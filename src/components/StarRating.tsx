@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cls } from "../ui";
 
-const STAR_SIZE = 24;
+const DEFAULT_STAR_SIZE = 24;
 
 /**
  * Five-star rating with half-star support (values in 0.5 steps, 0.5–5).
@@ -14,11 +14,17 @@ const STAR_SIZE = 24;
 export function StarRating({
   value,
   onChange,
+  size = DEFAULT_STAR_SIZE,
+  showValue = true,
   className,
 }: {
   /** Rating in 0.5 steps (0.5–5), or null when unrated. */
   value: number | null;
   onChange?: (value: number | null) => void;
+  /** Icon size in px (default 24). */
+  size?: number;
+  /** Show the "n/5" text after the stars (default true). */
+  showValue?: boolean;
   className?: string;
 }) {
   const { t } = useTranslation();
@@ -35,7 +41,9 @@ export function StarRating({
     <div
       className={cls("flex items-center", className)}
       role={onChange ? "radiogroup" : "img"}
-      aria-label={t("fields.rating")}
+      aria-label={
+        value != null ? `${t("fields.rating")}: ${value}/5` : t("fields.rating")
+      }
       onMouseLeave={() => setHover(null)}
     >
       {[1, 2, 3, 4, 5].map((i) => {
@@ -44,15 +52,15 @@ export function StarRating({
           <span
             key={i}
             className="relative inline-block"
-            style={{ width: STAR_SIZE, height: STAR_SIZE }}
+            style={{ width: size, height: size }}
           >
-            <Star size={STAR_SIZE} className="text-tm-dark" />
+            <Star size={size} className="text-tm-dark" />
             <span
               className="absolute inset-0 overflow-hidden"
               style={{ width: `${fill * 100}%` }}
             >
               <Star
-                size={STAR_SIZE}
+                size={size}
                 className="text-tm-accent"
                 fill="currentColor"
                 strokeWidth={0}
@@ -87,7 +95,7 @@ export function StarRating({
           </span>
         );
       })}
-      {value != null && (
+      {showValue && value != null && (
         <span className="ml-1.5 text-xs text-tm-gray">{value}/5</span>
       )}
     </div>

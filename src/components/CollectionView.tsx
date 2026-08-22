@@ -16,6 +16,7 @@ import { enumLabel, localeFor } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
 import { deriveTubeBadge } from "../lib/tube";
 import { MediaImage } from "./MediaImage";
+import { StarRating } from "./StarRating";
 import { TubeBadge } from "./TubeBadge";
 import { cls, btnPrimary, btnSecondary } from "../ui";
 
@@ -336,9 +337,11 @@ export function CollectionView({
                       </span>
                     )}
                     {d.overall_rating != null && (
-                      <span>
-                        {t("collection.rating", { n: d.overall_rating })}
-                      </span>
+                      <StarRating
+                        value={d.overall_rating}
+                        size={14}
+                        showValue={false}
+                      />
                     )}
                   </div>
                   <div
@@ -384,6 +387,9 @@ export function CollectionView({
                 </th>
                 <th className="px-3 py-2 text-right font-semibold">
                   {t("fields.price")}
+                </th>
+                <th className="px-3 py-2 font-semibold">
+                  {t("fields.rating")}
                 </th>
                 <th className="px-3 py-2 font-semibold">
                   {t("fields.tubeAmp")}
@@ -438,6 +444,17 @@ export function CollectionView({
                             settings.currency,
                             localeFor(settings.language),
                           )}
+                    </td>
+                    <td className="px-3 py-2">
+                      {d.overall_rating != null ? (
+                        <StarRating
+                          value={d.overall_rating}
+                          size={14}
+                          showValue={false}
+                        />
+                      ) : (
+                        <span className="text-tm-gray">—</span>
+                      )}
                     </td>
                     <td className="px-3 py-2">
                       {badge ? (

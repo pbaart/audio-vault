@@ -132,7 +132,6 @@
     "count_other": "{{shown}} van {{total}} apparaten",
     "noMatch": "Geen apparaten komen overeen met je filters.",
     "stage": "Stage {{n}}/5",
-    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "{{name}} bewerken",
       "delete": "{{name}} verwijderen"

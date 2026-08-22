@@ -132,7 +132,6 @@
     "count_other": "{{shown}} von {{total}} Geräten",
     "noMatch": "Keine Geräte entsprechen deinen Filtern.",
     "stage": "Bühne {{n}}/5",
-    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "{{name}} bearbeiten",
       "delete": "{{name}} löschen"

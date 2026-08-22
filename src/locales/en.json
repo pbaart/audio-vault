@@ -132,7 +132,6 @@
     "count_other": "{{shown}} of {{total}} devices",
     "noMatch": "No devices match your filters.",
     "stage": "Stage {{n}}/5",
-    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "Edit {{name}}",
       "delete": "Delete {{name}}"
