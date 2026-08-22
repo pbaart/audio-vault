@@ -290,6 +290,10 @@ export function CollectionView({
             <Rows3 size={15} />
           </button>
         </div>
+        <button className={btnPrimary} onClick={onAddDevice}>
+          <Plus size={16} />
+          {t("actions.addDevice")}
+        </button>
         {hasActiveFilters && (
           <button
             className="text-xs text-tm-accent hover:underline"
