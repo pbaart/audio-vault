@@ -65,7 +65,9 @@ export function DeviceDetailView({
           onClick={onBack}
         >
           <ArrowLeft size={16} />
-          {t(device.category === "headphones" ? "nav.collection" : "nav.devices")}
+          {t(
+            device.category === "headphones" ? "nav.collection" : "nav.devices",
+          )}
         </button>
         <div className="flex gap-2">
           <button className={btnPrimary} onClick={onEdit}>
@@ -217,143 +219,156 @@ export function DeviceDetailView({
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
               {device.category === "headphones" ? (
                 <>
-              <SpecItem
-                label={t("fields.impedance")}
-                value={
-                  device.impedance_ohms == null
-                    ? null
-                    : `${device.impedance_ohms} Ω`
-                }
-              />
-              <SpecItem
-                label={t("fields.sensitivity")}
-                value={
-                  device.sensitivity_db == null
-                    ? null
-                    : `${device.sensitivity_db} dB`
-                }
-              />
-              <SpecItem
-                label={t("fields.driveDifficulty")}
-                value={
-                  device.drive_difficulty
-                    ? enumLabel(device.drive_difficulty, t)
-                    : null
-                }
-              />
-              <SpecItem
-                label={t("fields.purchaseDate")}
-                value={formatDate(device.purchase_date, settings.dateFormat)}
-              />
-              <SpecItem
-                label={t("fields.price")}
-                value={formatPrice(
-                  device.price,
-                  settings.currency,
-                  localeFor(settings.language),
-                )}
-              />
-              <SpecItem
-                label={t("fields.soundSignature")}
-                value={
-                  device.sound_signature
-                    ? enumLabel(device.sound_signature, t)
-                    : null
-                }
-              />
+                  <SpecItem
+                    label={t("fields.impedance")}
+                    value={
+                      device.impedance_ohms == null
+                        ? null
+                        : `${device.impedance_ohms} Ω`
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.sensitivity")}
+                    value={
+                      device.sensitivity_db == null
+                        ? null
+                        : `${device.sensitivity_db} dB`
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.driveDifficulty")}
+                    value={
+                      device.drive_difficulty
+                        ? enumLabel(device.drive_difficulty, t)
+                        : null
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.purchaseDate")}
+                    value={formatDate(
+                      device.purchase_date,
+                      settings.dateFormat,
+                    )}
+                  />
+                  <SpecItem
+                    label={t("fields.price")}
+                    value={formatPrice(
+                      device.price,
+                      settings.currency,
+                      localeFor(settings.language),
+                    )}
+                  />
+                  <SpecItem
+                    label={t("fields.soundSignature")}
+                    value={
+                      device.sound_signature
+                        ? enumLabel(device.sound_signature, t)
+                        : null
+                    }
+                  />
                 </>
               ) : (
                 <>
-              <SpecItem label={t("fields.dacChip")} value={device.dac_chip} />
-              <SpecItem
-                label={t("fields.supportedFormats")}
-                value={device.supported_formats}
-              />
-              <SpecItem
-                label={t("fields.bluetoothCodecs")}
-                value={
-                  device.bluetooth_codecs.length > 0
-                    ? device.bluetooth_codecs.join(", ")
-                    : null
-                }
-              />
-              <SpecItem
-                label={t("fields.inputs")}
-                value={
-                  device.inputs.length > 0 ? device.inputs.join(", ") : null
-                }
-              />
-              <SpecItem
-                label={t("fields.outputs")}
-                value={
-                  device.outputs.length > 0 ? device.outputs.join(", ") : null
-                }
-              />
-              <SpecItem
-                label={t("fields.outputPower")}
-                value={device.output_power}
-              />
-              <SpecItem
-                label={t("fields.snr")}
-                value={
-                  device.snr_db == null ? null : `${device.snr_db} dB`
-                }
-              />
-              <SpecItem label={t("fields.thdN")} value={device.thd_n} />
-              <SpecItem
-                label={t("fields.loadImpedance")}
-                value={
-                  device.load_min_ohms == null && device.load_max_ohms == null
-                    ? null
-                    : device.load_max_ohms == null
-                      ? `≥ ${device.load_min_ohms} Ω`
-                      : device.load_min_ohms == null
-                        ? `≤ ${device.load_max_ohms} Ω`
-                        : `${device.load_min_ohms} – ${device.load_max_ohms} Ω`
-                }
-              />
-              <SpecItem label={t("fields.channels")} value={device.channels} />
-              <SpecItem label={t("fields.hdmi")} value={device.hdmi} />
-              <SpecItem
-                label={t("fields.roomCorrection")}
-                value={device.room_correction}
-              />
-              <SpecItem
-                label={t("fields.purchaseDate")}
-                value={formatDate(device.purchase_date, settings.dateFormat)}
-              />
-              <SpecItem
-                label={t("fields.price")}
-                value={formatPrice(
-                  device.price,
-                  settings.currency,
-                  localeFor(settings.language),
-                )}
-              />
+                  <SpecItem
+                    label={t("fields.dacChip")}
+                    value={device.dac_chip}
+                  />
+                  <SpecItem
+                    label={t("fields.supportedFormats")}
+                    value={device.supported_formats}
+                  />
+                  <SpecItem
+                    label={t("fields.bluetoothCodecs")}
+                    value={
+                      device.bluetooth_codecs.length > 0
+                        ? device.bluetooth_codecs.join(", ")
+                        : null
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.inputs")}
+                    value={
+                      device.inputs.length > 0 ? device.inputs.join(", ") : null
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.outputs")}
+                    value={
+                      device.outputs.length > 0
+                        ? device.outputs.join(", ")
+                        : null
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.outputPower")}
+                    value={device.output_power}
+                  />
+                  <SpecItem
+                    label={t("fields.snr")}
+                    value={device.snr_db == null ? null : `${device.snr_db} dB`}
+                  />
+                  <SpecItem label={t("fields.thdN")} value={device.thd_n} />
+                  <SpecItem
+                    label={t("fields.loadImpedance")}
+                    value={
+                      device.load_min_ohms == null &&
+                      device.load_max_ohms == null
+                        ? null
+                        : device.load_max_ohms == null
+                          ? `≥ ${device.load_min_ohms} Ω`
+                          : device.load_min_ohms == null
+                            ? `≤ ${device.load_max_ohms} Ω`
+                            : `${device.load_min_ohms} – ${device.load_max_ohms} Ω`
+                    }
+                  />
+                  <SpecItem
+                    label={t("fields.channels")}
+                    value={device.channels}
+                  />
+                  <SpecItem label={t("fields.hdmi")} value={device.hdmi} />
+                  <SpecItem
+                    label={t("fields.roomCorrection")}
+                    value={device.room_correction}
+                  />
+                  <SpecItem
+                    label={t("fields.purchaseDate")}
+                    value={formatDate(
+                      device.purchase_date,
+                      settings.dateFormat,
+                    )}
+                  />
+                  <SpecItem
+                    label={t("fields.price")}
+                    value={formatPrice(
+                      device.price,
+                      settings.currency,
+                      localeFor(settings.language),
+                    )}
+                  />
                 </>
               )}
             </div>
           </Section>
 
           {device.category === "headphones" && (
-          <Section title={t("detail.theSound")}>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-              <SoundField
-                field="soundstage"
-                rating={device.soundstage_rating}
-              />
-              <SoundField field="imaging" rating={device.imaging_rating} />
-              <SoundField
-                field="detailRetrieval"
-                rating={device.detail_retrieval_rating}
-              />
-              <SoundField field="timbre" rating={device.timbre_rating} />
-              <SoundField
-                field="tonalBalance"
-                rating={device.tonal_balance_rating}
-              />
-            </div>
-          </Section>
+            <Section title={t("detail.theSound")}>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+                <SoundField
+                  field="soundstage"
+                  rating={device.soundstage_rating}
+                />
+                <SoundField field="imaging" rating={device.imaging_rating} />
+                <SoundField
+                  field="detailRetrieval"
+                  rating={device.detail_retrieval_rating}
+                />
+                <SoundField field="timbre" rating={device.timbre_rating} />
+                <SoundField
+                  field="tonalBalance"
+                  rating={device.tonal_balance_rating}
+                />
+              </div>
+            </Section>
           )}
 
           {device.custom_fields.length > 0 && (
@@ -501,7 +516,6 @@ function EmptyHint({ text }: { text: string }) {
   return <p className="text-sm text-tm-gray">{text}</p>;
 }
 
-
 type SoundFieldKey =
   | "soundstage"
   | "imaging"
@@ -585,11 +599,11 @@ function SoundField({
         />
       </p>
       <div className="mt-1">
-{rating == null ? (
-  <span className="text-sm text-tm-gray">—</span>
-) : (
-  <DotRating value={rating} size={10} label={label} />
-)}
+        {rating == null ? (
+          <span className="text-sm text-tm-gray">—</span>
+        ) : (
+          <DotRating value={rating} size={10} label={label} />
+        )}
       </div>
     </div>
   );

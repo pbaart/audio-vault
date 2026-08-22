@@ -209,28 +209,28 @@ export function CollectionView({
         />
         {isHp && (
           <>
-          <FilterSelect
-            value={driverFilter}
-            onChange={(v) => setDriverFilter(v as DriverFilter)}
-          options={["all", ...DRIVER_TYPES]}
-          label={(v) =>
-            v === "all" ? t("collection.filter.driverAll") : enumLabel(v, t)
-          }
-        />
-        <FilterSelect
-          value={tubeFilter}
-          onChange={(v) => setTubeFilter(v as TubeFilter)}
-          options={["all", "yes", "partial", "no"]}
-          label={(v) =>
-            v === "all"
-              ? t("collection.filter.tubeAll")
-              : v === "yes"
-                ? t("collection.filter.tubeYes")
-                : v === "partial"
-                  ? t("collection.filter.tubePartial")
-                  : t("collection.filter.tubeNo")
-            }
-          />
+            <FilterSelect
+              value={driverFilter}
+              onChange={(v) => setDriverFilter(v as DriverFilter)}
+              options={["all", ...DRIVER_TYPES]}
+              label={(v) =>
+                v === "all" ? t("collection.filter.driverAll") : enumLabel(v, t)
+              }
+            />
+            <FilterSelect
+              value={tubeFilter}
+              onChange={(v) => setTubeFilter(v as TubeFilter)}
+              options={["all", "yes", "partial", "no"]}
+              label={(v) =>
+                v === "all"
+                  ? t("collection.filter.tubeAll")
+                  : v === "yes"
+                    ? t("collection.filter.tubeYes")
+                    : v === "partial"
+                      ? t("collection.filter.tubePartial")
+                      : t("collection.filter.tubeNo")
+              }
+            />
           </>
         )}
         <div className="flex items-center gap-1">
@@ -244,7 +244,9 @@ export function CollectionView({
             <option value="added">{t("collection.sort.added")}</option>
             <option value="modified">{t("collection.sort.modified")}</option>
             {isHp && (
-              <option value="impedance">{t("collection.sort.impedance")}</option>
+              <option value="impedance">
+                {t("collection.sort.impedance")}
+              </option>
             )}
             <option value="price">{t("collection.sort.price")}</option>
           </select>
