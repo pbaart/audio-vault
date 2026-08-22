@@ -345,7 +345,6 @@
     "savedNote": "Änderungen werden sofort in der Konfigurationsdatei gespeichert und appweit angewendet.",
     "webFetch": "Web-Abruf",
     "webFetchBody": "„Spezifikationen abrufen“ im Geräteformular sucht die aktuelle Marke + das Modell im Web – den squig.link-Messindex (ohne Schlüssel) für Frequenzgang und Preis sowie eine schlüssellose DuckDuckGo-Suche, um Herstellerseiten für Impedanz, Empfindlichkeit, Treibertyp und Produktbild zu finden. Abrufe sind Best-Effort: Felder, die nicht ermittelt werden können, bleiben leer, und nichts wird gespeichert, bis du es anwendest. Es wird kein API-Schlüssel benötigt und keine Zugangsdaten gespeichert.",
-    "theme": "Design",
     "colorScheme": "Farbschema",
     "storage": "Speicher (XDG)",
     "database": "Datenbank",

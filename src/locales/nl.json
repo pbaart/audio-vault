@@ -345,7 +345,6 @@
     "savedNote": "Wijzigingen worden direct in je configuratiebestand opgeslagen en over de hele app toegepast.",
     "webFetch": "Webopvraging",
     "webFetchBody": "„Specificaties ophalen“ in het apparaatvenster zoekt het huidige merk + model op het web — de squig.link-metingindex (zonder sleutel) voor de frequentierespons en de prijs, en een DuckDuckGo-zoekopdracht zonder sleutel om fabrikantpagina’s te vinden voor impedantie, gevoeligheid, drivertype en het productbeeld. Opvragingen zijn best-effort: velden die niet bepaald kunnen worden, blijven leeg, en er wordt niets opgeslagen totdat je het toepast. Er is geen API-sleutel nodig en er worden geen inloggegevens opgeslagen.",
-    "theme": "Thema",
     "colorScheme": "Kleurenschema",
     "storage": "Opslag (XDG)",
     "database": "Database",

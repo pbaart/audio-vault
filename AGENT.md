@@ -174,10 +174,10 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
 5. **Deletion:** confirm dialog; the device's media files (image + FR
    graph) are removed from `media/` on delete. Replacing an image in the
    form deletes the superseded file on successful save.
-6. **Settings:** XDG path display, "open media folder" (system file
-   manager), theme (5 selectable dark color schemes, default Tokyo Night),
-   language (EN/DE/NL/FR), currency + date format, web-fetch info,
-   tube-rule reference, and an About section showing the running app
+6. **Settings:** preferences (language EN/DE/NL/FR, currency, date format,
+   color scheme — 5 selectable dark color schemes, default Tokyo Night),
+   XDG path display, "open media folder" (system file manager), web-fetch
+   info, tube-rule reference, and an About section showing the running app
    version (Tauri `getVersion()`, embedded from tauri.conf.json).
 
 ### Phase 2 — Web auto-fetch (implemented)

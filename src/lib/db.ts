@@ -67,7 +67,10 @@ const asInt = (v: unknown): number | null =>
 
 /** Current UTC time in SQLite CURRENT_TIMESTAMP format (`YYYY-MM-DD HH:MM:SS`). */
 function sqlNow(): string {
-  return new Date().toISOString().replace("T", " ").replace(/\.\d+Z$/, "");
+  return new Date()
+    .toISOString()
+    .replace("T", " ")
+    .replace(/\.\d+Z$/, "");
 }
 
 /**

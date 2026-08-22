@@ -6,7 +6,6 @@ import {
   Globe,
   HardDrive,
   Info,
-  Palette,
   SlidersHorizontal,
 } from "lucide-react";
 import { getAppPaths, type AppPaths } from "../lib/paths";
@@ -70,7 +69,7 @@ export function SettingsView({
           <SlidersHorizontal size={14} />
           {t("settings.preferences")}
         </h3>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="text-xs text-tm-gray">
               {t("settings.language")}
@@ -134,6 +133,27 @@ export function SettingsView({
               ))}
             </select>
           </label>
+          <label className="block">
+            <span className="text-xs text-tm-gray">
+              {t("settings.colorScheme")}
+            </span>
+            <select
+              className={cls(selectCls, "mt-1 w-full")}
+              value={settings.theme}
+              onChange={(e) =>
+                onSettingsChange({
+                  ...settings,
+                  theme: e.target.value as ThemeId,
+                })
+              }
+            >
+              {THEMES.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         <p className="mt-3 text-xs text-tm-gray">{t("settings.savedNote")}</p>
       </section>
@@ -146,34 +166,6 @@ export function SettingsView({
         <p className="text-sm leading-relaxed text-tm-gray">
           {t("settings.webFetchBody")}
         </p>
-      </section>
-
-      <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
-        <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-          <Palette size={14} />
-          {t("settings.theme")}
-        </h3>
-        <label className="block">
-          <span className="text-xs text-tm-gray">
-            {t("settings.colorScheme")}
-          </span>
-          <select
-            className={cls(selectCls, "mt-1 w-full")}
-            value={settings.theme}
-            onChange={(e) =>
-              onSettingsChange({
-                ...settings,
-                theme: e.target.value as ThemeId,
-              })
-            }
-          >
-            {THEMES.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </label>
       </section>
 
       <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">

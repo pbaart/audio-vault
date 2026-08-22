@@ -345,7 +345,6 @@
     "savedNote": "Changes are saved immediately to your config file and applied across the app.",
     "webFetch": "Web fetch",
     "webFetchBody": "“Fetch specs” in the device form looks up the current brand + model on the web — the squig.link measurement index (no key needed) for the frequency-response data and price, and keyless DuckDuckGo search to find manufacturer pages for impedance, sensitivity, driver type and the product image. Fetches are best-effort: fields that cannot be determined are left blank, and nothing is saved until you apply it. No API key is required and no credentials are stored.",
-    "theme": "Theme",
     "colorScheme": "Color scheme",
     "storage": "Storage (XDG)",
     "database": "Database",

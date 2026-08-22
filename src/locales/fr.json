@@ -345,7 +345,6 @@
     "savedNote": "Les modifications sont enregistrées immédiatement dans le fichier de configuration et appliquées dans toute l'application.",
     "webFetch": "Récupération web",
     "webFetchBody": "« Récupérer les spécifications » dans le formulaire d'appareil recherche la marque + le modèle actuels sur le web — l'index de mesures squig.link (sans clé) pour les données de réponse en fréquence et le prix, et une recherche DuckDuckGo sans clé pour trouver les pages fabricant concernant l'impédance, la sensibilité, le type de driver et l'image du produit. Les récupérations sont best-effort : les champs qui ne peuvent pas être déterminés restent vides, et rien n'est enregistré avant que vous ne l'appliquiez. Aucune clé API n'est requise et aucune donnée d'identification n'est stockée.",
-    "theme": "Thème",
     "colorScheme": "Schéma de couleurs",
     "storage": "Stockage (XDG)",
     "database": "Base de données",
