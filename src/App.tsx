@@ -20,6 +20,20 @@ type View =
   | { name: "device"; id: string }
   | { name: "settings" };
 
+/**
+ * History entry state: mirrors the app view (plus its depth) so the
+ * webview back/forward buttons — mouse back button, Alt+Left/Right —
+ * navigate between collection, device detail and settings.
+ */
+type HistState = View & { idx: number };
+
+function histState(): HistState {
+  return (window.history.state as HistState | null) ?? {
+    name: "collection",
+    idx: 0,
+  };
+}
+
 export default function App() {
   const { t } = useTranslation();
   const [booted, setBooted] = useState(false);
@@ -61,13 +75,67 @@ export default function App() {
     };
   }, [refresh]);
 
+  // Tag the initial history entry so back/forward have a baseline.
+  useEffect(() => {
+    window.history.replaceState({ name: "collection", idx: 0 }, "");
+  }, []);
+
+  // Mouse back/forward (and Alt+Left/Right) navigate the app views.
+  useEffect(() => {
+    function onPop(e: PopStateEvent) {
+      const st = (e.state as HistState | null) ?? {
+        name: "collection",
+        idx: 0,
+      };
+      if (st.name === "collection") {
+        setView({ name: "collection" });
+        setSelected(null);
+      } else if (st.name === "settings") {
+        setView({ name: "settings" });
+        setSelected(null);
+      } else {
+        void getDevice(st.id).then((d) => {
+          if (d) {
+            setSelected(d);
+            setView({ name: "device", id: st.id });
+          } else {
+            // Stale entry (device deleted) — drop it.
+            setView({ name: "collection" });
+            setSelected(null);
+            window.history.replaceState({ name: "collection", idx: 0 }, "");
+          }
+        });
+      }
+    }
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   function openDevice(id: string) {
     void getDevice(id).then((d) => {
-      if (d) {
-        setSelected(d);
-        setView({ name: "device", id });
+      if (!d) return;
+      setSelected(d);
+      setView({ name: "device", id });
+      const cur = histState();
+      if (!(cur.name === "device" && cur.id === id)) {
+        window.history.pushState({ name: "device", id, idx: cur.idx + 1 }, "");
       }
     });
+  }
+
+  function openSettings() {
+    setView({ name: "settings" });
+    const cur = histState();
+    if (cur.name !== "settings") {
+      window.history.pushState({ name: "settings", idx: cur.idx + 1 }, "");
+    }
+  }
+
+  /** Return to the collection, popping any pushed history entries. */
+  function goCollection() {
+    const cur = histState();
+    if (cur.idx === 0) return;
+    window.history.go(-cur.idx);
   }
 
   function handleSaved(device: Device) {
@@ -89,8 +157,7 @@ export default function App() {
       void removeMediaFile(d.fr_graph_path);
       setDeleteTarget(null);
       if (view.name === "device" && view.id === d.id) {
-        setView({ name: "collection" });
-        setSelected(null);
+        goCollection();
       }
       await refresh();
     } catch (err) {
@@ -142,17 +209,14 @@ export default function App() {
         <nav className="flex items-center gap-1">
           <NavButton
             active={view.name !== "settings"}
-            onClick={() => {
-              setView({ name: "collection" });
-              setSelected(null);
-            }}
+            onClick={goCollection}
           >
             <Headphones size={15} />
             {t("nav.collection")}
           </NavButton>
           <NavButton
             active={view.name === "settings"}
-            onClick={() => setView({ name: "settings" })}
+            onClick={openSettings}
           >
             <Settings size={15} />
             {t("nav.settings")}
@@ -179,10 +243,7 @@ export default function App() {
           <DeviceDetailView
             device={selected}
             settings={settings}
-            onBack={() => {
-              setView({ name: "collection" });
-              setSelected(null);
-            }}
+            onBack={goCollection}
             onEdit={() => setFormState({ open: true, device: selected })}
             onDelete={() => setDeleteTarget(selected)}
           />

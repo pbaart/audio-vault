@@ -129,7 +129,10 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
 ## ⚙️ Core UI & Data Management
 
 1. **Screens:** Collection Overview (default), Device Detail, Add/Edit dialog
-   (modal), Settings. No router — state-based navigation in `App.tsx`.
+   (modal), Settings. No router — state-based navigation in `App.tsx`,
+   synced with webview history (`pushState`/`popstate`) so the mouse
+   back/forward buttons (and Alt+Left/Right) move between collection,
+   detail and settings.
 2. **Collection Overview:** grid of cards (image, name, type, key specs,
    tube badge, hover edit/delete) or list/table view (toggle persisted in
    localStorage; table rows carry edit + delete icon buttons in a right
