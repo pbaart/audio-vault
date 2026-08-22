@@ -1,5 +1,10 @@
 # Audio Vault
 
+![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpbaart%2Faudio-vault%2Fmain%2Fpackage.json&query=%24.version&label=version&color=blue)
+![License](https://img.shields.io/github/license/pbaart/audio-vault)
+
+![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB) ![React](https://img.shields.io/badge/React-19-61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6) ![Vite](https://img.shields.io/badge/Vite-7-646CFF) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8) ![Rust](https://img.shields.io/badge/Rust-stable-DEA584)
+
 A local-first desktop application for audiophiles to manage a collection of
 headphones and IEMs. Built with [Tauri v2](https://tauri.app) (Rust) and
 React + TypeScript, styled with Tailwind CSS in one of five dark color
