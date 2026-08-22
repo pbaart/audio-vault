@@ -20,6 +20,16 @@ All data lives on this machine in XDG directories — nothing leaves it:
 | Web-fetch caches (squig.link index) | `~/.local/share/audio-vault/cache/` |
 | Config | `~/.config/audio-vault/config.json` |
 
+## Screenshots
+
+Collection overview (list view):
+
+![Collection view](docs/screenshot-1.png)
+
+Device detail view:
+
+![Device detail view](docs/screenshot-2.png)
+
 ## Features (Phase 1 / MVP)
 
 - Collection overview with grid, search, filters (type / driver / tube-amp
