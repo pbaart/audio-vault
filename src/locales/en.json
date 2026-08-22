@@ -35,14 +35,14 @@
     "badges": {
       "Yes": "Perfect Match",
       "OTL Only": "Limited Compatibility",
-      "Transformer Only": "Not Recommended",
-      "No": "Not Supported"
+      "Transformer Only": "Not Advised",
+      "No": "Not Possible"
     },
     "dot": {
       "Yes": "Perfect match for tube amps",
       "OTL Only": "Limited compatibility with tube amps (OTL only)",
-      "Transformer Only": "Not recommended for tube amps (transformer-coupled only)",
-      "No": "Not suitable for tube amps"
+      "Transformer Only": "Not advised for tube amps (transformer-coupled only)",
+      "No": "Not possible with tube amps"
     }
   },
   "tubeRule": {

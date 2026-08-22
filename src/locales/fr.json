@@ -35,14 +35,14 @@
     "badges": {
       "Yes": "Correspondance parfaite",
       "OTL Only": "Compatibilité limitée",
-      "Transformer Only": "Non recommandé",
-      "No": "Non pris en charge"
+      "Transformer Only": "Déconseillé",
+      "No": "Impossible"
     },
     "dot": {
       "Yes": "Correspondance parfaite avec les amplis à tubes",
       "OTL Only": "Compatibilité limitée avec les amplis à tubes (OTL uniquement)",
-      "Transformer Only": "Non recommandé pour les amplis à tubes (à transformateur uniquement)",
-      "No": "Non adapté aux amplis à tubes"
+      "Transformer Only": "Déconseillé pour les amplis à tubes (à transformateur uniquement)",
+      "No": "Impossible avec les amplis à tubes"
     }
   },
   "tubeRule": {
