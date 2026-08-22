@@ -217,24 +217,24 @@ export function DeviceDetailView({
                 }
               />
               <SpecItem
-                label={t("fields.price")}
-                value={formatPrice(
-                  device.price,
-                  settings.currency,
-                  localeFor(settings.language),
-                )}
-              />
-              <SpecItem
-                label={t("fields.purchaseDate")}
-                value={formatDate(device.purchase_date, settings.dateFormat)}
-              />
-              <SpecItem
                 label={t("fields.driveDifficulty")}
                 value={
                   device.drive_difficulty
                     ? enumLabel(device.drive_difficulty, t)
                     : null
                 }
+              />
+              <SpecItem
+                label={t("fields.purchaseDate")}
+                value={formatDate(device.purchase_date, settings.dateFormat)}
+              />
+              <SpecItem
+                label={t("fields.price")}
+                value={formatPrice(
+                  device.price,
+                  settings.currency,
+                  localeFor(settings.language),
+                )}
               />
               <SpecItem
                 label={t("fields.soundSignature")}
