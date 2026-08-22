@@ -93,6 +93,7 @@
     "driveDifficulty": "Drive difficulty",
     "soundSignature": "Sound signature",
     "soundstage": "Soundstage",
+    "rating": "Rating",
     "tubeAmp": "Tube amp",
     "actions": "Actions"
   },
@@ -131,6 +132,7 @@
     "count_other": "{{shown}} of {{total}} devices",
     "noMatch": "No devices match your filters.",
     "stage": "Stage {{n}}/5",
+    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "Edit {{name}}",
       "delete": "Delete {{name}}"
@@ -206,6 +208,9 @@
     "ruleResult": "Rule result:",
     "sound": "Sound",
     "soundstage": "Soundstage (1–5)",
+    "rating": "Overall rating",
+    "starAria": "Rate {{n}} out of 5",
+    "starClearAria": "Clear rating",
     "listeningNotes": "Listening notes",
     "phListeningNotes": "Impressions, comparisons, burn-in status…",
     "frGraph": "Frequency response graph",
@@ -242,6 +247,7 @@
       "impedanceInt": "Impedance must be a whole number ≥ 0",
       "sensitivityNumber": "Sensitivity must be a number",
       "soundstageRange": "Soundstage must be 1–5",
+      "ratingRange": "Rating must be between 0.5 and 5",
       "urlInvalid": "Enter a valid URL (http or https)",
       "peqFreqRequired": "Frequency is required",
       "peqNumber": "Enter a number",

@@ -18,6 +18,7 @@ import { summarizePeq } from "../lib/peqCurve";
 import { PeqGraph } from "./PeqGraph";
 import { MediaImage } from "./MediaImage";
 import { TubeBadge } from "./TubeBadge";
+import { StarRating } from "./StarRating";
 import { Lightbox } from "./Lightbox";
 import { btnPrimary, cls } from "../ui";
 
@@ -164,6 +165,16 @@ export function DeviceDetailView({
         <div className="space-y-4">
           <Section title={t("detail.specs")}>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+              <div>
+                <p className="text-xs text-tm-gray">{t("fields.rating")}</p>
+                <div className="mt-1">
+                  {device.overall_rating != null ? (
+                    <StarRating value={device.overall_rating} />
+                  ) : (
+                    <span className="text-sm text-tm-gray">—</span>
+                  )}
+                </div>
+              </div>
               <SpecItem
                 label={t("fields.impedance")}
                 value={

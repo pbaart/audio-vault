@@ -335,6 +335,9 @@ export function CollectionView({
                         {t("collection.stage", { n: d.soundstage_rating })}
                       </span>
                     )}
+                    {d.overall_rating != null && (
+                      <span>{t("collection.rating", { n: d.overall_rating })}</span>
+                    )}
                   </div>
                   <div
                     className="flex items-center gap-2 pt-1 opacity-0 transition group-hover:opacity-100"

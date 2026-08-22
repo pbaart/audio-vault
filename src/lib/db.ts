@@ -9,8 +9,8 @@ const UPDATE_SQL =
   "price = ?, purchase_date = ?, driver_type = ?, impedance_ohms = ?, " +
   "sensitivity_db = ?, connector_type = ?, tube_amp_suitable = ?, " +
   "drive_difficulty = ?, sound_signature = ?, soundstage_rating = ?, " +
-  "listening_notes = ?, fr_graph_path = ?, peq_settings = ?, peq_source = ?, " +
-  "custom_fields = ? " +
+  "overall_rating = ?, listening_notes = ?, fr_graph_path = ?, " +
+  "peq_settings = ?, peq_source = ?, custom_fields = ? " +
   "WHERE id = ?";
 
 const INSERT_SQL =
@@ -18,8 +18,9 @@ const INSERT_SQL =
   "webshop_url, image_path, mood_image_path, price, " +
   "purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, " +
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
-  "listening_notes, fr_graph_path, peq_settings, peq_source, custom_fields) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "overall_rating, listening_notes, fr_graph_path, peq_settings, peq_source, " +
+  "custom_fields) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -60,6 +61,15 @@ const asString = (v: unknown): string | null =>
 
 const asInt = (v: unknown): number | null =>
   typeof v === "number" && Number.isInteger(v) ? v : null;
+
+/**
+ * `overall_rating` is stored as 2× the rating so half stars fit in an
+ * INTEGER column (1–10 ⇔ 0.5–5.0); NULL means unrated.
+ */
+function ratingFromRow(raw: unknown): number | null {
+  const doubled = asInt(raw);
+  return doubled == null ? null : doubled / 2;
+}
 
 const asNum = (v: unknown): number | null =>
   typeof v === "number" && Number.isFinite(v) ? v : null;
@@ -135,6 +145,7 @@ function rowToDevice(row: Row): Device {
     ) as Device["drive_difficulty"],
     sound_signature: asString(row.sound_signature) as Device["sound_signature"],
     soundstage_rating: asInt(row.soundstage_rating),
+    overall_rating: ratingFromRow(row.overall_rating),
     listening_notes: asString(row.listening_notes),
     fr_graph_path: asString(row.fr_graph_path),
     peq_settings: parsePeqSettings(row.peq_settings),
@@ -235,6 +246,9 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.drive_difficulty,
     device.sound_signature,
     device.soundstage_rating,
+    device.overall_rating == null
+      ? null
+      : Math.round(device.overall_rating * 2),
     device.listening_notes,
     device.fr_graph_path,
     JSON.stringify(device.peq_settings),

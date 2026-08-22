@@ -93,6 +93,7 @@
     "driveDifficulty": "Ansteuerbarkeit",
     "soundSignature": "Klangcharakter",
     "soundstage": "Klangbühne",
+    "rating": "Bewertung",
     "tubeAmp": "Röhrenverstärker",
     "actions": "Aktionen"
   },
@@ -131,6 +132,7 @@
     "count_other": "{{shown}} von {{total}} Geräten",
     "noMatch": "Keine Geräte entsprechen deinen Filtern.",
     "stage": "Bühne {{n}}/5",
+    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "{{name}} bearbeiten",
       "delete": "{{name}} löschen"
@@ -206,6 +208,9 @@
     "ruleResult": "Regelergebnis:",
     "sound": "Klang",
     "soundstage": "Klangbühne (1–5)",
+    "rating": "Gesamtbewertung",
+    "starAria": "{{n}} von 5 bewerten",
+    "starClearAria": "Bewertung entfernen",
     "listeningNotes": "Hörnotizen",
     "phListeningNotes": "Eindrücke, Vergleiche, Einlaufstatus …",
     "frGraph": "Frequenzgang-Graphik",
@@ -242,6 +247,7 @@
       "impedanceInt": "Impedanz muss eine ganze Zahl ≥ 0 sein",
       "sensitivityNumber": "Empfindlichkeit muss eine Zahl sein",
       "soundstageRange": "Klangbühne muss 1–5 sein",
+      "ratingRange": "Bewertung muss zwischen 0,5 und 5 liegen",
       "urlInvalid": "Gültige URL eingeben (http oder https)",
       "peqFreqRequired": "Frequenz ist erforderlich",
       "peqNumber": "Zahl eingeben",

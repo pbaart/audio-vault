@@ -93,6 +93,7 @@
     "driveDifficulty": "Difficulté de pilotage",
     "soundSignature": "Signature sonore",
     "soundstage": "Scène sonore",
+    "rating": "Note",
     "tubeAmp": "Ampli à tubes",
     "actions": "Actions"
   },
@@ -131,6 +132,7 @@
     "count_other": "{{shown}} sur {{total}} appareils",
     "noMatch": "Aucun appareil ne correspond à vos filtres.",
     "stage": "Scène {{n}}/5",
+    "rating": "★ {{n}}/5",
     "aria": {
       "edit": "Modifier {{name}}",
       "delete": "Supprimer {{name}}"
@@ -206,6 +208,9 @@
     "ruleResult": "Résultat de la règle :",
     "sound": "Son",
     "soundstage": "Scène sonore (1–5)",
+    "rating": "Note globale",
+    "starAria": "Noter {{n}} sur 5",
+    "starClearAria": "Effacer la note",
     "listeningNotes": "Notes d'écoute",
     "phListeningNotes": "Impressions, comparaisons, état du rodage…",
     "frGraph": "Graphique de réponse en fréquence",
@@ -242,6 +247,7 @@
       "impedanceInt": "L'impédance doit être un entier ≥ 0",
       "sensitivityNumber": "La sensibilité doit être un nombre",
       "soundstageRange": "La scène sonore doit être entre 1 et 5",
+      "ratingRange": "La note doit être comprise entre 0,5 et 5",
       "urlInvalid": "Saisissez une URL valide (http ou https)",
       "peqFreqRequired": "La fréquence est requise",
       "peqNumber": "Saisissez un nombre",

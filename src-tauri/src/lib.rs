@@ -527,6 +527,14 @@ pub fn run() {
     description: "add_mood_image_path_column",
     sql: "ALTER TABLE devices ADD COLUMN mood_image_path TEXT;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 9,
+    description: "add_overall_rating_column",
+    // Stores 2x the user rating so half stars fit in an INTEGER column:
+    // 1..=10 maps to 0.5..=5.0; NULL means unrated.
+    sql: "ALTER TABLE devices ADD COLUMN overall_rating INTEGER;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

@@ -55,6 +55,7 @@ import { renderFrPng } from "../lib/renderFr";
 import { FrPreview } from "./FrPreview";
 import { MediaImage } from "./MediaImage";
 import { Modal } from "./Modal";
+import { StarRating } from "./StarRating";
 import { TubeBadge } from "./TubeBadge";
 import {
   btnDanger,
@@ -110,6 +111,7 @@ interface FormState {
   drive_difficulty: DriveDifficulty | "";
   sound_signature: SoundSignature | "";
   soundstage_rating: string;
+  overall_rating: string;
   listening_notes: string;
   fr_graph_path: string | null;
   peq: PeqDraft[];
@@ -141,6 +143,8 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
     sound_signature: device?.sound_signature ?? "",
     soundstage_rating:
       device?.soundstage_rating == null ? "" : String(device.soundstage_rating),
+    overall_rating:
+      device?.overall_rating == null ? "" : String(device.overall_rating),
     listening_notes: device?.listening_notes ?? "",
     fr_graph_path: device?.fr_graph_path ?? null,
     peq: (device?.peq_settings ?? []).map((b) => ({
@@ -211,6 +215,16 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
     )
   )
     e.soundstage_rating = t("form.validation.soundstageRange");
+  if (
+    f.overall_rating !== "" &&
+    !(
+      Number.isFinite(Number(f.overall_rating)) &&
+      Number(f.overall_rating) >= 0.5 &&
+      Number(f.overall_rating) <= 5 &&
+      Number(f.overall_rating) % 0.5 === 0
+    )
+  )
+    e.overall_rating = t("form.validation.ratingRange");
   if (
     f.manufacturer_url.trim() !== "" &&
     normalizeUrl(f.manufacturer_url) == null
@@ -642,6 +656,10 @@ export function DeviceFormDialog({
           form.soundstage_rating === ""
             ? null
             : Math.min(5, Math.max(1, Number(form.soundstage_rating))),
+        overall_rating:
+          form.overall_rating === ""
+            ? null
+            : Math.min(5, Math.max(0.5, Number(form.overall_rating))),
         listening_notes: form.listening_notes.trim() || null,
         fr_graph_path: form.fr_graph_path,
         peq_settings: peq,
@@ -1181,6 +1199,18 @@ export function DeviceFormDialog({
                   </option>
                 ))}
               </select>
+            </Field>
+            <Field label={t("form.rating")} error={errors.overall_rating}>
+              <StarRating
+                value={
+                  form.overall_rating === ""
+                    ? null
+                    : Number(form.overall_rating)
+                }
+                onChange={(v) =>
+                  set("overall_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
           </div>
           <Field label={t("form.listeningNotes")} className="mt-4">
