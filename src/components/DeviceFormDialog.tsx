@@ -29,7 +29,12 @@ import {
   TUBE_BADGES,
 } from "../types";
 import { deriveTubeBadge, describeTubeRule, tubeBadgeLabel } from "../lib/tube";
-import { enumLabel, localizeNote, localeFor, type TranslateFn } from "../lib/i18n";
+import {
+  enumLabel,
+  localizeNote,
+  localeFor,
+  type TranslateFn,
+} from "../lib/i18n";
 import {
   getDistinctBrands,
   getDistinctColors,
@@ -837,7 +842,6 @@ export function DeviceFormDialog({
 
         {/* Web fetch */}
         <FormSection title={t("form.webFetch")}>
-
           <div className="flex flex-wrap items-center gap-3">
             <button
               className={btnSecondary}
@@ -959,7 +963,6 @@ export function DeviceFormDialog({
               </button>
             </div>
           )}
-        
         </FormSection>
 
         {/* Technical specs */}
@@ -1080,13 +1083,19 @@ export function DeviceFormDialog({
                 placeholder="349"
               />
             </Field>
-            <Field label={t("fields.tubeAmp")} className="col-span-2 sm:col-span-3">
+            <Field
+              label={t("fields.tubeAmp")}
+              className="col-span-2 sm:col-span-3"
+            >
               <div className="flex flex-wrap items-center gap-4">
                 <select
                   className={selectCls}
                   value={form.tube_amp_suitable}
                   onChange={(e) =>
-                    set("tube_amp_suitable", e.target.value as TubeBadgeValue | "")
+                    set(
+                      "tube_amp_suitable",
+                      e.target.value as TubeBadgeValue | "",
+                    )
                   }
                 >
                   <option value="">{t("form.tubeAuto")}</option>
@@ -1100,7 +1109,11 @@ export function DeviceFormDialog({
                   <div className="flex items-center gap-2 text-xs text-tm-gray">
                     <span>{t("form.ruleResult")}</span>
                     <Tip label={t("fields.tubeAmp")}>
-                      <TubeBadge badge={previewBadge} size="sm" tooltip={null} />
+                      <TubeBadge
+                        badge={previewBadge}
+                        size="sm"
+                        tooltip={null}
+                      />
                     </Tip>
                   </div>
                 )}
@@ -1108,14 +1121,12 @@ export function DeviceFormDialog({
               <p className="mt-2 text-xs text-tm-gray">
                 {describeTubeRule((k) => t(k))}
               </p>
-        
             </Field>
           </div>
         </FormSection>
 
         {/* Extra */}
         <FormSection title={t("detail.custom")}>
-
           <div className="space-y-2">
             <datalist id="custom-key-suggestions">
               {customKeys.map((k) => (
@@ -1182,7 +1193,6 @@ export function DeviceFormDialog({
               {t("form.addCustom")}
             </button>
           </div>
-        
         </FormSection>
 
         {/* Sound */}
@@ -1208,7 +1218,7 @@ export function DeviceFormDialog({
               label={t("form.soundstage")}
               error={errors.soundstage_rating}
             >
-                            <DotRating
+              <DotRating
                 label={t("form.soundstage")}
                 value={
                   form.soundstage_rating === ""
@@ -1221,7 +1231,7 @@ export function DeviceFormDialog({
               />
             </Field>
             <Field label={t("form.imaging")} error={errors.imaging_rating}>
-                            <DotRating
+              <DotRating
                 label={t("form.imaging")}
                 value={
                   form.imaging_rating === ""
@@ -1237,7 +1247,7 @@ export function DeviceFormDialog({
               label={t("form.detailRetrieval")}
               error={errors.detail_retrieval_rating}
             >
-                            <DotRating
+              <DotRating
                 label={t("form.detailRetrieval")}
                 value={
                   form.detail_retrieval_rating === ""
@@ -1250,12 +1260,10 @@ export function DeviceFormDialog({
               />
             </Field>
             <Field label={t("form.timbre")} error={errors.timbre_rating}>
-                            <DotRating
+              <DotRating
                 label={t("form.timbre")}
                 value={
-                  form.timbre_rating === ""
-                    ? null
-                    : Number(form.timbre_rating)
+                  form.timbre_rating === "" ? null : Number(form.timbre_rating)
                 }
                 onChange={(v) =>
                   set("timbre_rating", v == null ? "" : String(v))
@@ -1266,7 +1274,7 @@ export function DeviceFormDialog({
               label={t("form.tonalBalance")}
               error={errors.tonal_balance_rating}
             >
-                            <DotRating
+              <DotRating
                 label={t("form.tonalBalance")}
                 value={
                   form.tonal_balance_rating === ""
@@ -1283,14 +1291,12 @@ export function DeviceFormDialog({
 
         {/* Listening notes */}
         <FormSection title={t("detail.notes")}>
-
           <textarea
             className={cls(inputCls, "min-h-24 resize-y")}
             value={form.listening_notes}
             onChange={(e) => set("listening_notes", e.target.value)}
             placeholder={t("form.phListeningNotes")}
           />
-        
         </FormSection>
 
         {/* Images */}
@@ -1360,7 +1366,9 @@ export function DeviceFormDialog({
                     onClick={() => void handlePickImage("image")}
                   >
                     <FolderOpen size={14} />
-                    {form.image_path ? t("form.replaceImage") : t("form.pickImage")}
+                    {form.image_path
+                      ? t("form.replaceImage")
+                      : t("form.pickImage")}
                   </button>
                   {form.image_path && (
                     <button
@@ -1424,7 +1432,6 @@ export function DeviceFormDialog({
 
         {/* Frequency response */}
         <FormSection title={t("detail.fr")}>
-
           <Field label={t("form.frGraph")}>
             <div className="flex items-start gap-3">
               <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
@@ -1450,7 +1457,9 @@ export function DeviceFormDialog({
                     onClick={() => void handleUseFetchedFr()}
                   >
                     <AudioLines size={14} />
-                    {t("form.useFetchedCurve", { count: pendingFr.curve.length })}
+                    {t("form.useFetchedCurve", {
+                      count: pendingFr.curve.length,
+                    })}
                   </button>
                 )}
                 {form.fr_graph_path && (
@@ -1464,13 +1473,10 @@ export function DeviceFormDialog({
               </div>
             </div>
           </Field>
-
-        
         </FormSection>
 
         {/* PEQ */}
         <FormSection title={t("detail.peq")}>
-
           <div className="space-y-3">
             {form.peq.length > 0 ? (
               <div className="flex flex-wrap items-center gap-3 rounded border border-tm-dark bg-tm-darker p-3">
@@ -1617,7 +1623,6 @@ export function DeviceFormDialog({
               </div>
             )}
           </div>
-        
         </FormSection>
 
         {pickError && (

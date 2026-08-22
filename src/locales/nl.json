@@ -110,14 +110,12 @@
     },
     "search": "Merk of model zoeken…",
     "filter": {
-      "typeAll": "Type: Alle",
-      "type": "Type: {{value}}",
-      "driverAll": "Driver: Alle",
-      "driver": "Driver: {{value}}",
-      "tubeAll": "Buizenversterker: Alle",
-      "tubeYes": "Buizenversterker: Perfecte match",
-      "tubePartial": "Buizenversterker: Beperkt / Niet aanbevolen",
-      "tubeNo": "Buizenversterker: Niet ondersteund"
+      "typeAll": "Alle typen",
+      "driverAll": "Alle drivers",
+      "tubeAll": "Alle buizenversterkers",
+      "tubeYes": "Perfecte match",
+      "tubePartial": "Beperkt / Niet aanbevolen",
+      "tubeNo": "Niet ondersteund"
     },
     "sort": {
       "aria": "Sorteren op",

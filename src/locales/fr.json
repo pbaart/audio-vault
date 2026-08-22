@@ -110,14 +110,12 @@
     },
     "search": "Rechercher une marque ou un modèle…",
     "filter": {
-      "typeAll": "Type : Tous",
-      "type": "Type : {{value}}",
-      "driverAll": "Driver : Tous",
-      "driver": "Driver : {{value}}",
-      "tubeAll": "Ampli à tubes : Tous",
-      "tubeYes": "Ampli à tubes : Correspondance parfaite",
-      "tubePartial": "Ampli à tubes : Limité / Non recommandé",
-      "tubeNo": "Ampli à tubes : Non pris en charge"
+      "typeAll": "Tous les types",
+      "driverAll": "Tous les drivers",
+      "tubeAll": "Tous les amplis à tubes",
+      "tubeYes": "Correspondance parfaite",
+      "tubePartial": "Limité / Non recommandé",
+      "tubeNo": "Non pris en charge"
     },
     "sort": {
       "aria": "Trier par",

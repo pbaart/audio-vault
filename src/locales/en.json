@@ -110,14 +110,12 @@
     },
     "search": "Search brand or model…",
     "filter": {
-      "typeAll": "Type: All",
-      "type": "Type: {{value}}",
-      "driverAll": "Driver: All",
-      "driver": "Driver: {{value}}",
-      "tubeAll": "Tube amp: All",
-      "tubeYes": "Tube amp: Perfect Match",
-      "tubePartial": "Tube amp: Limited / Not recommended",
-      "tubeNo": "Tube amp: Not Supported"
+      "typeAll": "All types",
+      "driverAll": "All drivers",
+      "tubeAll": "All tube amps",
+      "tubeYes": "Perfect Match",
+      "tubePartial": "Limited / Not recommended",
+      "tubeNo": "Not Supported"
     },
     "sort": {
       "aria": "Sort by",

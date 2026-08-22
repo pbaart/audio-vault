@@ -49,8 +49,11 @@ export function DateCalendar({ value, onSelect, locale }: DateCalendarProps) {
 
   // Monday-first day cells for the viewed month (null = leading blanks).
   const cells = useMemo(() => {
-    const lead = (new Date(Date.UTC(viewYear, viewMonth, 1)).getUTCDay() + 6) % 7;
-    const daysInMonth = new Date(Date.UTC(viewYear, viewMonth + 1, 0)).getUTCDate();
+    const lead =
+      (new Date(Date.UTC(viewYear, viewMonth, 1)).getUTCDay() + 6) % 7;
+    const daysInMonth = new Date(
+      Date.UTC(viewYear, viewMonth + 1, 0),
+    ).getUTCDate();
     const out: (number | null)[] = [];
     for (let i = 0; i < lead; i++) out.push(null);
     for (let d = 1; d <= daysInMonth; d++) out.push(d);
@@ -59,16 +62,19 @@ export function DateCalendar({ value, onSelect, locale }: DateCalendarProps) {
 
   const monthLabel = useMemo(
     () =>
-      new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(
-        new Date(Date.UTC(viewYear, viewMonth, 1)),
-      ),
+      new Intl.DateTimeFormat(locale, {
+        month: "long",
+        year: "numeric",
+      }).format(new Date(Date.UTC(viewYear, viewMonth, 1))),
     [locale, viewYear, viewMonth],
   );
 
   // Reference week: Mon 2024-01-01 … Sun 2024-01-07.
   const weekdayNames = useMemo(() => {
     const fmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
-    return [1, 2, 3, 4, 5, 6, 7].map((d) => fmt.format(new Date(Date.UTC(2024, 0, d))));
+    return [1, 2, 3, 4, 5, 6, 7].map((d) =>
+      fmt.format(new Date(Date.UTC(2024, 0, d))),
+    );
   }, [locale]);
 
   const now = new Date();
@@ -117,7 +123,9 @@ export function DateCalendar({ value, onSelect, locale }: DateCalendarProps) {
             >
               <ChevronLeft size={14} />
             </button>
-            <span className="text-xs font-semibold text-tm-fg">{monthLabel}</span>
+            <span className="text-xs font-semibold text-tm-fg">
+              {monthLabel}
+            </span>
             <button
               type="button"
               aria-label="Next month"

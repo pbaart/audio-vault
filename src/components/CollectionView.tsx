@@ -178,9 +178,7 @@ export function CollectionView({
           onChange={(v) => setTypeFilter(v as TypeFilter)}
           options={["all", ...DEVICE_TYPES]}
           label={(v) =>
-            v === "all"
-              ? t("collection.filter.typeAll")
-              : t("collection.filter.type", { value: enumLabel(v, t) })
+            v === "all" ? t("collection.filter.typeAll") : enumLabel(v, t)
           }
         />
         <FilterSelect
@@ -188,9 +186,7 @@ export function CollectionView({
           onChange={(v) => setDriverFilter(v as DriverFilter)}
           options={["all", ...DRIVER_TYPES]}
           label={(v) =>
-            v === "all"
-              ? t("collection.filter.driverAll")
-              : t("collection.filter.driver", { value: enumLabel(v, t) })
+            v === "all" ? t("collection.filter.driverAll") : enumLabel(v, t)
           }
         />
         <FilterSelect

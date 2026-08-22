@@ -110,14 +110,12 @@
     },
     "search": "Marke oder Modell suchen …",
     "filter": {
-      "typeAll": "Typ: Alle",
-      "type": "Typ: {{value}}",
-      "driverAll": "Treiber: Alle",
-      "driver": "Treiber: {{value}}",
-      "tubeAll": "Röhrenverstärker: Alle",
-      "tubeYes": "Röhrenverstärker: Perfektes Match",
-      "tubePartial": "Röhrenverstärker: Begrenzt / Nicht empfohlen",
-      "tubeNo": "Röhrenverstärker: Nicht unterstützt"
+      "typeAll": "Alle Typen",
+      "driverAll": "Alle Treiber",
+      "tubeAll": "Alle Röhrenverstärker",
+      "tubeYes": "Perfektes Match",
+      "tubePartial": "Begrenzt / Nicht empfohlen",
+      "tubeNo": "Nicht unterstützt"
     },
     "sort": {
       "aria": "Sortieren nach",
