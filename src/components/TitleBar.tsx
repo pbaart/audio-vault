@@ -39,7 +39,10 @@ export function TitleBar({ children }: { children?: ReactNode }) {
       .catch(() => {});
     win
       .onResized(() => {
-        win.isMaximized().then(setMaximized).catch(() => {});
+        win
+          .isMaximized()
+          .then(setMaximized)
+          .catch(() => {});
       })
       .then((un) => {
         unlisten = un;
