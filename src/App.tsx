@@ -28,10 +28,12 @@ type View =
 type HistState = View & { idx: number };
 
 function histState(): HistState {
-  return (window.history.state as HistState | null) ?? {
-    name: "collection",
-    idx: 0,
-  };
+  return (
+    (window.history.state as HistState | null) ?? {
+      name: "collection",
+      idx: 0,
+    }
+  );
 }
 
 export default function App() {
@@ -207,17 +209,11 @@ export default function App() {
           <span className="text-lg font-semibold">{t("app.title")}</span>
         </div>
         <nav className="flex items-center gap-1">
-          <NavButton
-            active={view.name !== "settings"}
-            onClick={goCollection}
-          >
+          <NavButton active={view.name !== "settings"} onClick={goCollection}>
             <Headphones size={15} />
             {t("nav.collection")}
           </NavButton>
-          <NavButton
-            active={view.name === "settings"}
-            onClick={openSettings}
-          >
+          <NavButton active={view.name === "settings"} onClick={openSettings}>
             <Settings size={15} />
             {t("nav.settings")}
           </NavButton>
