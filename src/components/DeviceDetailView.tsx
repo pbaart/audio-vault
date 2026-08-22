@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
+  Cpu,
   Globe,
   Headphones,
   Palette,
@@ -64,7 +65,7 @@ export function DeviceDetailView({
           onClick={onBack}
         >
           <ArrowLeft size={16} />
-          {t("nav.collection")}
+          {t(device.category === "headphones" ? "nav.collection" : "nav.devices")}
         </button>
         <div className="flex gap-2">
           <button className={btnPrimary} onClick={onEdit}>
@@ -129,6 +130,19 @@ export function DeviceDetailView({
                     label={enumLabel(device.type, t)}
                     icon={<Headphones size={12} />}
                   />
+                </Tip>
+              )}
+              {device.device_type && (
+                <Tip label={t("fields.type")}>
+                  <Chip
+                    label={enumLabel(device.device_type, t)}
+                    icon={<Cpu size={12} />}
+                  />
+                </Tip>
+              )}
+              {device.dac_chip && (
+                <Tip label={t("fields.dacChip")}>
+                  <Chip label={device.dac_chip} icon={<Cpu size={12} />} />
                 </Tip>
               )}
               {device.driver_type && (
@@ -201,6 +215,8 @@ export function DeviceDetailView({
         <div className="space-y-4">
           <Section title={t("detail.specs")}>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+              {device.category === "headphones" ? (
+                <>
               <SpecItem
                 label={t("fields.impedance")}
                 value={
@@ -245,9 +261,81 @@ export function DeviceDetailView({
                     : null
                 }
               />
+                </>
+              ) : (
+                <>
+              <SpecItem label={t("fields.dacChip")} value={device.dac_chip} />
+              <SpecItem
+                label={t("fields.supportedFormats")}
+                value={device.supported_formats}
+              />
+              <SpecItem
+                label={t("fields.bluetoothCodecs")}
+                value={
+                  device.bluetooth_codecs.length > 0
+                    ? device.bluetooth_codecs.join(", ")
+                    : null
+                }
+              />
+              <SpecItem
+                label={t("fields.inputs")}
+                value={
+                  device.inputs.length > 0 ? device.inputs.join(", ") : null
+                }
+              />
+              <SpecItem
+                label={t("fields.outputs")}
+                value={
+                  device.outputs.length > 0 ? device.outputs.join(", ") : null
+                }
+              />
+              <SpecItem
+                label={t("fields.outputPower")}
+                value={device.output_power}
+              />
+              <SpecItem
+                label={t("fields.snr")}
+                value={
+                  device.snr_db == null ? null : `${device.snr_db} dB`
+                }
+              />
+              <SpecItem label={t("fields.thdN")} value={device.thd_n} />
+              <SpecItem
+                label={t("fields.loadImpedance")}
+                value={
+                  device.load_min_ohms == null && device.load_max_ohms == null
+                    ? null
+                    : device.load_max_ohms == null
+                      ? `≥ ${device.load_min_ohms} Ω`
+                      : device.load_min_ohms == null
+                        ? `≤ ${device.load_max_ohms} Ω`
+                        : `${device.load_min_ohms} – ${device.load_max_ohms} Ω`
+                }
+              />
+              <SpecItem label={t("fields.channels")} value={device.channels} />
+              <SpecItem label={t("fields.hdmi")} value={device.hdmi} />
+              <SpecItem
+                label={t("fields.roomCorrection")}
+                value={device.room_correction}
+              />
+              <SpecItem
+                label={t("fields.purchaseDate")}
+                value={formatDate(device.purchase_date, settings.dateFormat)}
+              />
+              <SpecItem
+                label={t("fields.price")}
+                value={formatPrice(
+                  device.price,
+                  settings.currency,
+                  localeFor(settings.language),
+                )}
+              />
+                </>
+              )}
             </div>
           </Section>
 
+          {device.category === "headphones" && (
           <Section title={t("detail.theSound")}>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
               <SoundField
@@ -266,6 +354,7 @@ export function DeviceDetailView({
               />
             </div>
           </Section>
+          )}
 
           {device.custom_fields.length > 0 && (
             <Section title={t("detail.custom")}>
