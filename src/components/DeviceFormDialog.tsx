@@ -820,6 +820,50 @@ export function DeviceFormDialog({
               ))}
             </datalist>
           </Field>
+            <Field label={t("form.driverType")}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.driver_type}
+                onChange={(e) =>
+                  set("driver_type", e.target.value as DriverType | "")
+                }
+              >
+                <option value="">{t("form.unknown")}</option>
+                {DRIVER_TYPES.map((v) => (
+                  <option key={v} value={v}>
+                    {enumLabel(v, t)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("form.connector")}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.connector_type}
+                onChange={(e) =>
+                  set("connector_type", e.target.value as ConnectorType | "")
+                }
+              >
+                <option value="">{t("form.unknown")}</option>
+                {CONNECTOR_TYPES.map((v) => (
+                  <option key={v} value={v}>
+                    {enumLabel(v, t)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("form.rating")} error={errors.overall_rating}>
+              <StarRating
+                value={
+                  form.overall_rating === ""
+                    ? null
+                    : Number(form.overall_rating)
+                }
+                onChange={(v) =>
+                  set("overall_rating", v == null ? "" : String(v))
+                }
+              />
+            </Field>
         </div>
 
         {/* Links */}
@@ -1075,96 +1119,6 @@ export function DeviceFormDialog({
           </div>
         </Field>
 
-        {/* Technical specs */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.specs")}
-          </legend>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <Field
-              label={t("form.price", {
-                currency: currencySymbol(settings.currency),
-              })}
-              error={errors.price}
-            >
-              <input
-                className={inputCls}
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.price}
-                onChange={(e) => set("price", e.target.value)}
-                placeholder="349"
-              />
-            </Field>
-            <Field
-              label={t("form.purchaseDate", { format: settings.dateFormat })}
-              error={errors.purchase_date}
-            >
-              <input
-                className={inputCls}
-                value={form.purchase_date}
-                onChange={(e) => set("purchase_date", e.target.value)}
-                placeholder={settings.dateFormat}
-                autoComplete="off"
-              />
-            </Field>
-            <Field label={t("form.driverType")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.driver_type}
-                onChange={(e) =>
-                  set("driver_type", e.target.value as DriverType | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {DRIVER_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("form.impedance")} error={errors.impedance_ohms}>
-              <input
-                className={inputCls}
-                type="number"
-                min="0"
-                step="1"
-                value={form.impedance_ohms}
-                onChange={(e) => set("impedance_ohms", e.target.value)}
-                placeholder="300"
-              />
-            </Field>
-            <Field label={t("form.sensitivity")} error={errors.sensitivity_db}>
-              <input
-                className={inputCls}
-                type="number"
-                step="0.1"
-                value={form.sensitivity_db}
-                onChange={(e) => set("sensitivity_db", e.target.value)}
-                placeholder="104"
-              />
-            </Field>
-            <Field label={t("form.connector")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.connector_type}
-                onChange={(e) =>
-                  set("connector_type", e.target.value as ConnectorType | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {CONNECTOR_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-        </fieldset>
-
         {/* Tube compatibility */}
         <fieldset>
           <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
@@ -1199,12 +1153,33 @@ export function DeviceFormDialog({
           </p>
         </fieldset>
 
-        {/* Sound */}
+        {/* Technical specs */}
         <fieldset>
           <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.sound")}
+            {t("detail.specs")}
           </legend>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <Field label={t("form.impedance")} error={errors.impedance_ohms}>
+              <input
+                className={inputCls}
+                type="number"
+                min="0"
+                step="1"
+                value={form.impedance_ohms}
+                onChange={(e) => set("impedance_ohms", e.target.value)}
+                placeholder="300"
+              />
+            </Field>
+            <Field label={t("form.sensitivity")} error={errors.sensitivity_db}>
+              <input
+                className={inputCls}
+                type="number"
+                step="0.1"
+                value={form.sensitivity_db}
+                onChange={(e) => set("sensitivity_db", e.target.value)}
+                placeholder="104"
+              />
+            </Field>
             <Field label={t("fields.driveDifficulty")}>
               <select
                 className={cls(selectCls, "w-full")}
@@ -1224,6 +1199,34 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
+            <Field
+              label={t("form.purchaseDate", { format: settings.dateFormat })}
+              error={errors.purchase_date}
+            >
+              <input
+                className={inputCls}
+                value={form.purchase_date}
+                onChange={(e) => set("purchase_date", e.target.value)}
+                placeholder={settings.dateFormat}
+                autoComplete="off"
+              />
+            </Field>
+            <Field
+              label={t("form.price", {
+                currency: currencySymbol(settings.currency),
+              })}
+              error={errors.price}
+            >
+              <input
+                className={inputCls}
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.price}
+                onChange={(e) => set("price", e.target.value)}
+                placeholder="349"
+              />
+            </Field>
             <Field label={t("fields.soundSignature")}>
               <select
                 className={cls(selectCls, "w-full")}
@@ -1240,6 +1243,15 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
+          </div>
+        </fieldset>
+
+        {/* Sound */}
+        <fieldset>
+          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+            {t("detail.theSound")}
+          </legend>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field
               label={t("form.soundstage")}
               error={errors.soundstage_rating}
@@ -1319,74 +1331,146 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
-            <Field label={t("form.rating")} error={errors.overall_rating}>
-              <StarRating
-                value={
-                  form.overall_rating === ""
-                    ? null
-                    : Number(form.overall_rating)
-                }
-                onChange={(v) =>
-                  set("overall_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
           </div>
-          <Field label={t("form.listeningNotes")} className="mt-4">
-            <textarea
-              className={cls(inputCls, "min-h-24 resize-y")}
-              value={form.listening_notes}
-              onChange={(e) => set("listening_notes", e.target.value)}
-              placeholder={t("form.phListeningNotes")}
-            />
-          </Field>
+        </fieldset>
+
+        {/* Extra */}
+        <fieldset>
+          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+            {t("detail.custom")}
+          </legend>
+          <div className="space-y-2">
+            <datalist id="custom-key-suggestions">
+              {customKeys.map((k) => (
+                <option key={k} value={k} />
+              ))}
+            </datalist>
+            {form.custom.length === 0 && (
+              <p className="text-sm text-tm-gray">{t("form.noCustom")}</p>
+            )}
+            {form.custom.map((cf, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <input
+                  className={cls(inputCls, "w-48")}
+                  value={cf.key}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.map((c, idx) =>
+                        idx === i ? { ...c, key: e.target.value } : c,
+                      ),
+                    }))
+                  }
+                  placeholder={t("form.phCustomKey")}
+                  list="custom-key-suggestions"
+                  autoComplete="off"
+                />
+                <input
+                  className={inputCls}
+                  value={cf.value}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.map((c, idx) =>
+                        idx === i ? { ...c, value: e.target.value } : c,
+                      ),
+                    }))
+                  }
+                  placeholder={t("form.phCustomValue")}
+                />
+                <button
+                  className="mt-1 rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-red"
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.filter((_, idx) => idx !== i),
+                    }))
+                  }
+                  aria-label={t("form.ariaRemoveCustom", { index: i + 1 })}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+            <button
+              className={btnSecondary}
+              onClick={() =>
+                setForm((f) => ({
+                  ...f,
+                  custom: [...f.custom, { key: "", value: "" }],
+                }))
+              }
+            >
+              <Plus size={14} />
+              {t("form.addCustom")}
+            </button>
+          </div>
+        </fieldset>
+
+        {/* Listening notes */}
+        <fieldset>
+          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+            {t("detail.notes")}
+          </legend>
+          <textarea
+            className={cls(inputCls, "min-h-24 resize-y")}
+            value={form.listening_notes}
+            onChange={(e) => set("listening_notes", e.target.value)}
+            placeholder={t("form.phListeningNotes")}
+          />
         </fieldset>
 
         {/* Frequency response */}
-        <Field label={t("form.frGraph")}>
-          <div className="flex items-start gap-3">
-            <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-              <MediaImage
-                relPath={form.fr_graph_path}
-                className="aspect-video w-full bg-tm-darker object-contain"
-                placeholderIcon={28}
-              />
-            </div>
-            <div className="flex flex-col items-start gap-2 pt-1">
-              <button
-                className={btnSecondary}
-                onClick={() => void handlePickImage("fr")}
-              >
-                <FolderOpen size={14} />
-                {form.fr_graph_path
-                  ? t("form.replaceGraph")
-                  : t("form.pickGraph")}
-              </button>
-              {pendingFr && !form.fr_graph_path && (
+        <fieldset>
+          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+            {t("detail.fr")}
+          </legend>
+          <Field label={t("form.frGraph")}>
+            <div className="flex items-start gap-3">
+              <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                <MediaImage
+                  relPath={form.fr_graph_path}
+                  className="aspect-video w-full bg-tm-darker object-contain"
+                  placeholderIcon={28}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-2 pt-1">
                 <button
                   className={btnSecondary}
-                  onClick={() => void handleUseFetchedFr()}
+                  onClick={() => void handlePickImage("fr")}
                 >
-                  <AudioLines size={14} />
-                  {t("form.useFetchedCurve", { count: pendingFr.curve.length })}
+                  <FolderOpen size={14} />
+                  {form.fr_graph_path
+                    ? t("form.replaceGraph")
+                    : t("form.pickGraph")}
                 </button>
-              )}
-              {form.fr_graph_path && (
-                <button
-                  className="text-xs text-tm-red hover:underline"
-                  onClick={() => handleRemoveImage("fr")}
-                >
-                  {t("form.removeGraph")}
-                </button>
-              )}
+                {pendingFr && !form.fr_graph_path && (
+                  <button
+                    className={btnSecondary}
+                    onClick={() => void handleUseFetchedFr()}
+                  >
+                    <AudioLines size={14} />
+                    {t("form.useFetchedCurve", { count: pendingFr.curve.length })}
+                  </button>
+                )}
+                {form.fr_graph_path && (
+                  <button
+                    className="text-xs text-tm-red hover:underline"
+                    onClick={() => handleRemoveImage("fr")}
+                  >
+                    {t("form.removeGraph")}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </Field>
+          </Field>
+
+        </fieldset>
 
         {/* PEQ */}
         <fieldset>
           <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.peq")}
+            {t("detail.peq")}
           </legend>
           <div className="space-y-3">
             {form.peq.length > 0 ? (
@@ -1533,79 +1617,6 @@ export function DeviceFormDialog({
                 </div>
               </div>
             )}
-          </div>
-        </fieldset>
-
-        {/* Custom fields */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.custom")}
-          </legend>
-          <div className="space-y-2">
-            <datalist id="custom-key-suggestions">
-              {customKeys.map((k) => (
-                <option key={k} value={k} />
-              ))}
-            </datalist>
-            {form.custom.length === 0 && (
-              <p className="text-sm text-tm-gray">{t("form.noCustom")}</p>
-            )}
-            {form.custom.map((cf, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <input
-                  className={cls(inputCls, "w-48")}
-                  value={cf.key}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.map((c, idx) =>
-                        idx === i ? { ...c, key: e.target.value } : c,
-                      ),
-                    }))
-                  }
-                  placeholder={t("form.phCustomKey")}
-                  list="custom-key-suggestions"
-                  autoComplete="off"
-                />
-                <input
-                  className={inputCls}
-                  value={cf.value}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.map((c, idx) =>
-                        idx === i ? { ...c, value: e.target.value } : c,
-                      ),
-                    }))
-                  }
-                  placeholder={t("form.phCustomValue")}
-                />
-                <button
-                  className="mt-1 rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-red"
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.filter((_, idx) => idx !== i),
-                    }))
-                  }
-                  aria-label={t("form.ariaRemoveCustom", { index: i + 1 })}
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))}
-            <button
-              className={btnSecondary}
-              onClick={() =>
-                setForm((f) => ({
-                  ...f,
-                  custom: [...f.custom, { key: "", value: "" }],
-                }))
-              }
-            >
-              <Plus size={14} />
-              {t("form.addCustom")}
-            </button>
           </div>
         </fieldset>
 
