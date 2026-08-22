@@ -1,0 +1,309 @@
+{
+  "app": {
+    "title": "Audio Vault",
+    "loading": "Collectie laden…",
+    "error": "Er ging iets mis"
+  },
+  "nav": {
+    "collection": "Collectie",
+    "settings": "Instellingen"
+  },
+  "actions": {
+    "addDevice": "Apparaat toevoegen"
+  },
+  "common": {
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Dialoog sluiten",
+    "closeViewer": "Weergave sluiten",
+    "bands_one": "{{count}} band",
+    "bands_other": "{{count}} banden"
+  },
+  "delete": {
+    "title": "Apparaat verwijderen",
+    "confirm": "{{name}} verwijderen?",
+    "mediaNote": "De opgeslagen afbeelding(en) worden uit de mediemap verwijderd.",
+    "unundoable": "Dit kan niet ongedaan worden gemaakt."
+  },
+  "lightbox": {
+    "unavailable": "Afbeelding niet beschikbaar",
+    "image": "Afbeelding"
+  },
+  "tube": {
+    "tooltip": "Buizenversterker-compatibiliteit",
+    "badges": {
+      "Yes": "Perfecte match",
+      "OTL Only": "Beperkte compatibiliteit",
+      "Transformer Only": "Alleen met transformator",
+      "No": "Niet ondersteund"
+    }
+  },
+  "tubeRule": {
+    "high": "≥ 120 Ω: Perfecte match",
+    "dynamic": "32–119 Ω + dynamische driver: Beperkte compatibiliteit",
+    "nonDynamic": "32–119 Ω + niet-dynamische driver: Alleen met transformator",
+    "low": "< 32 Ω: Niet ondersteund",
+    "unknown": "Onbekende impedantie: geen badge"
+  },
+  "peq": {
+    "axisTitle": "Frequentie (Hz)"
+  },
+  "values": {
+    "Over-Ear": "Over-Ear",
+    "On-Ear": "On-Ear",
+    "IEM": "IEM",
+    "Dynamic": "Dynamisch",
+    "Planar": "Planair",
+    "BA": "BA",
+    "Electrostatic": "Elektrostatisch",
+    "Hybrid": "Hybride",
+    "Tribrid": "Tribrid",
+    "Easy": "Makkelijk",
+    "Moderate": "Gemiddeld",
+    "Demanding": "Veeleisend",
+    "Neutral": "Neutraal",
+    "Warm": "Warm",
+    "V-Shaped": "V-vormig",
+    "Bright": "Fris",
+    "Harman": "Harman",
+    "Dark": "Donker",
+    "3_5mm_jack": "3,5 mm jack",
+    "2_5mm_jack": "2,5 mm jack",
+    "4_4mm_Pentaconn": "4,4 mm Pentaconn",
+    "6_35mm_jack": "6,35 mm jack",
+    "XLR": "XLR",
+    "Mini-XLR": "Mini-XLR"
+  },
+  "fields": {
+    "brand": "Merk",
+    "model": "Model",
+    "type": "Type",
+    "driver": "Driver",
+    "impedance": "Impedantie",
+    "sensitivity": "Gevoeligheid",
+    "price": "Prijs",
+    "purchaseDate": "Aanschafdatum",
+    "driveDifficulty": "Aandrijfmoeilijkheid",
+    "soundSignature": "Klanksignatuur",
+    "soundstage": "Soundstage",
+    "tubeAmp": "Buizenversterker",
+    "actions": "Acties"
+  },
+  "collection": {
+    "empty": {
+      "title": "Je collectie is leeg",
+      "hint": "Voeg je eerste koptelefoon of IEM toe om te beginnen.",
+      "add": "Voeg je eerste apparaat toe"
+    },
+    "search": "Merk of model zoeken…",
+    "filter": {
+      "typeAll": "Type: Alle",
+      "type": "Type: {{value}}",
+      "driverAll": "Driver: Alle",
+      "driver": "Driver: {{value}}",
+      "tubeAll": "Buizenversterker: Alle",
+      "tubeYes": "Buizenversterker: Perfecte match",
+      "tubePartial": "Buizenversterker: Beperkt / Niet aanbevolen",
+      "tubeNo": "Buizenversterker: Niet ondersteund"
+    },
+    "sort": {
+      "aria": "Sorteren op",
+      "name": "Sorteer: Naam",
+      "added": "Sorteer: Recent toegevoegd",
+      "impedance": "Sorteer: Impedantie",
+      "price": "Sorteer: Prijs",
+      "asc": "Oplopend — klik voor aflopend",
+      "desc": "Aflopend — klik voor oplopend"
+    },
+    "view": {
+      "grid": "Rasterweergave",
+      "list": "Lijstweergave"
+    },
+    "clearFilters": "Filters wissen",
+    "count_one": "{{shown}} van {{total}} apparaat",
+    "count_other": "{{shown}} van {{total}} apparaten",
+    "noMatch": "Geen apparaten komen overeen met je filters.",
+    "stage": "Stage {{n}}/5",
+    "aria": {
+      "edit": "{{name}} bewerken",
+      "delete": "{{name}} verwijderen"
+    }
+  },
+  "detail": {
+    "zoom": "Klik om te vergroten",
+    "device": "Apparaat",
+    "connectorLabel": "Aansluiting:",
+    "specs": "Technische specificaties",
+    "notes": "Luisternotities",
+    "noNotes": "Geen luisternotities.",
+    "peq": "PEQ-instellingen",
+    "peqSummary": "{{summary}} — gecombineerde amplitude-respons (banden in cascade)",
+    "source": "Bron: {{source}}",
+    "noPeq": "Geen PEQ-instellingen.",
+    "fr": "Frequentierespons",
+    "noFr": "Geen frequentieresponsgrafiek.",
+    "frTitle": "Frequentierespons — {{name}}",
+    "custom": "Aangepaste velden",
+    "noCustom": "Geen aangepaste velden."
+  },
+  "form": {
+    "titleEdit": "{{name}} bewerken",
+    "saving": "Bezig met opslaan…",
+    "saveChanges": "Wijzigingen opslaan",
+    "brand": "Merk",
+    "model": "Model",
+    "type": "Type",
+    "color": "Kleur",
+    "phBrand": "bijv. Sennheiser",
+    "phModel": "bijv. HD 660S2",
+    "select": "Selecteer…",
+    "phColor": "bijv. Middernachtblauw",
+    "manufacturerUrl": "Fabrikantwebsite",
+    "phManufacturerUrl": "bijv. https://www.sennheiser-hearing.com",
+    "webshop": "Webshop",
+    "phWebshop": "bijv. https://www.example-shop.com",
+    "webFetch": "Webopvraging",
+    "fetching": "Bezig met ophalen…",
+    "fetchSpecs": "Specificaties ophalen",
+    "fetchHint": "Zoekt squig.link-metingen en fabrikantpagina's voor {{target}}. Vult alleen lege velden.",
+    "thisDevice": "dit apparaat",
+    "fetchSearching": "Zoeken in de squig.link-index en het web… de eerste keer kan tot een minuut duren (de index wordt daarna gecached).",
+    "match": "Match:",
+    "matchPrice": "· prijs {{price}}",
+    "matchSite": "(meting van {{site}})",
+    "noMatch": "Geen meting gevonden in de squig.link-index.",
+    "measurementPoints": "{{count}} meetpunten{{source}}",
+    "imageFound": "gevonden",
+    "applied": "Toegepast — lege velden gevuld",
+    "apply": "Toepassen op formulier (alleen lege velden)",
+    "image": "Afbeelding",
+    "replaceImage": "Afbeelding vervangen",
+    "pickImage": "Afbeelding kiezen",
+    "removeImage": "Afbeelding verwijderen",
+    "specs": "Technische specificaties",
+    "price": "Prijs ({{currency}})",
+    "purchaseDate": "Aanschafdatum ({{format}})",
+    "driverType": "Drivertype",
+    "unknown": "Onbekend",
+    "impedance": "Impedantie (Ω)",
+    "sensitivity": "Gevoeligheid (dB)",
+    "connector": "Aansluiting (versterkerzijde)",
+    "tube": "Buizenversterker-compatibiliteit",
+    "tubeAuto": "Automatisch (uit specificaties)",
+    "ruleResult": "Regelresultaat:",
+    "sound": "Klank",
+    "soundstage": "Soundstage (1–5)",
+    "listeningNotes": "Luisternotities",
+    "phListeningNotes": "Impressies, vergelijkingen, inloopstatus…",
+    "frGraph": "Frequentieresponsgrafiek",
+    "replaceGraph": "Grafiek vervangen",
+    "pickGraph": "Grafiek kiezen",
+    "useFetchedCurve": "Ophaalde curve gebruiken ({{count}} ptn)",
+    "removeGraph": "Grafiek verwijderen",
+    "peq": "PEQ-instellingen",
+    "peqLoaded_one": "{{count}} band geladen",
+    "peqLoaded_other": "{{count}} banden geladen",
+    "clearPeq": "PEQ wissen",
+    "noPeq": "Nog geen PEQ-banden.",
+    "opraIdle": "Voer een merk en model in om OPRA te controleren op community-presets.",
+    "opraChecking": "OPRA wordt gecontroleerd…",
+    "opraFound": "Gevonden in OPRA — pas een preset toe:",
+    "appliedTag": "(toegepast)",
+    "opraOverall": "totaal {{gain}} dB",
+    "opraNone": "Geen OPRA-preset gevonden voor dit apparaat.",
+    "importPeq": "XML/JSON importeren",
+    "peqFileFilter": "PEQ-preset",
+    "importReady": "{{count}} banden klaar uit {{file}}",
+    "replaceBands": "Banden vervangen",
+    "custom": "Aangepaste velden",
+    "noCustom": "Nog geen aangepaste velden.",
+    "phCustomKey": "Sleutel (bijv. Gewicht)",
+    "phCustomValue": "Waarde (bijv. 260 g)",
+    "ariaRemoveCustom": "Aangepast veld {{index}} verwijderen",
+    "addCustom": "Aangepast veld toevoegen",
+    "validation": {
+      "brandRequired": "Merk is verplicht",
+      "modelRequired": "Model is verplicht",
+      "typeRequired": "Type is verplicht",
+      "priceNumber": "Prijs moet een getal zijn",
+      "impedanceInt": "Impedantie moet een geheel getal ≥ 0 zijn",
+      "sensitivityNumber": "Gevoeligheid moet een getal zijn",
+      "soundstageRange": "Soundstage moet 1–5 zijn",
+      "urlInvalid": "Vul een geldige URL in (http of https)",
+      "peqFreqRequired": "Frequentie is verplicht",
+      "peqNumber": "Vul een getal in",
+      "peqFreqPositive": "Moet > 0 Hz zijn",
+      "peqQRequired": "Q is verplicht voor dit type",
+      "peqQPositive": "Q moet > 0 zijn",
+      "dateInvalid": "Ongeldige datum — verwacht {{format}}"
+    }
+  },
+  "notes": {
+    "common": {
+      "brand_model_required": "Merk en model zijn beide verplicht"
+    },
+    "spec": {
+      "site_list_load_failed": "De squig.link-sitelijst kon niet worden geladen",
+      "site_list_unreadable": "De sitelijst was niet leesbaar",
+      "federation_load_failed": "Geen gefedereerde telefoonboeken konden worden geladen",
+      "phonebook_load_failed": "Het squig.link-telefoonboek kon niet worden geladen",
+      "no_match_iem": "Geen passende meting in de squig.link-index (in-ear-database)",
+      "no_match_headphone": "Geen passende meting gevonden in de squig.link-index (hoofd- + gefedereerde koptelefoon-databases)",
+      "matched_no_data": "„{{p0}} {{p1}}“ gevonden op {{p2}}, maar er zijn geen meetgegevens",
+      "search_no_results": "Zoekopdracht leverde geen resultaten op",
+      "search_no_specs": "{{p0}} pagina('s) doorzocht, maar geen specificaties kunnen worden geparst",
+      "search_failed": "Webzoekopdracht mislukt: {{p0}}",
+      "search_unparseable": "DuckDuckGo leverde geen bruikbare resultaten"
+    },
+    "opra": {
+      "stale_cache": "OPRA-database kon niet worden vernieuwd — de laatste gecachte kopie wordt gebruikt",
+      "load_failed": "OPRA-database kon niet worden geladen (geen netwerk) — geen gecachte kopie"
+    },
+    "err": {
+      "file_too_large": "Bestand te groot (max. 1 MiB)",
+      "path_escapes_media": "Pad ligt buiten de mediemap",
+      "https_only": "Alleen https-afbeeldings-URL's worden ondersteund",
+      "image_too_large": "Afbeelding te groot (max. 5 MB)"
+    }
+  },
+  "peqImport": {
+    "bandSkippedNotObject": "band {{p0}}: overgeslagen (geen object)",
+    "bandSkippedNoFreqGain": "band {{p0}}: overgeslagen (freq/gain ontbreekt of is ongeldig)",
+    "bandSkippedFreqRange": "band {{p0}}: overgeslagen (frequentie {{p1}} Hz buiten bereik)",
+    "bandUnknownType": "band {{p0}}: onbekend type „{{p1}}“ — als PK aangenomen",
+    "bandMissingType": "band {{p0}}: type ontbreekt — als PK aangenomen",
+    "bandInvalidQ": "band {{p0}}: ongeldige Q — 0,707 wordt gebruikt",
+    "multipleProfiles": "bestand bevat {{p0}} profielen — het eerste wordt gebruikt"
+  },
+  "opraNote": {
+    "overallGainNotApplied": "het totale profiel-gain van {{p0}} dB wordt niet toegepast (het bandmodel heeft geen globale gain)"
+  },
+  "fiioeq": {
+    "unknownType": "Band {{p0}}: onbekend filtertype „{{p1}}“ — overgeslagen",
+    "invalidFreq": "Band {{p0}}: ongeldige frequentie „{{p1}}“ (1–20000 Hz verwacht) — overgeslagen",
+    "invalidQ": "Band {{p0}}: geen bruikbare Q „{{p1}}“ — standaard {{p2}} wordt gebruikt",
+    "trailingPadding": "De laatste {{p0}} banden zijn allemaal identiek ({{p1}} @ {{p2}} Hz) — waarschijnlijk FiiO-app-opvulling. Verwijder ze als ze niet deel uitmaken van je EQ.",
+    "noBands": "Geen PEQ-banden gevonden in {{p0}}"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "preferences": "Voorkeuren",
+    "language": "Taal",
+    "currency": "Valuta",
+    "dateFormat": "Datumnotatie",
+    "savedNote": "Wijzigingen worden direct in je configuratiebestand opgeslagen en over de hele app toegepast.",
+    "webFetch": "Webopvraging",
+    "webFetchBody": "„Specificaties ophalen“ in het apparaatvenster zoekt het huidige merk + model op het web — de squig.link-metingindex (zonder sleutel) voor de frequentierespons en de prijs, en een DuckDuckGo-zoekopdracht zonder sleutel om fabrikantpagina’s te vinden voor impedantie, gevoeligheid, drivertype en het productbeeld. Opvragingen zijn best-effort: velden die niet bepaald kunnen worden, blijven leeg, en er wordt niets opgeslagen totdat je het toepast. Er is geen API-sleutel nodig en er worden geen inloggegevens opgeslagen.",
+    "theme": "Thema",
+    "colorScheme": "Kleurenschema",
+    "storage": "Opslag (XDG)",
+    "database": "Database",
+    "media": "Media",
+    "config": "Configuratie",
+    "openMediaFolder": "Mediamap openen",
+    "tubeRule": "Buizenversterker-compatibiliteitsregel",
+    "about": "Over",
+    "aboutBody": "Audio Vault 0.1.0 — een local-first collectiebeheer voor audioapparatuur. Alle gegevens blijven op deze machine in je XDG-mappen."
+  }
+}

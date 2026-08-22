@@ -1,0 +1,309 @@
+{
+  "app": {
+    "title": "Audio Vault",
+    "loading": "Loading collection…",
+    "error": "Something went wrong"
+  },
+  "nav": {
+    "collection": "Collection",
+    "settings": "Settings"
+  },
+  "actions": {
+    "addDevice": "Add device"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close dialog",
+    "closeViewer": "Close viewer",
+    "bands_one": "{{count}} band",
+    "bands_other": "{{count}} bands"
+  },
+  "delete": {
+    "title": "Delete device",
+    "confirm": "Delete {{name}}?",
+    "mediaNote": "Its stored image(s) will be removed from the media folder.",
+    "unundoable": "This cannot be undone."
+  },
+  "lightbox": {
+    "unavailable": "Image unavailable",
+    "image": "Image"
+  },
+  "tube": {
+    "tooltip": "Tube amp compatibility",
+    "badges": {
+      "Yes": "Perfect Match",
+      "OTL Only": "Limited Compatibility",
+      "Transformer Only": "Not Recommended",
+      "No": "Not Supported"
+    }
+  },
+  "tubeRule": {
+    "high": "≥ 120 Ω: Perfect Match",
+    "dynamic": "32–119 Ω + Dynamic driver: Limited Compatibility",
+    "nonDynamic": "32–119 Ω + non-Dynamic driver: Not Recommended",
+    "low": "< 32 Ω: Not Supported",
+    "unknown": "Unknown impedance: no badge"
+  },
+  "peq": {
+    "axisTitle": "Frequency (Hz)"
+  },
+  "values": {
+    "Over-Ear": "Over-Ear",
+    "On-Ear": "On-Ear",
+    "IEM": "IEM",
+    "Dynamic": "Dynamic",
+    "Planar": "Planar",
+    "BA": "BA",
+    "Electrostatic": "Electrostatic",
+    "Hybrid": "Hybrid",
+    "Tribrid": "Tribrid",
+    "Easy": "Easy",
+    "Moderate": "Moderate",
+    "Demanding": "Demanding",
+    "Neutral": "Neutral",
+    "Warm": "Warm",
+    "V-Shaped": "V-Shaped",
+    "Bright": "Bright",
+    "Harman": "Harman",
+    "Dark": "Dark",
+    "3_5mm_jack": "3.5mm jack",
+    "2_5mm_jack": "2.5mm jack",
+    "4_4mm_Pentaconn": "4.4mm Pentaconn",
+    "6_35mm_jack": "6.35mm jack",
+    "XLR": "XLR",
+    "Mini-XLR": "Mini-XLR"
+  },
+  "fields": {
+    "brand": "Brand",
+    "model": "Model",
+    "type": "Type",
+    "driver": "Driver",
+    "impedance": "Impedance",
+    "sensitivity": "Sensitivity",
+    "price": "Price",
+    "purchaseDate": "Purchase date",
+    "driveDifficulty": "Drive difficulty",
+    "soundSignature": "Sound signature",
+    "soundstage": "Soundstage",
+    "tubeAmp": "Tube amp",
+    "actions": "Actions"
+  },
+  "collection": {
+    "empty": {
+      "title": "Your collection is empty",
+      "hint": "Add your first headphone or IEM to get started.",
+      "add": "Add your first device"
+    },
+    "search": "Search brand or model…",
+    "filter": {
+      "typeAll": "Type: All",
+      "type": "Type: {{value}}",
+      "driverAll": "Driver: All",
+      "driver": "Driver: {{value}}",
+      "tubeAll": "Tube amp: All",
+      "tubeYes": "Tube amp: Perfect Match",
+      "tubePartial": "Tube amp: Limited / Not recommended",
+      "tubeNo": "Tube amp: Not Supported"
+    },
+    "sort": {
+      "aria": "Sort by",
+      "name": "Sort: Name",
+      "added": "Sort: Recently added",
+      "impedance": "Sort: Impedance",
+      "price": "Sort: Price",
+      "asc": "Ascending — click for descending",
+      "desc": "Descending — click for ascending"
+    },
+    "view": {
+      "grid": "Grid view",
+      "list": "List view"
+    },
+    "clearFilters": "Clear filters",
+    "count_one": "{{shown}} of {{total}} device",
+    "count_other": "{{shown}} of {{total}} devices",
+    "noMatch": "No devices match your filters.",
+    "stage": "Stage {{n}}/5",
+    "aria": {
+      "edit": "Edit {{name}}",
+      "delete": "Delete {{name}}"
+    }
+  },
+  "detail": {
+    "zoom": "Click to zoom",
+    "device": "Device",
+    "connectorLabel": "Connector:",
+    "specs": "Technical Specs",
+    "notes": "Listening Notes",
+    "noNotes": "No listening notes.",
+    "peq": "PEQ Settings",
+    "peqSummary": "{{summary}} — combined magnitude response (bands cascade)",
+    "source": "Source: {{source}}",
+    "noPeq": "No PEQ settings.",
+    "fr": "Frequency Response",
+    "noFr": "No frequency response graph.",
+    "frTitle": "Frequency Response — {{name}}",
+    "custom": "Custom Fields",
+    "noCustom": "No custom fields."
+  },
+  "form": {
+    "titleEdit": "Edit {{name}}",
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "brand": "Brand",
+    "model": "Model",
+    "type": "Type",
+    "color": "Color",
+    "phBrand": "e.g. Sennheiser",
+    "phModel": "e.g. HD 660S2",
+    "select": "Select…",
+    "phColor": "e.g. Midnight Blue",
+    "manufacturerUrl": "Manufacturer website",
+    "phManufacturerUrl": "e.g. https://www.sennheiser-hearing.com",
+    "webshop": "Webshop",
+    "phWebshop": "e.g. https://www.example-shop.com",
+    "webFetch": "Web fetch",
+    "fetching": "Fetching…",
+    "fetchSpecs": "Fetch specs",
+    "fetchHint": "Looks up squig.link measurements and manufacturer pages for {{target}}. Fills only empty fields.",
+    "thisDevice": "this device",
+    "fetchSearching": "Searching the squig.link index and the web… first use can take up to a minute (the index is cached afterwards).",
+    "match": "Match:",
+    "matchPrice": "· price {{price}}",
+    "matchSite": "(measurement from {{site}})",
+    "noMatch": "No measurement match in the squig.link index.",
+    "measurementPoints": "{{count}} measurement points{{source}}",
+    "imageFound": "found",
+    "applied": "Applied — empty fields filled",
+    "apply": "Apply to form (empty fields only)",
+    "image": "Image",
+    "replaceImage": "Replace image",
+    "pickImage": "Pick image",
+    "removeImage": "Remove image",
+    "specs": "Technical specs",
+    "price": "Price ({{currency}})",
+    "purchaseDate": "Purchase date ({{format}})",
+    "driverType": "Driver type",
+    "unknown": "Unknown",
+    "impedance": "Impedance (Ω)",
+    "sensitivity": "Sensitivity (dB)",
+    "connector": "Connector (amp-side plug)",
+    "tube": "Tube amp compatibility",
+    "tubeAuto": "Auto (from specs)",
+    "ruleResult": "Rule result:",
+    "sound": "Sound",
+    "soundstage": "Soundstage (1–5)",
+    "listeningNotes": "Listening notes",
+    "phListeningNotes": "Impressions, comparisons, burn-in status…",
+    "frGraph": "Frequency response graph",
+    "replaceGraph": "Replace graph",
+    "pickGraph": "Pick graph",
+    "useFetchedCurve": "Use fetched curve ({{count}} pts)",
+    "removeGraph": "Remove graph",
+    "peq": "PEQ settings",
+    "peqLoaded_one": "{{count}} band loaded",
+    "peqLoaded_other": "{{count}} bands loaded",
+    "clearPeq": "Clear PEQ",
+    "noPeq": "No PEQ bands yet.",
+    "opraIdle": "Enter a brand and model to check OPRA for community presets.",
+    "opraChecking": "Checking OPRA…",
+    "opraFound": "Found in OPRA — apply a preset:",
+    "appliedTag": "(applied)",
+    "opraOverall": "overall {{gain}} dB",
+    "opraNone": "No OPRA preset found for this device.",
+    "importPeq": "Import XML/JSON",
+    "peqFileFilter": "PEQ preset",
+    "importReady": "{{count}} bands ready from {{file}}",
+    "replaceBands": "Replace bands",
+    "custom": "Custom fields",
+    "noCustom": "No custom fields yet.",
+    "phCustomKey": "Key (e.g. Weight)",
+    "phCustomValue": "Value (e.g. 260 g)",
+    "ariaRemoveCustom": "Remove custom field {{index}}",
+    "addCustom": "Add custom field",
+    "validation": {
+      "brandRequired": "Brand is required",
+      "modelRequired": "Model is required",
+      "typeRequired": "Type is required",
+      "priceNumber": "Price must be a number",
+      "impedanceInt": "Impedance must be a whole number ≥ 0",
+      "sensitivityNumber": "Sensitivity must be a number",
+      "soundstageRange": "Soundstage must be 1–5",
+      "urlInvalid": "Enter a valid URL (http or https)",
+      "peqFreqRequired": "Frequency is required",
+      "peqNumber": "Enter a number",
+      "peqFreqPositive": "Must be > 0 Hz",
+      "peqQRequired": "Q is required for this type",
+      "peqQPositive": "Q must be > 0",
+      "dateInvalid": "Invalid date — expected {{format}}"
+    }
+  },
+  "notes": {
+    "common": {
+      "brand_model_required": "Brand and model are both required"
+    },
+    "spec": {
+      "site_list_load_failed": "Could not load the squig.link site list",
+      "site_list_unreadable": "Site list was unreadable",
+      "federation_load_failed": "No federated phone books could be loaded",
+      "phonebook_load_failed": "Could not load the squig.link phone book",
+      "no_match_iem": "No matching measurement in the squig.link index (in-ear database)",
+      "no_match_headphone": "No matching measurement found in the squig.link index (main + federated headphone databases)",
+      "matched_no_data": "Matched \"{{p0}} {{p1}}\" on {{p2}} but no measurement data was found",
+      "search_no_results": "Search returned no results",
+      "search_no_specs": "Searched {{p0}} page(s) but could not parse any specs",
+      "search_failed": "Web search failed: {{p0}}",
+      "search_unparseable": "DuckDuckGo returned no parseable results"
+    },
+    "opra": {
+      "stale_cache": "OPRA database could not be refreshed — using the last cached copy",
+      "load_failed": "Could not load the OPRA database (network unavailable) — no cached copy"
+    },
+    "err": {
+      "file_too_large": "File too large (max 1 MiB)",
+      "path_escapes_media": "Path escapes the media directory",
+      "https_only": "Only https image URLs are supported",
+      "image_too_large": "Image too large (max 5 MB)"
+    }
+  },
+  "peqImport": {
+    "bandSkippedNotObject": "band {{p0}}: skipped (not an object)",
+    "bandSkippedNoFreqGain": "band {{p0}}: skipped (missing or invalid freq/gain)",
+    "bandSkippedFreqRange": "band {{p0}}: skipped (frequency {{p1}} Hz out of range)",
+    "bandUnknownType": "band {{p0}}: unknown type \"{{p1}}\" — assumed PK",
+    "bandMissingType": "band {{p0}}: missing type — assumed PK",
+    "bandInvalidQ": "band {{p0}}: invalid Q — using 0.707",
+    "multipleProfiles": "file contains {{p0}} profiles — using the first"
+  },
+  "opraNote": {
+    "overallGainNotApplied": "overall profile gain {{p0}} dB is not applied (the band model has no global gain)"
+  },
+  "fiioeq": {
+    "unknownType": "Band {{p0}}: unknown filter type \"{{p1}}\" — skipped",
+    "invalidFreq": "Band {{p0}}: invalid frequency \"{{p1}}\" (1–20000 Hz expected) — skipped",
+    "invalidQ": "Band {{p0}}: no usable Q \"{{p1}}\" — using default {{p2}}",
+    "trailingPadding": "The last {{p0}} bands are all identical ({{p1}} @ {{p2}} Hz) — likely FiiO app padding. Delete them if they are not part of your EQ.",
+    "noBands": "No PEQ bands found in {{p0}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "preferences": "Preferences",
+    "language": "Language",
+    "currency": "Currency",
+    "dateFormat": "Date format",
+    "savedNote": "Changes are saved immediately to your config file and applied across the app.",
+    "webFetch": "Web fetch",
+    "webFetchBody": "“Fetch specs” in the device form looks up the current brand + model on the web — the squig.link measurement index (no key needed) for the frequency-response data and price, and keyless DuckDuckGo search to find manufacturer pages for impedance, sensitivity, driver type and the product image. Fetches are best-effort: fields that cannot be determined are left blank, and nothing is saved until you apply it. No API key is required and no credentials are stored.",
+    "theme": "Theme",
+    "colorScheme": "Color scheme",
+    "storage": "Storage (XDG)",
+    "database": "Database",
+    "media": "Media",
+    "config": "Config",
+    "openMediaFolder": "Open media folder",
+    "tubeRule": "Tube amp compatibility rule",
+    "about": "About",
+    "aboutBody": "Audio Vault 0.1.0 — a local-first collection manager for audio gear. All data stays on this machine in your XDG directories."
+  }
+}

@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@source "../src";
+
+@theme {
+  --color-tm-darker: #1a1b26;
+  --color-tm-dark: #24283b;
+  --color-tm-bg: #1f2335;
+  --color-tm-fg: #c0caf5;
+  --color-tm-accent: #7aa2f7;
+  --color-tm-purple: #bb9af7;
+  --color-tm-blue: #7dcfff;
+  --color-tm-cyan: #7dcfff;
+  --color-tm-magenta: #bb9af7;
+  --color-tm-red: #f7768e;
+  --color-tm-gray: #565f89;
+  --color-tm-green: #9ece6a;
+  --color-tm-yellow: #e0af68;
+  --color-tm-orange: #ff9e64;
+  --color-tm-teal: #73daca;
+}
+
+/*
+ * Global type scale. Tailwind's text-* utilities (and most spacing) are
+ * rem-based, so this one value scales the whole UI — bump to 19px/20px
+ * for even larger text on high-DPI displays.
+ */
+html {
+  font-size: 18px;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--color-tm-darker);
+  color: var(--color-tm-fg);
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Native <select> popups: keep the dark theme inside the dropdown list. */
+select option {
+  background-color: var(--color-tm-darker);
+  color: var(--color-tm-fg);
+}
+
+/*
+ * Render selects with the app palette instead of the native (grey) widget.
+ * WebKit only applies author backgrounds to appearance:auto selects on
+ * focus, so we take over drawing and add our own dropdown arrow.
+ */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23565f89' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 0.85rem;
+  padding-right: 1.8rem;
+}
+
+/*
+ * Theme variants. Tailwind v4 utilities compile to var(--color-tm-*), so
+ * redefining the variables per theme re-skins the whole UI at runtime.
+ * Values mirror src/lib/themes.ts (keep in sync — that file owns the chart
+ * palettes used by the canvas/SVG renderers).
+ */
+html[data-theme="gruvbox"] {
+  --color-tm-darker: #1d2021;
+  --color-tm-dark: #3c3836;
+  --color-tm-bg: #282828;
+  --color-tm-fg: #ebdbb2;
+  --color-tm-accent: #fabd2f;
+  --color-tm-purple: #b2789f;
+  --color-tm-blue: #83a598;
+  --color-tm-cyan: #8ec07c;
+  --color-tm-magenta: #d3869b;
+  --color-tm-red: #fb4934;
+  --color-tm-gray: #928374;
+  --color-tm-green: #b8bb26;
+  --color-tm-yellow: #fabd2f;
+  --color-tm-orange: #fe8019;
+  --color-tm-teal: #8ec07c;
+}
+html[data-theme="gruvbox"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23928374' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme="dracula"] {
+  --color-tm-darker: #1e1f29;
+  --color-tm-dark: #282a36;
+  --color-tm-bg: #2c2e3b;
+  --color-tm-fg: #f8f8f2;
+  --color-tm-accent: #bd93f9;
+  --color-tm-purple: #bd93f9;
+  --color-tm-blue: #8be9fd;
+  --color-tm-cyan: #8be9fd;
+  --color-tm-magenta: #ff79c6;
+  --color-tm-red: #ff5555;
+  --color-tm-gray: #6272a4;
+  --color-tm-green: #50fa7b;
+  --color-tm-yellow: #f1fa8c;
+  --color-tm-orange: #ffb86c;
+  --color-tm-teal: #8be9fd;
+}
+html[data-theme="dracula"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236272a4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme="catppuccin"] {
+  --color-tm-darker: #11111b;
+  --color-tm-dark: #313244;
+  --color-tm-bg: #1e1e2e;
+  --color-tm-fg: #cdd6f4;
+  --color-tm-accent: #89b4fa;
+  --color-tm-purple: #cba6f7;
+  --color-tm-blue: #89b4fa;
+  --color-tm-cyan: #94e2d5;
+  --color-tm-magenta: #f5c2e7;
+  --color-tm-red: #f38ba8;
+  --color-tm-gray: #6c7086;
+  --color-tm-green: #a6e3a1;
+  --color-tm-yellow: #f9e2af;
+  --color-tm-orange: #fab387;
+  --color-tm-teal: #94e2d5;
+}
+html[data-theme="catppuccin"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c7086' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme="monokai"] {
+  --color-tm-darker: #1e1f1c;
+  --color-tm-dark: #3e3d32;
+  --color-tm-bg: #272822;
+  --color-tm-fg: #f8f8f2;
+  --color-tm-accent: #66d9ef;
+  --color-tm-purple: #ae81ff;
+  --color-tm-blue: #66d9ef;
+  --color-tm-cyan: #a1efe4;
+  --color-tm-magenta: #f92672;
+  --color-tm-red: #f92672;
+  --color-tm-gray: #75715e;
+  --color-tm-green: #a6e22e;
+  --color-tm-yellow: #e6db74;
+  --color-tm-orange: #fd971f;
+  --color-tm-teal: #a1efe4;
+}
+html[data-theme="monokai"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2375715e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
