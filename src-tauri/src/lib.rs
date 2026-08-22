@@ -689,6 +689,18 @@ INSERT INTO devices_v17 SELECT id, brand, model, type, image_path, price, purcha
 DROP TABLE devices;
 ALTER TABLE devices_v17 RENAME TO devices;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 19,
+    description: "move_legacy_device_product_images_into_gallery",
+    // Devices created before the gallery existed may still carry a
+    // product image in image_path (the old form's single-image field),
+    // which the new device form cannot see or edit. Move it into the
+    // images array (first position) so it is manageable like any other
+    // gallery image. Idempotent: after one run no device row has
+    // image_path set.
+    sql: "UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE category = 'devices' AND image_path IS NOT NULL AND image_path != '';",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()
