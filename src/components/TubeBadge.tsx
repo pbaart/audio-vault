@@ -13,16 +13,16 @@ interface TubeBadgeProps {
 
 const BADGE_STYLES: Record<TubeBadgeValue, string> = {
   Yes: "border-tm-green/40 bg-tm-green/10 text-tm-green",
-  "OTL Only": "border-tm-yellow/40 bg-tm-yellow/10 text-tm-yellow",
-  "Transformer Only": "border-tm-purple/40 bg-tm-purple/10 text-tm-purple",
+  "OTL Only": "border-tm-orange/40 bg-tm-orange/10 text-tm-orange",
+  "Transformer Only": "border-tm-blue/40 bg-tm-blue/10 text-tm-blue",
   No: "border-tm-gray/40 bg-tm-gray/10 text-tm-gray",
 };
 
 /** Solid (opaque) backgrounds for the dot variant on images. */
 const SOLID_STYLES: Record<TubeBadgeValue, string> = {
   Yes: "bg-tm-green",
-  "OTL Only": "bg-tm-yellow",
-  "Transformer Only": "bg-tm-purple",
+  "OTL Only": "bg-tm-orange",
+  "Transformer Only": "bg-tm-blue",
   No: "bg-tm-gray",
 };
 

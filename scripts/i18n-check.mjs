@@ -44,9 +44,15 @@ function flatten(obj, prefix = "") {
 // ── 1. Key structure parity ────────────────────────────────────────────────
 const catalogs = {};
 for (const lang of LANGS) {
-  catalogs[lang] = flatten(
-    JSON.parse(readFileSync(join(localesDir, `${lang}.json`), "utf8")),
-  );
+  let parsed;
+  try {
+    const raw = readFileSync(join(localesDir, `${lang}.json`), "utf8");
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    console.error(`  ✗ ${lang}.json could not be read/parsed: ${err.message}`);
+    process.exit(1);
+  }
+  catalogs[lang] = flatten(parsed);
 }
 const enKeys = Object.keys(catalogs.en);
 console.log(`en.json: ${enKeys.length} keys`);
