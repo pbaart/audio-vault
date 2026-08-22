@@ -56,7 +56,7 @@ pub struct FetchedSpecs {
   pub fr_curve: Option<Vec<Vec<f64>>>,
   #[serde(skip_serializing_if = "Option::is_none")]
   pub fr_source: Option<String>,
-  /// One of: Dynamic, Planar, BA, Electrostatic, Hybrid, Tribrid.
+  /// One of: Dynamic, Planar, Balanced Armature, Electrostatic, Hybrid, Tribrid.
   #[serde(skip_serializing_if = "Option::is_none")]
   pub driver_type: Option<String>,
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -480,10 +480,10 @@ async fn load_federation(
       Err(_) => fetch_failures += 1,
     }
   }
-  if !fresh_cache.is_empty() {
-    if let Ok(raw) = serde_json::to_string(&fresh_cache) {
-      store_cached("hp_phone_books.json", &raw);
-    }
+  if !fresh_cache.is_empty()
+    && let Ok(raw) = serde_json::to_string(&fresh_cache)
+  {
+    store_cached("hp_phone_books.json", &raw);
   }
   if fetch_failures > 0 && fresh_cache.is_empty() {
     notes.push(note("spec.federation_load_failed"));
@@ -673,7 +673,7 @@ async fn search_duckduckgo(
     }
   }
   if hits.is_empty() {
-    return Err(note("spec.search_unparseable"));
+    return Err(note("spec.search_unparsable"));
   }
   Ok(hits)
 }
@@ -841,10 +841,10 @@ fn find_value_near(
     let from = floor_char(text, pos.saturating_sub(window));
     let to = ceil_char(text, (pos + m.len() + window).min(text.len()));
     let slice = &text[from..to];
-    if let Some(caps) = value_re.captures(slice) {
-      if let Ok(v) = caps[1].parse::<f64>() {
-        return Some(v);
-      }
+    if let Some(caps) = value_re.captures(slice)
+      && let Ok(v) = caps[1].parse::<f64>()
+    {
+      return Some(v);
     }
   }
   None
@@ -856,7 +856,7 @@ fn detect_driver(text: &str) -> Option<String> {
     return Some(match m[1].to_lowercase().as_str() {
       "dynamic" => "Dynamic".to_string(),
       "planar magnetic" | "planar" => "Planar".to_string(),
-      "balanced armature" => "BA".to_string(),
+      "balanced armature" => "Balanced Armature".to_string(),
       "electrostatic" => "Electrostatic".to_string(),
       "hybrid" => "Hybrid".to_string(),
       "tribrid" => "Tribrid".to_string(),
@@ -880,7 +880,7 @@ fn detect_driver(text: &str) -> Option<String> {
   score.push(
     (
       count("balanced armature") * 4.0 + count("ba driver") * 3.0 + count("ba drivers") * 3.0,
-      "BA",
+      "Balanced Armature",
     ),
   );
   score.push((count("electrostatic") * 3.0, "Electrostatic"));
@@ -912,12 +912,11 @@ fn resolve_url(raw: &str, page_url: &str) -> String {
   }
   if let Some(pos) = page_url.find("://") {
     let scheme_end = pos + 3;
-    if let Some(rest) = page_url.get(scheme_end..) {
-      if let Some(rel) = rest.find('/') {
-        if let Some(prefix) = page_url.get(..scheme_end + rel) {
-          return format!("{}{}", prefix, raw);
-        }
-      }
+    if let Some(rest) = page_url.get(scheme_end..)
+      && let Some(rel) = rest.find('/')
+      && let Some(prefix) = page_url.get(..scheme_end + rel)
+    {
+      return format!("{}{}", prefix, raw);
     }
   }
   raw.to_string()
@@ -1028,7 +1027,7 @@ pub async fn fetch_specs(
       }
     }
     Err(e) => {
-      if e == note("spec.search_unparseable") {
+      if e == note("spec.search_unparsable") {
         out.notes.push(e);
       } else {
         out.notes.push(note_with(
