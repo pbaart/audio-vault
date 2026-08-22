@@ -150,7 +150,7 @@ export function DeviceDetailView({
               )}
               {badge && (
                 <Tip label={t("fields.tubeAmp")}>
-                  <TubeBadge badge={badge} size="sm" />
+                  <TubeBadge badge={badge} size="sm" tooltip={null} />
                 </Tip>
               )}
             </div>

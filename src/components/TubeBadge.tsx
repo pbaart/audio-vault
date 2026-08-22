@@ -9,6 +9,11 @@ interface TubeBadgeProps {
   size?: "sm" | "md";
   /** Solid colored dot (no icon/text) for use on top of images (grid view). */
   dot?: boolean;
+  /**
+   * Native hover tooltip. Defaults to the tube.tooltip text; pass null to
+   * disable it (e.g. when the badge is wrapped in its own styled tooltip).
+   */
+  tooltip?: string | null;
 }
 
 const BADGE_STYLES: Record<TubeBadgeValue, string> = {
@@ -27,7 +32,12 @@ const SOLID_STYLES: Record<TubeBadgeValue, string> = {
 };
 
 /** Colored tube-amp compatibility badge (computed by the rule in lib/tube). */
-export function TubeBadge({ badge, size = "md", dot = false }: TubeBadgeProps) {
+export function TubeBadge({
+  badge,
+  size = "md",
+  dot = false,
+  tooltip,
+}: TubeBadgeProps) {
   const { t } = useTranslation();
   if (dot) {
     return (
@@ -43,7 +53,7 @@ export function TubeBadge({ badge, size = "md", dot = false }: TubeBadgeProps) {
   }
   return (
     <span
-      title={t("tube.tooltip")}
+      title={tooltip === undefined ? t("tube.tooltip") : tooltip || undefined}
       className={cls(
         "inline-flex items-center gap-1 rounded-full border font-medium",
         size === "sm" ? "px-2 py-0.5 text-[12.5px]" : "px-2.5 py-1 text-xs",
