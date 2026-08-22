@@ -4,6 +4,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { AudioLines, Copy, Minus, Square, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { isTauri } from "../lib/paths";
+import { Tip } from "./Tip";
 import { cls } from "../ui";
 
 /**
@@ -53,8 +54,11 @@ export function TitleBar({ children }: { children?: ReactNode }) {
     };
   }, [win]);
 
+  // Window controls: no hover background — only the icon changes color.
+  // Tooltips use the app's standard Tip component (bottom side, since the
+  // bar sits at the top edge of the window).
   const btn =
-    "flex h-7 w-9 items-center justify-center text-tm-gray transition hover:bg-tm-dark hover:text-tm-fg";
+    "flex h-7 w-9 items-center justify-center text-tm-gray transition hover:text-tm-fg";
 
   return (
     <div
@@ -67,30 +71,36 @@ export function TitleBar({ children }: { children?: ReactNode }) {
       </div>
       {children}
       <div className="ml-auto flex items-center">
-        <button
-          className={btn}
-          onClick={() => void win.minimize()}
-          aria-label={t("app.minimize")}
-          title={t("app.minimize")}
+        <Tip label={t("app.minimize")} side="bottom">
+          <button
+            className={btn}
+            onClick={() => void win.minimize()}
+            aria-label={t("app.minimize")}
+          >
+            <Minus size={14} />
+          </button>
+        </Tip>
+        <Tip
+          label={maximized ? t("app.restore") : t("app.maximize")}
+          side="bottom"
         >
-          <Minus size={14} />
-        </button>
-        <button
-          className={btn}
-          onClick={() => void (maximized ? win.unmaximize() : win.maximize())}
-          aria-label={maximized ? t("app.restore") : t("app.maximize")}
-          title={maximized ? t("app.restore") : t("app.maximize")}
-        >
-          {maximized ? <Copy size={13} /> : <Square size={13} />}
-        </button>
-        <button
-          className={cls(btn, "hover:bg-red-500/80 hover:text-white")}
-          onClick={() => void win.close()}
-          aria-label={t("app.close")}
-          title={t("app.close")}
-        >
-          <X size={15} />
-        </button>
+          <button
+            className={btn}
+            onClick={() => void (maximized ? win.unmaximize() : win.maximize())}
+            aria-label={maximized ? t("app.restore") : t("app.maximize")}
+          >
+            {maximized ? <Copy size={13} /> : <Square size={13} />}
+          </button>
+        </Tip>
+        <Tip label={t("app.close")} side="bottom">
+          <button
+            className={cls(btn, "hover:text-tm-red")}
+            onClick={() => void win.close()}
+            aria-label={t("app.close")}
+          >
+            <X size={15} />
+          </button>
+        </Tip>
       </div>
     </div>
   );
