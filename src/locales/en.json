@@ -97,6 +97,8 @@
     "detailRetrieval": "Detail retrieval",
     "timbre": "Timbre",
     "tonalBalance": "Tonal balance",
+    "color": "Color",
+    "connector": "Connector",
     "rating": "Rating",
     "tubeAmp": "Tube amp",
     "actions": "Actions"
@@ -144,7 +146,6 @@
   "detail": {
     "zoom": "Click to zoom",
     "productImage": "Product image",
-    "device": "Device",
     "specs": "Technical Specs",
     "theSound": "The Sound",
     "notes": "Listening Notes",
@@ -152,12 +153,9 @@
     "peq": "PEQ Settings",
     "peqSummary": "{{summary}} — combined magnitude response (bands cascade)",
     "source": "Source: {{source}}",
-    "noPeq": "No PEQ settings.",
     "fr": "Frequency Response",
-    "noFr": "No frequency response graph.",
     "frTitle": "Frequency Response — {{name}}",
-    "custom": "Custom Fields",
-    "noCustom": "No custom fields."
+    "custom": "Custom Fields"
   },
   "form": {
     "titleEdit": "Edit {{name}}",

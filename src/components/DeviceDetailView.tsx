@@ -112,10 +112,7 @@ export function DeviceDetailView({
             )}
           </div>
           <div className="rounded-lg border border-tm-dark bg-tm-bg p-4">
-            <p className="text-xs uppercase tracking-wide text-tm-gray">
-              {t("detail.device")}
-            </p>
-            <h2 className="mt-1 text-xl font-semibold text-tm-fg">
+            <h2 className="text-xl font-semibold text-tm-fg">
               {device.brand} {device.model}
             </h2>
             {device.overall_rating != null && (
@@ -124,26 +121,38 @@ export function DeviceDetailView({
               </div>
             )}
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Chip
-                label={enumLabel(device.type, t)}
-                icon={<Headphones size={12} />}
-              />
-              {device.driver_type && (
+              <Tip label={t("fields.type")}>
                 <Chip
-                  label={enumLabel(device.driver_type, t)}
-                  icon={<Volume2 size={12} />}
+                  label={enumLabel(device.type, t)}
+                  icon={<Headphones size={12} />}
                 />
+              </Tip>
+              {device.driver_type && (
+                <Tip label={t("fields.driver")}>
+                  <Chip
+                    label={enumLabel(device.driver_type, t)}
+                    icon={<Volume2 size={12} />}
+                  />
+                </Tip>
               )}
               {device.color && (
-                <Chip label={device.color} icon={<Palette size={12} />} />
+                <Tip label={t("fields.color")}>
+                  <Chip label={device.color} icon={<Palette size={12} />} />
+                </Tip>
               )}
               {device.connector_type && (
-                <Chip
-                  label={enumLabel(device.connector_type, t)}
-                  icon={<Plug size={12} />}
-                />
+                <Tip label={t("fields.connector")}>
+                  <Chip
+                    label={enumLabel(device.connector_type, t)}
+                    icon={<Plug size={12} />}
+                  />
+                </Tip>
               )}
-              {badge && <TubeBadge badge={badge} size="sm" />}
+              {badge && (
+                <Tip label={t("fields.tubeAmp")}>
+                  <TubeBadge badge={badge} size="sm" />
+                </Tip>
+              )}
             </div>
             {(device.manufacturer_url || device.webshop_url) && (
               <div className="mt-3 flex flex-wrap gap-2">
@@ -257,6 +266,19 @@ export function DeviceDetailView({
             </div>
           </Section>
 
+          {device.custom_fields.length > 0 && (
+            <Section title={t("detail.custom")}>
+              <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+                {device.custom_fields.map((cf, i) => (
+                  <div key={`${cf.key}-${i}`}>
+                    <dt className="text-xs text-tm-gray">{cf.key}</dt>
+                    <dd className="text-sm text-tm-fg">{cf.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Section>
+          )}
+
           <Section title={t("detail.notes")}>
             {device.listening_notes ? (
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-tm-fg">
@@ -267,8 +289,8 @@ export function DeviceDetailView({
             )}
           </Section>
 
-          <Section title={t("detail.fr")}>
-            {device.fr_graph_path ? (
+          {device.fr_graph_path && (
+            <Section title={t("detail.fr")}>
               <button
                 className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark"
                 onClick={() => setLightbox("fr")}
@@ -283,13 +305,11 @@ export function DeviceDetailView({
                   <ZoomIn size={16} className="text-white" />
                 </div>
               </button>
-            ) : (
-              <EmptyHint text={t("detail.noFr")} />
-            )}
-          </Section>
+            </Section>
+          )}
 
-          <Section title={t("detail.peq")}>
-            {device.peq_settings.length > 0 ? (
+          {device.peq_settings.length > 0 && (
+            <Section title={t("detail.peq")}>
               <div className="space-y-2">
                 <div className="overflow-hidden rounded-lg border border-tm-dark bg-tm-bg">
                   <PeqGraph bands={device.peq_settings} />
@@ -305,25 +325,8 @@ export function DeviceDetailView({
                   </p>
                 )}
               </div>
-            ) : (
-              <EmptyHint text={t("detail.noPeq")} />
-            )}
-          </Section>
-
-          <Section title={t("detail.custom")}>
-            {device.custom_fields.length > 0 ? (
-              <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-                {device.custom_fields.map((cf, i) => (
-                  <div key={`${cf.key}-${i}`}>
-                    <dt className="text-xs text-tm-gray">{cf.key}</dt>
-                    <dd className="text-sm text-tm-fg">{cf.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <EmptyHint text={t("detail.noCustom")} />
-            )}
-          </Section>
+            </Section>
+          )}
         </div>
       </div>
 
@@ -392,6 +395,28 @@ function UrlButton({ url, icon }: { url: string; icon: ReactNode }) {
       {icon}
       {hostOf(url)}
     </button>
+  );
+}
+
+/** Hover tooltip showing the field name above the wrapped pill. */
+function Tip({ label, children }: { label: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      {children}
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded border border-tm-dark bg-tm-bg px-2 py-0.5 text-xs text-tm-fg shadow-lg"
+        >
+          {label}
+        </span>
+      )}
+    </span>
   );
 }
 

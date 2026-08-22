@@ -97,6 +97,8 @@
     "detailRetrieval": "Detailweergave",
     "timbre": "Timbre",
     "tonalBalance": "Tonaal evenwicht",
+    "color": "Kleur",
+    "connector": "Aansluiting",
     "rating": "Beoordeling",
     "tubeAmp": "Buizenversterker",
     "actions": "Acties"
@@ -144,7 +146,6 @@
   "detail": {
     "zoom": "Klik om te vergroten",
     "productImage": "Productafbeelding",
-    "device": "Apparaat",
     "specs": "Technische specificaties",
     "theSound": "De Klank",
     "notes": "Luisternotities",
@@ -152,12 +153,9 @@
     "peq": "PEQ-instellingen",
     "peqSummary": "{{summary}} — gecombineerde amplitude-respons (banden in cascade)",
     "source": "Bron: {{source}}",
-    "noPeq": "Geen PEQ-instellingen.",
     "fr": "Frequentierespons",
-    "noFr": "Geen frequentieresponsgrafiek.",
     "frTitle": "Frequentierespons — {{name}}",
-    "custom": "Aangepaste velden",
-    "noCustom": "Geen aangepaste velden."
+    "custom": "Aangepaste velden"
   },
   "form": {
     "titleEdit": "{{name}} bewerken",

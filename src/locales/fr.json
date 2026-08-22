@@ -97,6 +97,8 @@
     "detailRetrieval": "Restitution du détail",
     "timbre": "Timbre",
     "tonalBalance": "Équilibre tonal",
+    "color": "Couleur",
+    "connector": "Connecteur",
     "rating": "Note",
     "tubeAmp": "Ampli à tubes",
     "actions": "Actions"
@@ -144,7 +146,6 @@
   "detail": {
     "zoom": "Cliquez pour zoomer",
     "productImage": "Image produit",
-    "device": "Appareil",
     "specs": "Caractéristiques techniques",
     "theSound": "Le Son",
     "notes": "Notes d'écoute",
@@ -152,12 +153,9 @@
     "peq": "Réglages PEQ",
     "peqSummary": "{{summary}} — réponse en amplitude combinée (bandes en cascade)",
     "source": "Source : {{source}}",
-    "noPeq": "Aucun réglage PEQ.",
     "fr": "Réponse en fréquence",
-    "noFr": "Aucun graphique de réponse en fréquence.",
     "frTitle": "Réponse en fréquence — {{name}}",
-    "custom": "Champs personnalisés",
-    "noCustom": "Aucun champ personnalisé."
+    "custom": "Champs personnalisés"
   },
   "form": {
     "titleEdit": "Modifier {{name}}",

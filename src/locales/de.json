@@ -97,6 +97,8 @@
     "detailRetrieval": "Detailauflösung",
     "timbre": "Klangfarbe",
     "tonalBalance": "Tonale Balance",
+    "color": "Farbe",
+    "connector": "Anschluss",
     "rating": "Bewertung",
     "tubeAmp": "Röhrenverstärker",
     "actions": "Aktionen"
@@ -144,7 +146,6 @@
   "detail": {
     "zoom": "Klicken zum Vergrößern",
     "productImage": "Produktbild",
-    "device": "Gerät",
     "specs": "Technische Daten",
     "theSound": "Der Klang",
     "notes": "Hörnotizen",
@@ -152,12 +153,9 @@
     "peq": "PEQ-Einstellungen",
     "peqSummary": "{{summary}} — kombinierte Amplitudencharakteristik (Bänder kaskadiert)",
     "source": "Quelle: {{source}}",
-    "noPeq": "Keine PEQ-Einstellungen.",
     "fr": "Frequenzgang",
-    "noFr": "Keine Frequenzgang-Graphik.",
     "frTitle": "Frequenzgang — {{name}}",
-    "custom": "Eigene Felder",
-    "noCustom": "Keine eigenen Felder."
+    "custom": "Eigene Felder"
   },
   "form": {
     "titleEdit": "{{name}} bearbeiten",
