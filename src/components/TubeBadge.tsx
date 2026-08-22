@@ -7,8 +7,8 @@ import { cls } from "../ui";
 interface TubeBadgeProps {
   badge: TubeBadgeValue;
   size?: "sm" | "md";
-  /** Solid, icon-only variant for use on top of images (grid view). */
-  iconOnly?: boolean;
+  /** Solid colored dot (no icon/text) for use on top of images (grid view). */
+  dot?: boolean;
 }
 
 const BADGE_STYLES: Record<TubeBadgeValue, string> = {
@@ -18,7 +18,7 @@ const BADGE_STYLES: Record<TubeBadgeValue, string> = {
   No: "border-tm-gray/40 bg-tm-gray/10 text-tm-gray",
 };
 
-/** Solid (opaque) backgrounds for the icon-only variant on images. */
+/** Solid (opaque) backgrounds for the dot variant on images. */
 const SOLID_STYLES: Record<TubeBadgeValue, string> = {
   Yes: "bg-tm-green",
   "OTL Only": "bg-tm-yellow",
@@ -27,20 +27,22 @@ const SOLID_STYLES: Record<TubeBadgeValue, string> = {
 };
 
 /** Colored tube-amp compatibility badge (computed by the rule in lib/tube). */
-export function TubeBadge({ badge, size = "md", iconOnly = false }: TubeBadgeProps) {
+export function TubeBadge({
+  badge,
+  size = "md",
+  dot = false,
+}: TubeBadgeProps) {
   const { t } = useTranslation();
-  if (iconOnly) {
+  if (dot) {
     return (
       <span
         title={tubeBadgeLabel(badge, (k) => t(k))}
         className={cls(
-          "inline-flex items-center justify-center rounded-full text-white ring-2 ring-black/30",
-          size === "sm" ? "h-6 w-6" : "h-7 w-7",
+          "inline-block rounded-full ring-2 ring-black/30",
+          size === "sm" ? "h-4 w-4" : "h-5 w-5",
           SOLID_STYLES[badge],
         )}
-      >
-        <Flame size={size === "sm" ? 14 : 16} />
-      </span>
+      />
     );
   }
   return (
