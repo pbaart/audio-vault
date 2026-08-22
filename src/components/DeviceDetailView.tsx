@@ -8,8 +8,8 @@ import {
   Pencil,
   Plug,
   ShoppingBag,
-  Speaker,
   Trash2,
+  Volume2,
   ZoomIn,
 } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
@@ -131,7 +131,7 @@ export function DeviceDetailView({
               {device.driver_type && (
                 <Chip
                   label={enumLabel(device.driver_type, t)}
-                  icon={<Speaker size={12} />}
+                  icon={<Volume2 size={12} />}
                 />
               )}
               {device.color && (
