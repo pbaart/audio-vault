@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  ChevronLeft,
+  ChevronRight,
   CloudDownload,
   FolderOpen,
   Plus,
@@ -120,6 +122,8 @@ interface FormState {
   webshop_url: string;
   image_path: string | null;
   mood_image_path: string | null;
+  /** Devices category: product image gallery (first = cover). */
+  images: string[];
   price: string;
   purchase_date: string;
   driver_type: DriverType | "";
@@ -229,6 +233,7 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
     webshop_url: device?.webshop_url ?? "",
     image_path: device?.image_path ?? null,
     mood_image_path: device?.mood_image_path ?? null,
+    images: device?.images ?? [],
     price: device?.price == null ? "" : String(device.price),
     purchase_date: formatDate(device?.purchase_date ?? null, dateFormat) ?? "",
     driver_type: device?.driver_type ?? "",
@@ -452,6 +457,9 @@ export function DeviceFormDialog({
   const [imageDownloading, setImageDownloading] = useState(false);
   const [moodImageUrl, setMoodImageUrl] = useState("");
   const [moodImageDownloading, setMoodImageDownloading] = useState(false);
+  /** Devices gallery: URL currently being downloaded into media/. */
+  const [galleryUrl, setGalleryUrl] = useState("");
+  const [galleryDownloading, setGalleryDownloading] = useState(false);
   /** Media files superseded in this session — deleted only on successful save. */
   const [replacedMedia, setReplacedMedia] = useState<string[]>([]);
   const [fetchState, setFetchState] = useState<FetchState>({ status: "idle" });
@@ -614,6 +622,53 @@ export function DeviceFormDialog({
       }
       set("fr_graph_path", null);
     }
+  }
+
+  /** Devices gallery: append a picked file. */
+  async function handleAddGalleryImage() {
+    setPickError(null);
+    try {
+      const rel = await pickImageFile();
+      if (!rel) return;
+      set("images", [...form.images, rel]);
+    } catch (err) {
+      setPickError(String(err));
+    }
+  }
+
+  /** Devices gallery: download a pasted URL into media/ and append it. */
+  async function handleDownloadGalleryImage() {
+    const url = galleryUrl.trim();
+    if (!url || galleryDownloading) return;
+    setPickError(null);
+    setGalleryDownloading(true);
+    try {
+      const name = `${form.brand} ${form.model}`.trim() || "image";
+      const rel = await downloadImage(url, name);
+      set("images", [...form.images, rel]);
+      setGalleryUrl("");
+    } catch (err) {
+      setPickError(String(err));
+    } finally {
+      setGalleryDownloading(false);
+    }
+  }
+
+  function handleRemoveGalleryImage(index: number) {
+    const rel = form.images[index];
+    if (rel) setReplacedMedia((r) => [...r, rel]);
+    set(
+      "images",
+      form.images.filter((_, i) => i !== index),
+    );
+  }
+
+  function handleMoveGalleryImage(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= form.images.length) return;
+    const next = [...form.images];
+    [next[index], next[target]] = [next[target], next[index]];
+    set("images", next);
   }
 
   // ── Web auto-fetch (Phase 2) ──────────────────────────────────────────
@@ -811,6 +866,7 @@ export function DeviceFormDialog({
         webshop_url: normalizeUrl(form.webshop_url),
         image_path: form.image_path,
         mood_image_path: form.mood_image_path,
+        images: cat === "devices" ? form.images : [],
         price: parseOptFloat(form.price),
         purchase_date: parseDateToISO(form.purchase_date, settings.dateFormat),
         driver_type: (form.driver_type || null) as DriverType | null,
@@ -879,7 +935,7 @@ export function DeviceFormDialog({
             ? form.room_correction.trim() || null
             : null,
         created_at: device?.created_at ?? new Date().toISOString(),
-              updated_at: device?.updated_at ?? "",
+        updated_at: device?.updated_at ?? "",
       };
 
       const stored = await saveDevice(saved);
@@ -1049,127 +1105,127 @@ export function DeviceFormDialog({
         {/* Web fetch (headphones only — squig.link indexes measurements) */}
         {cat === "headphones" && (
           <FormSection title={t("form.webFetch")}>
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              className={btnSecondary}
-              onClick={() => void handleFetchSpecs()}
-              disabled={
-                fetchState.status === "fetching" ||
-                !form.brand.trim() ||
-                !form.model.trim()
-              }
-            >
-              <CloudDownload size={14} />
-              {fetchState.status === "fetching"
-                ? t("form.fetching")
-                : t("form.fetchSpecs")}
-            </button>
-            <p className="text-xs text-tm-gray">
-              {t("form.fetchHint", {
-                target:
-                  form.brand.trim() && form.model.trim()
-                    ? `“${form.brand.trim()} ${form.model.trim()}”`
-                    : t("form.thisDevice"),
-              })}
-            </p>
-          </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                className={btnSecondary}
+                onClick={() => void handleFetchSpecs()}
+                disabled={
+                  fetchState.status === "fetching" ||
+                  !form.brand.trim() ||
+                  !form.model.trim()
+                }
+              >
+                <CloudDownload size={14} />
+                {fetchState.status === "fetching"
+                  ? t("form.fetching")
+                  : t("form.fetchSpecs")}
+              </button>
+              <p className="text-xs text-tm-gray">
+                {t("form.fetchHint", {
+                  target:
+                    form.brand.trim() && form.model.trim()
+                      ? `“${form.brand.trim()} ${form.model.trim()}”`
+                      : t("form.thisDevice"),
+                })}
+              </p>
+            </div>
 
-          {fetchState.status === "fetching" && (
-            <p className="mt-3 animate-pulse text-sm text-tm-cyan">
-              {t("form.fetchSearching")}
-            </p>
-          )}
+            {fetchState.status === "fetching" && (
+              <p className="mt-3 animate-pulse text-sm text-tm-cyan">
+                {t("form.fetchSearching")}
+              </p>
+            )}
 
-          {fetchState.status === "done" && (
-            <div className="mt-3 space-y-3">
-              {fetchState.result.match ? (
-                <p className="text-sm text-tm-fg">
-                  <span className="text-tm-purple">{t("form.match")}</span>{" "}
-                  {fetchState.result.match.brand}{" "}
-                  {fetchState.result.match.model}
-                  {fetchState.result.match.price != null && (
+            {fetchState.status === "done" && (
+              <div className="mt-3 space-y-3">
+                {fetchState.result.match ? (
+                  <p className="text-sm text-tm-fg">
+                    <span className="text-tm-purple">{t("form.match")}</span>{" "}
+                    {fetchState.result.match.brand}{" "}
+                    {fetchState.result.match.model}
+                    {fetchState.result.match.price != null && (
+                      <span className="text-tm-gray">
+                        {" "}
+                        {t("form.matchPrice", {
+                          price: fetchState.result.match.price,
+                        })}
+                      </span>
+                    )}{" "}
                     <span className="text-tm-gray">
-                      {" "}
-                      {t("form.matchPrice", {
-                        price: fetchState.result.match.price,
+                      {t("form.matchSite", {
+                        site: fetchState.result.match.site,
                       })}
                     </span>
-                  )}{" "}
-                  <span className="text-tm-gray">
-                    {t("form.matchSite", {
-                      site: fetchState.result.match.site,
-                    })}
-                  </span>
-                </p>
-              ) : (
-                <p className="text-sm text-tm-gray">{t("form.noMatch")}</p>
-              )}
-
-              {fetchState.result.frCurve &&
-                fetchState.result.frCurve.length >= 2 && (
-                  <div className="max-w-md overflow-hidden">
-                    <FrPreview curve={fetchState.result.frCurve} />
-                    <p className="mt-1 text-xs text-tm-gray">
-                      {t("form.measurementPoints", {
-                        count: fetchState.result.frCurve.length,
-                        source: fetchState.result.frSource
-                          ? ` — ${fetchState.result.frSource}`
-                          : "",
-                      })}
-                    </p>
-                  </div>
+                  </p>
+                ) : (
+                  <p className="text-sm text-tm-gray">{t("form.noMatch")}</p>
                 )}
 
-              <div className="flex flex-wrap gap-2 text-xs">
-                {fetchState.result.driverType && (
-                  <SpecChip
-                    label={t("fields.driver")}
-                    value={fetchState.result.driverType}
-                  />
+                {fetchState.result.frCurve &&
+                  fetchState.result.frCurve.length >= 2 && (
+                    <div className="max-w-md overflow-hidden">
+                      <FrPreview curve={fetchState.result.frCurve} />
+                      <p className="mt-1 text-xs text-tm-gray">
+                        {t("form.measurementPoints", {
+                          count: fetchState.result.frCurve.length,
+                          source: fetchState.result.frSource
+                            ? ` — ${fetchState.result.frSource}`
+                            : "",
+                        })}
+                      </p>
+                    </div>
+                  )}
+
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {fetchState.result.driverType && (
+                    <SpecChip
+                      label={t("fields.driver")}
+                      value={fetchState.result.driverType}
+                    />
+                  )}
+                  {fetchState.result.impedanceOhms != null && (
+                    <SpecChip
+                      label={t("fields.impedance")}
+                      value={`${fetchState.result.impedanceOhms} Ω`}
+                    />
+                  )}
+                  {fetchState.result.sensitivityDb != null && (
+                    <SpecChip
+                      label={t("fields.sensitivity")}
+                      value={`${fetchState.result.sensitivityDb} dB`}
+                    />
+                  )}
+                  {fetchState.result.imageUrl && (
+                    <SpecChip
+                      label={t("form.image")}
+                      value={t("form.imageFound")}
+                    />
+                  )}
+                  {fetchState.result.match?.price != null && (
+                    <SpecChip
+                      label={t("fields.price")}
+                      value={String(fetchState.result.match.price)}
+                    />
+                  )}
+                </div>
+
+                {fetchState.result.notes.length > 0 && (
+                  <ul className="space-y-1 text-xs text-tm-gray">
+                    {fetchState.result.notes.map((n, i) => (
+                      <li key={i}>· {localizeNote(n)}</li>
+                    ))}
+                  </ul>
                 )}
-                {fetchState.result.impedanceOhms != null && (
-                  <SpecChip
-                    label={t("fields.impedance")}
-                    value={`${fetchState.result.impedanceOhms} Ω`}
-                  />
-                )}
-                {fetchState.result.sensitivityDb != null && (
-                  <SpecChip
-                    label={t("fields.sensitivity")}
-                    value={`${fetchState.result.sensitivityDb} dB`}
-                  />
-                )}
-                {fetchState.result.imageUrl && (
-                  <SpecChip
-                    label={t("form.image")}
-                    value={t("form.imageFound")}
-                  />
-                )}
-                {fetchState.result.match?.price != null && (
-                  <SpecChip
-                    label={t("fields.price")}
-                    value={String(fetchState.result.match.price)}
-                  />
-                )}
+
+                <button
+                  className={btnPrimary}
+                  onClick={() => void handleApplyFetch()}
+                  disabled={fetchState.applied}
+                >
+                  {fetchState.applied ? t("form.applied") : t("form.apply")}
+                </button>
               </div>
-
-              {fetchState.result.notes.length > 0 && (
-                <ul className="space-y-1 text-xs text-tm-gray">
-                  {fetchState.result.notes.map((n, i) => (
-                    <li key={i}>· {localizeNote(n)}</li>
-                  ))}
-                </ul>
-              )}
-
-              <button
-                className={btnPrimary}
-                onClick={() => void handleApplyFetch()}
-                disabled={fetchState.applied}
-              >
-                {fetchState.applied ? t("form.applied") : t("form.apply")}
-              </button>
-            </div>
-          )}
+            )}
           </FormSection>
         )}
 
@@ -1177,119 +1233,122 @@ export function DeviceFormDialog({
         <FormSection title={t("detail.specs")}>
           {cat === "headphones" ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <Field label={t("form.impedance")} error={errors.impedance_ohms}>
-              <input
-                className={inputCls}
-                type="number"
-                min="0"
-                step="1"
-                value={form.impedance_ohms}
-                onChange={(e) => set("impedance_ohms", e.target.value)}
-                placeholder="300"
-              />
-            </Field>
-            <Field label={t("form.sensitivity")} error={errors.sensitivity_db}>
-              <input
-                className={inputCls}
-                type="number"
-                step="0.1"
-                value={form.sensitivity_db}
-                onChange={(e) => set("sensitivity_db", e.target.value)}
-                placeholder="104"
-              />
-            </Field>
-            <Field label={t("fields.driveDifficulty")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.drive_difficulty}
-                onChange={(e) =>
-                  set(
-                    "drive_difficulty",
-                    e.target.value as DriveDifficulty | "",
-                  )
-                }
+              <Field label={t("form.impedance")} error={errors.impedance_ohms}>
+                <input
+                  className={inputCls}
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.impedance_ohms}
+                  onChange={(e) => set("impedance_ohms", e.target.value)}
+                  placeholder="300"
+                />
+              </Field>
+              <Field
+                label={t("form.sensitivity")}
+                error={errors.sensitivity_db}
               >
-                <option value="">{t("form.unknown")}</option>
-                {DRIVE_DIFFICULTIES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("form.driverType")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.driver_type}
-                onChange={(e) =>
-                  set("driver_type", e.target.value as DriverType | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {DRIVER_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("form.connector")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.connector_type}
-                onChange={(e) =>
-                  set("connector_type", e.target.value as ConnectorType | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {CONNECTOR_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            {purchaseDateField}
-            {priceField}
-            <Field
-              label={t("fields.tubeAmp")}
-              className="col-span-2 sm:col-span-3"
-            >
-              <div className="flex flex-wrap items-center gap-4">
+                <input
+                  className={inputCls}
+                  type="number"
+                  step="0.1"
+                  value={form.sensitivity_db}
+                  onChange={(e) => set("sensitivity_db", e.target.value)}
+                  placeholder="104"
+                />
+              </Field>
+              <Field label={t("fields.driveDifficulty")}>
                 <select
-                  className={selectCls}
-                  value={form.tube_amp_suitable}
+                  className={cls(selectCls, "w-full")}
+                  value={form.drive_difficulty}
                   onChange={(e) =>
                     set(
-                      "tube_amp_suitable",
-                      e.target.value as TubeBadgeValue | "",
+                      "drive_difficulty",
+                      e.target.value as DriveDifficulty | "",
                     )
                   }
                 >
-                  <option value="">{t("form.tubeAuto")}</option>
-                  {TUBE_BADGES.map((b) => (
-                    <option key={b} value={b}>
-                      {tubeBadgeLabel(b, (k) => t(k))}
+                  <option value="">{t("form.unknown")}</option>
+                  {DRIVE_DIFFICULTIES.map((v) => (
+                    <option key={v} value={v}>
+                      {enumLabel(v, t)}
                     </option>
                   ))}
                 </select>
-                {previewBadge && form.tube_amp_suitable === "" && (
-                  <div className="flex items-center gap-2 text-xs text-tm-gray">
-                    <span>{t("form.ruleResult")}</span>
-                    <Tip label={t("fields.tubeAmp")}>
-                      <TubeBadge
-                        badge={previewBadge}
-                        size="sm"
-                        tooltip={null}
-                      />
-                    </Tip>
-                  </div>
-                )}
-              </div>
-              <p className="mt-2 text-xs text-tm-gray">
-                {describeTubeRule((k) => t(k))}
-              </p>
-            </Field>
+              </Field>
+              <Field label={t("form.driverType")}>
+                <select
+                  className={cls(selectCls, "w-full")}
+                  value={form.driver_type}
+                  onChange={(e) =>
+                    set("driver_type", e.target.value as DriverType | "")
+                  }
+                >
+                  <option value="">{t("form.unknown")}</option>
+                  {DRIVER_TYPES.map((v) => (
+                    <option key={v} value={v}>
+                      {enumLabel(v, t)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t("form.connector")}>
+                <select
+                  className={cls(selectCls, "w-full")}
+                  value={form.connector_type}
+                  onChange={(e) =>
+                    set("connector_type", e.target.value as ConnectorType | "")
+                  }
+                >
+                  <option value="">{t("form.unknown")}</option>
+                  {CONNECTOR_TYPES.map((v) => (
+                    <option key={v} value={v}>
+                      {enumLabel(v, t)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              {purchaseDateField}
+              {priceField}
+              <Field
+                label={t("fields.tubeAmp")}
+                className="col-span-2 sm:col-span-3"
+              >
+                <div className="flex flex-wrap items-center gap-4">
+                  <select
+                    className={selectCls}
+                    value={form.tube_amp_suitable}
+                    onChange={(e) =>
+                      set(
+                        "tube_amp_suitable",
+                        e.target.value as TubeBadgeValue | "",
+                      )
+                    }
+                  >
+                    <option value="">{t("form.tubeAuto")}</option>
+                    {TUBE_BADGES.map((b) => (
+                      <option key={b} value={b}>
+                        {tubeBadgeLabel(b, (k) => t(k))}
+                      </option>
+                    ))}
+                  </select>
+                  {previewBadge && form.tube_amp_suitable === "" && (
+                    <div className="flex items-center gap-2 text-xs text-tm-gray">
+                      <span>{t("form.ruleResult")}</span>
+                      <Tip label={t("fields.tubeAmp")}>
+                        <TubeBadge
+                          badge={previewBadge}
+                          size="sm"
+                          tooltip={null}
+                        />
+                      </Tip>
+                    </div>
+                  )}
+                </div>
+                <p className="mt-2 text-xs text-tm-gray">
+                  {describeTubeRule((k) => t(k))}
+                </p>
+              </Field>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -1521,96 +1580,101 @@ export function DeviceFormDialog({
         {/* Sound (headphones only) */}
         {cat === "headphones" && (
           <FormSection title={t("detail.theSound")}>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <Field label={t("fields.soundSignature")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.sound_signature}
-                onChange={(e) =>
-                  set("sound_signature", e.target.value as SoundSignature | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {SOUND_SIGNATURES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field
-              label={t("form.soundstage")}
-              error={errors.soundstage_rating}
-            >
-              <DotRating
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <Field label={t("fields.soundSignature")}>
+                <select
+                  className={cls(selectCls, "w-full")}
+                  value={form.sound_signature}
+                  onChange={(e) =>
+                    set(
+                      "sound_signature",
+                      e.target.value as SoundSignature | "",
+                    )
+                  }
+                >
+                  <option value="">{t("form.unknown")}</option>
+                  {SOUND_SIGNATURES.map((v) => (
+                    <option key={v} value={v}>
+                      {enumLabel(v, t)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field
                 label={t("form.soundstage")}
-                value={
-                  form.soundstage_rating === ""
-                    ? null
-                    : Number(form.soundstage_rating)
-                }
-                onChange={(v) =>
-                  set("soundstage_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
-            <Field label={t("form.imaging")} error={errors.imaging_rating}>
-              <DotRating
-                label={t("form.imaging")}
-                value={
-                  form.imaging_rating === ""
-                    ? null
-                    : Number(form.imaging_rating)
-                }
-                onChange={(v) =>
-                  set("imaging_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
-            <Field
-              label={t("form.detailRetrieval")}
-              error={errors.detail_retrieval_rating}
-            >
-              <DotRating
+                error={errors.soundstage_rating}
+              >
+                <DotRating
+                  label={t("form.soundstage")}
+                  value={
+                    form.soundstage_rating === ""
+                      ? null
+                      : Number(form.soundstage_rating)
+                  }
+                  onChange={(v) =>
+                    set("soundstage_rating", v == null ? "" : String(v))
+                  }
+                />
+              </Field>
+              <Field label={t("form.imaging")} error={errors.imaging_rating}>
+                <DotRating
+                  label={t("form.imaging")}
+                  value={
+                    form.imaging_rating === ""
+                      ? null
+                      : Number(form.imaging_rating)
+                  }
+                  onChange={(v) =>
+                    set("imaging_rating", v == null ? "" : String(v))
+                  }
+                />
+              </Field>
+              <Field
                 label={t("form.detailRetrieval")}
-                value={
-                  form.detail_retrieval_rating === ""
-                    ? null
-                    : Number(form.detail_retrieval_rating)
-                }
-                onChange={(v) =>
-                  set("detail_retrieval_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
-            <Field label={t("form.timbre")} error={errors.timbre_rating}>
-              <DotRating
-                label={t("form.timbre")}
-                value={
-                  form.timbre_rating === "" ? null : Number(form.timbre_rating)
-                }
-                onChange={(v) =>
-                  set("timbre_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
-            <Field
-              label={t("form.tonalBalance")}
-              error={errors.tonal_balance_rating}
-            >
-              <DotRating
+                error={errors.detail_retrieval_rating}
+              >
+                <DotRating
+                  label={t("form.detailRetrieval")}
+                  value={
+                    form.detail_retrieval_rating === ""
+                      ? null
+                      : Number(form.detail_retrieval_rating)
+                  }
+                  onChange={(v) =>
+                    set("detail_retrieval_rating", v == null ? "" : String(v))
+                  }
+                />
+              </Field>
+              <Field label={t("form.timbre")} error={errors.timbre_rating}>
+                <DotRating
+                  label={t("form.timbre")}
+                  value={
+                    form.timbre_rating === ""
+                      ? null
+                      : Number(form.timbre_rating)
+                  }
+                  onChange={(v) =>
+                    set("timbre_rating", v == null ? "" : String(v))
+                  }
+                />
+              </Field>
+              <Field
                 label={t("form.tonalBalance")}
-                value={
-                  form.tonal_balance_rating === ""
-                    ? null
-                    : Number(form.tonal_balance_rating)
-                }
-                onChange={(v) =>
-                  set("tonal_balance_rating", v == null ? "" : String(v))
-                }
-              />
-            </Field>
-          </div>
+                error={errors.tonal_balance_rating}
+              >
+                <DotRating
+                  label={t("form.tonalBalance")}
+                  value={
+                    form.tonal_balance_rating === ""
+                      ? null
+                      : Number(form.tonal_balance_rating)
+                  }
+                  onChange={(v) =>
+                    set("tonal_balance_rating", v == null ? "" : String(v))
+                  }
+                />
+              </Field>
+            </div>
           </FormSection>
         )}
 
@@ -1626,7 +1690,8 @@ export function DeviceFormDialog({
 
         {/* Images */}
         <FormSection title={t("form.images")}>
-          <div className="space-y-4">
+          {cat === "headphones" ? (
+            <div className="space-y-4">
             <Field label={t("form.moodImage")}>
               <div className="flex items-start gap-3">
                 <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
@@ -1725,7 +1790,91 @@ export function DeviceFormDialog({
                 </div>
               </div>
             </Field>
-          </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs text-tm-gray">
+                {t("form.firstImageHint")}
+              </p>
+              {form.images.length > 0 && (
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
+                  {form.images.map((rel, i) => (
+                    <div
+                      key={rel}
+                      className="group relative overflow-hidden rounded border border-tm-dark"
+                    >
+                      <MediaImage
+                        relPath={rel}
+                        className="aspect-video w-full"
+                        placeholderIcon={24}
+                      />
+                      {i === 0 && (
+                        <span className="absolute left-1.5 top-1.5 rounded bg-black/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-white">
+                          {t("form.coverTag")}
+                        </span>
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-black/50 p-1 opacity-0 transition group-hover:opacity-100">
+                        <div className="flex gap-1">
+                          <button
+                            className="rounded p-1 text-white transition hover:bg-white/20 disabled:opacity-30"
+                            disabled={i === 0}
+                            onClick={() => handleMoveGalleryImage(i, -1)}
+                            aria-label={t("form.moveLeft")}
+                            title={t("form.moveLeft")}
+                          >
+                            <ChevronLeft size={14} />
+                          </button>
+                          <button
+                            className="rounded p-1 text-white transition hover:bg-white/20 disabled:opacity-30"
+                            disabled={i === form.images.length - 1}
+                            onClick={() => handleMoveGalleryImage(i, 1)}
+                            aria-label={t("form.moveRight")}
+                            title={t("form.moveRight")}
+                          >
+                            <ChevronRight size={14} />
+                          </button>
+                        </div>
+                        <button
+                          className="rounded p-1 text-white transition hover:bg-red-500/60"
+                          onClick={() => handleRemoveGalleryImage(i)}
+                          aria-label={t("form.removeImage")}
+                          title={t("form.removeImage")}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  className={btnSecondary}
+                  onClick={() => void handleAddGalleryImage()}
+                >
+                  <Plus size={14} />
+                  {t("form.addImage")}
+                </button>
+                <input
+                  type="url"
+                  value={galleryUrl}
+                  onChange={(e) => setGalleryUrl(e.target.value)}
+                  placeholder={t("form.imageUrlPlaceholder")}
+                  className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                />
+                <button
+                  className={btnSecondary}
+                  onClick={() => void handleDownloadGalleryImage()}
+                  disabled={galleryDownloading || !galleryUrl.trim()}
+                >
+                  <CloudDownload size={14} />
+                  {galleryDownloading
+                    ? t("form.downloading")
+                    : t("form.downloadImage")}
+                </button>
+              </div>
+            </div>
+          )}
         </FormSection>
 
         {/* Links */}
@@ -1758,199 +1907,201 @@ export function DeviceFormDialog({
         {/* Frequency response (headphones only) */}
         {cat === "headphones" && (
           <FormSection title={t("detail.fr")}>
-          <Field label={t("form.frGraph")}>
-            <div className="flex items-start gap-3">
-              <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-                <MediaImage
-                  relPath={form.fr_graph_path}
-                  className="aspect-video w-full bg-tm-darker object-contain"
-                  placeholderIcon={28}
-                />
-              </div>
-              <div className="flex flex-col items-start gap-2 pt-1">
-                <button
-                  className={btnSecondary}
-                  onClick={() => void handlePickImage("fr")}
-                >
-                  <FolderOpen size={14} />
-                  {form.fr_graph_path
-                    ? t("form.replaceGraph")
-                    : t("form.pickGraph")}
-                </button>
-                {pendingFr && !form.fr_graph_path && (
+            <Field label={t("form.frGraph")}>
+              <div className="flex items-start gap-3">
+                <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                  <MediaImage
+                    relPath={form.fr_graph_path}
+                    className="aspect-video w-full bg-tm-darker object-contain"
+                    placeholderIcon={28}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-2 pt-1">
                   <button
                     className={btnSecondary}
-                    onClick={() => void handleUseFetchedFr()}
+                    onClick={() => void handlePickImage("fr")}
                   >
-                    <AudioLines size={14} />
-                    {t("form.useFetchedCurve", {
-                      count: pendingFr.curve.length,
-                    })}
+                    <FolderOpen size={14} />
+                    {form.fr_graph_path
+                      ? t("form.replaceGraph")
+                      : t("form.pickGraph")}
                   </button>
-                )}
-                {form.fr_graph_path && (
-                  <button
-                    className="text-xs text-tm-red hover:underline"
-                    onClick={() => handleRemoveImage("fr")}
-                  >
-                    {t("form.removeGraph")}
-                  </button>
-                )}
+                  {pendingFr && !form.fr_graph_path && (
+                    <button
+                      className={btnSecondary}
+                      onClick={() => void handleUseFetchedFr()}
+                    >
+                      <AudioLines size={14} />
+                      {t("form.useFetchedCurve", {
+                        count: pendingFr.curve.length,
+                      })}
+                    </button>
+                  )}
+                  {form.fr_graph_path && (
+                    <button
+                      className="text-xs text-tm-red hover:underline"
+                      onClick={() => handleRemoveImage("fr")}
+                    >
+                      {t("form.removeGraph")}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          </Field>
+            </Field>
           </FormSection>
         )}
 
         {/* PEQ (headphones only) */}
         {cat === "headphones" && (
           <FormSection title={t("detail.peq")}>
-          <div className="space-y-3">
-            {form.peq.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-3 rounded border border-tm-dark bg-tm-darker p-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm">
-                    {t("form.peqLoaded", { count: form.peq.length })}
-                  </p>
-                  {form.peq_source && (
-                    <p
-                      className="truncate text-xs text-tm-gray"
-                      title={form.peq_source}
-                    >
-                      {t("detail.source", { source: form.peq_source })}
+            <div className="space-y-3">
+              {form.peq.length > 0 ? (
+                <div className="flex flex-wrap items-center gap-3 rounded border border-tm-dark bg-tm-darker p-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm">
+                      {t("form.peqLoaded", { count: form.peq.length })}
                     </p>
-                  )}
-                  {peqNote && (
-                    <p className="mt-0.5 text-xs text-tm-yellow">{peqNote}</p>
-                  )}
-                </div>
-                <button
-                  className="text-xs text-tm-red hover:underline"
-                  onClick={clearPeq}
-                >
-                  {t("form.clearPeq")}
-                </button>
-              </div>
-            ) : (
-              !importPending && (
-                <p className="text-sm text-tm-gray">{t("form.noPeq")}</p>
-              )
-            )}
-
-            {opraCheck.status === "idle" && (
-              <p className="text-xs text-tm-gray">{t("form.opraIdle")}</p>
-            )}
-            {opraCheck.status === "checking" && (
-              <p className="animate-pulse text-sm text-tm-cyan">
-                {t("form.opraChecking")}
-              </p>
-            )}
-            {opraCheck.status === "done" && opraCheck.result && (
-              <>
-                {opraCheck.result.candidates.length > 0 ? (
-                  <div className="space-y-2">
-                    <p className="text-xs text-tm-gray">
-                      {t("form.opraFound")}
-                    </p>
-                    {opraCheck.result.candidates.map((c) => (
-                      <div
-                        key={`${c.vendor}/${c.name}`}
-                        className="rounded border border-tm-dark p-3"
+                    {form.peq_source && (
+                      <p
+                        className="truncate text-xs text-tm-gray"
+                        title={form.peq_source}
                       >
-                        <p className="text-sm">
-                          <strong>
-                            {c.vendor} {c.name}
-                          </strong>{" "}
-                          <span className="text-xs text-tm-gray">
-                            {c.subtype.replace(/_/g, " ")}
-                          </span>
-                        </p>
-                        <div className="mt-2 space-y-1.5">
-                          {c.profiles.map((p) => (
-                            <div
-                              key={p.id}
-                              className="flex flex-wrap items-center gap-2"
-                            >
-                              <button
-                                className={btnSecondary}
-                                onClick={() => applyOpraProfile(p)}
-                              >
-                                {p.author} — {p.details || p.id}
-                                {appliedProfileId === p.id
-                                  ? ` ${t("form.appliedTag")}`
-                                  : ""}
-                              </button>
-                              <span className="text-xs text-tm-gray">
-                                {t("common.bands", { count: p.bands.length })}
-                                {p.overallGainDb !== 0 &&
-                                  ` · ${t("form.opraOverall", {
-                                    gain: `${p.overallGainDb > 0 ? "+" : ""}${p.overallGainDb}`,
-                                  })}`}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                    {opraCheck.result.note && (
-                      <p className="text-xs text-tm-yellow">
-                        {localizeNote(opraCheck.result.note)}
+                        {t("detail.source", { source: form.peq_source })}
                       </p>
+                    )}
+                    {peqNote && (
+                      <p className="mt-0.5 text-xs text-tm-yellow">{peqNote}</p>
                     )}
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    {opraCheck.result.note ? (
-                      <p className="text-xs text-tm-yellow">
-                        {localizeNote(opraCheck.result.note)}
-                      </p>
-                    ) : (
+                  <button
+                    className="text-xs text-tm-red hover:underline"
+                    onClick={clearPeq}
+                  >
+                    {t("form.clearPeq")}
+                  </button>
+                </div>
+              ) : (
+                !importPending && (
+                  <p className="text-sm text-tm-gray">{t("form.noPeq")}</p>
+                )
+              )}
+
+              {opraCheck.status === "idle" && (
+                <p className="text-xs text-tm-gray">{t("form.opraIdle")}</p>
+              )}
+              {opraCheck.status === "checking" && (
+                <p className="animate-pulse text-sm text-tm-cyan">
+                  {t("form.opraChecking")}
+                </p>
+              )}
+              {opraCheck.status === "done" && opraCheck.result && (
+                <>
+                  {opraCheck.result.candidates.length > 0 ? (
+                    <div className="space-y-2">
                       <p className="text-xs text-tm-gray">
-                        {t("form.opraNone")}
+                        {t("form.opraFound")}
                       </p>
-                    )}
+                      {opraCheck.result.candidates.map((c) => (
+                        <div
+                          key={`${c.vendor}/${c.name}`}
+                          className="rounded border border-tm-dark p-3"
+                        >
+                          <p className="text-sm">
+                            <strong>
+                              {c.vendor} {c.name}
+                            </strong>{" "}
+                            <span className="text-xs text-tm-gray">
+                              {c.subtype.replace(/_/g, " ")}
+                            </span>
+                          </p>
+                          <div className="mt-2 space-y-1.5">
+                            {c.profiles.map((p) => (
+                              <div
+                                key={p.id}
+                                className="flex flex-wrap items-center gap-2"
+                              >
+                                <button
+                                  className={btnSecondary}
+                                  onClick={() => applyOpraProfile(p)}
+                                >
+                                  {p.author} — {p.details || p.id}
+                                  {appliedProfileId === p.id
+                                    ? ` ${t("form.appliedTag")}`
+                                    : ""}
+                                </button>
+                                <span className="text-xs text-tm-gray">
+                                  {t("common.bands", { count: p.bands.length })}
+                                  {p.overallGainDb !== 0 &&
+                                    ` · ${t("form.opraOverall", {
+                                      gain: `${p.overallGainDb > 0 ? "+" : ""}${p.overallGainDb}`,
+                                    })}`}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      {opraCheck.result.note && (
+                        <p className="text-xs text-tm-yellow">
+                          {localizeNote(opraCheck.result.note)}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {opraCheck.result.note ? (
+                        <p className="text-xs text-tm-yellow">
+                          {localizeNote(opraCheck.result.note)}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-tm-gray">
+                          {t("form.opraNone")}
+                        </p>
+                      )}
+                      <button
+                        className={btnSecondary}
+                        onClick={() => void handlePeqImport()}
+                      >
+                        <FileUp size={14} />
+                        {t("form.importPeq")}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {importError && (
+                <p className="text-xs text-tm-red">
+                  {localizeNote(importError)}
+                </p>
+              )}
+              {importPending && (
+                <div className="rounded border border-tm-border bg-tm-dark p-3 text-sm">
+                  <p>
+                    {t("form.importReady", {
+                      count: importPending.bands.length,
+                      file: importPending.fileName,
+                    })}
+                  </p>
+                  {importPending.notes.map((n, i) => (
+                    <p key={i} className="mt-1 text-xs text-tm-yellow">
+                      {n}
+                    </p>
+                  ))}
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button className={btnPrimary} onClick={applyImportPending}>
+                      {t("form.replaceBands")}
+                    </button>
                     <button
                       className={btnSecondary}
-                      onClick={() => void handlePeqImport()}
+                      onClick={() => setImportPending(null)}
                     >
-                      <FileUp size={14} />
-                      {t("form.importPeq")}
+                      {t("common.cancel")}
                     </button>
                   </div>
-                )}
-              </>
-            )}
-
-            {importError && (
-              <p className="text-xs text-tm-red">{localizeNote(importError)}</p>
-            )}
-            {importPending && (
-              <div className="rounded border border-tm-border bg-tm-dark p-3 text-sm">
-                <p>
-                  {t("form.importReady", {
-                    count: importPending.bands.length,
-                    file: importPending.fileName,
-                  })}
-                </p>
-                {importPending.notes.map((n, i) => (
-                  <p key={i} className="mt-1 text-xs text-tm-yellow">
-                    {n}
-                  </p>
-                ))}
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <button className={btnPrimary} onClick={applyImportPending}>
-                    {t("form.replaceBands")}
-                  </button>
-                  <button
-                    className={btnSecondary}
-                    onClick={() => setImportPending(null)}
-                  >
-                    {t("common.cancel")}
-                  </button>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
           </FormSection>
         )}
 

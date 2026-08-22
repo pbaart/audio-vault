@@ -34,9 +34,11 @@ Device detail view:
 ## Features (Phase 1 / MVP)
 
 - **Two categories:** Headphones (incl. IEMs) and Devices (DAC, AMP,
-  Dongle DAC, DAC+AMP, BT Amp, AVR), each with its own collection page,
+  Dongle DAC, DAC+AMP, BT Amp, Tube Amp, Power Amp, Preamp, Streamer,
+  Phono Stage, Turntable, AVR), each with its own collection page,
   filters and spec fields (DAC chip, supported formats, Bluetooth
-  codecs, inputs/outputs, amplifier specs, AVR extras)
+  codecs, inputs/outputs, amplifier specs, AVR extras); devices carry a
+  multi-image product gallery (front/back/details, first image = cover)
 - Collection overview with grid, search, filters (type / driver / tube-amp
   compatibility) and sorting (name, added, modified, impedance, price)
 - **Overall star rating** with half-star support (0.5–5), shown in the

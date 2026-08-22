@@ -619,6 +619,16 @@ pub fn run() {
     kind: MigrationKind::Up,
   },
   Migration {
+    version: 18,
+    description: "add_device_images_column",
+    // Devices-category gallery: JSON string array of relative media
+    // paths (same convention as inputs/outputs). The first entry is the
+    // cover shown in collection cards and the detail hero. Headphones
+    // keep using image_path / mood_image_path and leave this empty.
+    sql: "ALTER TABLE devices ADD COLUMN images TEXT;",
+    kind: MigrationKind::Up,
+  },
+  Migration {
     version: 17,
     description: "make_type_nullable_for_devices_category",
     // Devices-category rows have no headphone type, so `type` must be

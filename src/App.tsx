@@ -176,6 +176,7 @@ export default function App() {
       // Clean up media files owned by this device (best effort).
       void removeMediaFile(d.image_path);
       void removeMediaFile(d.mood_image_path);
+      d.images.forEach((rel) => void removeMediaFile(rel));
       void removeMediaFile(d.fr_graph_path);
       setDeleteTarget(null);
       if (view.name === "device" && view.id === d.id) {

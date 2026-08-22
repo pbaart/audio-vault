@@ -15,7 +15,7 @@ const UPDATE_SQL =
   "category = ?, device_type = ?, dac_chip = ?, supported_formats = ?, " +
   "bluetooth_codecs = ?, inputs = ?, outputs = ?, output_power = ?, " +
   "snr_db = ?, thd_n = ?, load_min_ohms = ?, load_max_ohms = ?, " +
-  "channels = ?, hdmi = ?, room_correction = ?, " +
+  "channels = ?, hdmi = ?, room_correction = ?, images = ?, " +
   "updated_at = ? " +
   "WHERE id = ?";
 
@@ -29,8 +29,8 @@ const INSERT_SQL =
   "peq_settings, peq_source, custom_fields, category, device_type, dac_chip, " +
   "supported_formats, bluetooth_codecs, inputs, outputs, output_power, " +
   "snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, " +
-  "room_correction, updated_at) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "room_correction, images, updated_at) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -154,6 +154,7 @@ function rowToDevice(row: Row): Device {
     webshop_url: asString(row.webshop_url),
     image_path: asString(row.image_path),
     mood_image_path: asString(row.mood_image_path),
+    images: parseStringArray(row.images),
     price: asNum(row.price),
     purchase_date: asString(row.purchase_date),
     driver_type: asString(row.driver_type) as Device["driver_type"],
@@ -311,6 +312,7 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.webshop_url,
     device.image_path,
     device.mood_image_path,
+    JSON.stringify(device.images),
     device.price,
     device.purchase_date,
     device.driver_type,

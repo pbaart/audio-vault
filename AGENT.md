@@ -69,7 +69,7 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v17 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v18 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
@@ -117,7 +117,8 @@ CREATE TABLE IF NOT EXISTS devices (
   load_max_ohms INTEGER,
   channels TEXT,                          -- v16: AVR, e.g. "7.1(4)"
   hdmi TEXT,                              -- v16: AVR, e.g. "4 in / 1 out (eARC)"
-  room_correction TEXT                    -- v16: AVR, e.g. "Audyssey MultEQ"
+  room_correction TEXT,                  -- v16: AVR, e.g. "Audyssey MultEQ"
+  images TEXT                             -- v18: devices gallery, JSON string array (first = cover)
 );
 -- v17 rebuilds the table identically except `type` becomes nullable
 -- (devices-category rows have no headphone type).
@@ -185,7 +186,12 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    `TagInput` chip component (type + Enter adds, datalist suggestions,
    × removes) and AVR extras (channels, HDMI, room correction); spec
    groups hide per device type, and Web fetch, The Sound, FR and PEQ
-   sections are headphones-only (OPRA auto-check gated too).
+   sections are headphones-only (OPRA auto-check gated too). For
+   devices, the Images section is a gallery manager instead of the two
+   single-image fields: add via file picker or URL download, remove,
+   and ◀/▶ reorder (first image = cover used in cards and the detail
+   hero); removed/superseded files are cleaned up on save like the
+   headphone images.
    The FiiO DSP XML encoding used by the import parser: type
    0=PK/1=LSC/2=HSC, freq raw Hz, gain `(raw - 120) / 10` dB, Q
    `raw / 10`, `s` (shelf slope) ignored. Gain offset 120 is **confirmed**

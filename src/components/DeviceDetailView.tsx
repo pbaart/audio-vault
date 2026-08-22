@@ -46,13 +46,16 @@ export function DeviceDetailView({
   onDelete,
 }: DeviceDetailViewProps) {
   const { t } = useTranslation();
-  const [lightbox, setLightbox] = useState<null | "image" | "mood" | "fr">(
-    null,
-  );
-  const mainImage = device.mood_image_path ?? device.image_path;
-  const mainLightbox: "image" | "mood" = device.mood_image_path
-    ? "mood"
-    : "image";
+  const [lightbox, setLightbox] = useState<
+    | { kind: "image" }
+    | { kind: "mood" }
+    | { kind: "fr" }
+    | { kind: "gallery"; index: number }
+    | null
+  >(null);
+  // Devices use the gallery's first image as their cover.
+  const mainImage =
+    device.mood_image_path ?? device.image_path ?? device.images[0] ?? null;
   const showProductThumb = !!device.image_path && !!device.mood_image_path;
   const badge = deriveTubeBadge(device.impedance_ohms, device.driver_type);
 
@@ -91,7 +94,15 @@ export function DeviceDetailView({
             {mainImage ? (
               <button
                 className="group block w-full"
-                onClick={() => setLightbox(mainLightbox)}
+                onClick={() =>
+                  setLightbox(
+                    device.category === "devices"
+                      ? { kind: "gallery", index: 0 }
+                      : device.mood_image_path
+                        ? { kind: "mood" }
+                        : { kind: "image" },
+                  )
+                }
                 title={t("detail.zoom")}
               >
                 <MediaImage
@@ -198,7 +209,7 @@ export function DeviceDetailView({
             <div>
               <button
                 className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark transition hover:border-tm-accent/60"
-                onClick={() => setLightbox("image")}
+                onClick={() => setLightbox({ kind: "image" })}
                 title={t("detail.zoom")}
               >
                 <MediaImage
@@ -209,6 +220,25 @@ export function DeviceDetailView({
                   <ZoomIn size={28} className="text-white" />
                 </div>
               </button>
+            </div>
+          )}
+
+          {/* Devices: gallery strip under the identity card */}
+          {device.category === "devices" && device.images.length > 1 && (
+            <div className="grid grid-cols-3 gap-2">
+              {device.images.map((rel, i) => (
+                <button
+                  key={rel}
+                  className="group relative overflow-hidden rounded border border-tm-dark transition hover:border-tm-accent/60"
+                  onClick={() => setLightbox({ kind: "gallery", index: i })}
+                  title={t("detail.zoom")}
+                >
+                  <MediaImage relPath={rel} className="aspect-video w-full" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
+                    <ZoomIn size={18} className="text-white" />
+                  </div>
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -398,7 +428,7 @@ export function DeviceDetailView({
             <Section title={t("detail.fr")}>
               <button
                 className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark"
-                onClick={() => setLightbox("fr")}
+                onClick={() => setLightbox({ kind: "fr" })}
                 title={t("detail.zoom")}
               >
                 <MediaImage
@@ -435,26 +465,33 @@ export function DeviceDetailView({
         </div>
       </div>
 
-      {lightbox === "image" && (
+      {lightbox?.kind === "image" && (
         <Lightbox
           relPath={device.image_path}
           title={`${device.brand} ${device.model}`}
           onClose={() => setLightbox(null)}
         />
       )}
-      {lightbox === "mood" && (
+      {lightbox?.kind === "mood" && (
         <Lightbox
           relPath={device.mood_image_path}
           title={`${device.brand} ${device.model}`}
           onClose={() => setLightbox(null)}
         />
       )}
-      {lightbox === "fr" && (
+      {lightbox?.kind === "fr" && (
         <Lightbox
           relPath={device.fr_graph_path}
           title={t("detail.frTitle", {
             name: `${device.brand} ${device.model}`,
           })}
+          onClose={() => setLightbox(null)}
+        />
+      )}
+      {lightbox?.kind === "gallery" && (
+        <Lightbox
+          relPath={device.images[lightbox.index]}
+          title={`${device.brand} ${device.model}`}
           onClose={() => setLightbox(null)}
         />
       )}

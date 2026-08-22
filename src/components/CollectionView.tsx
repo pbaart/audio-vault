@@ -332,7 +332,7 @@ export function CollectionView({
               >
                 <div className="relative aspect-video">
                   <MediaImage
-                    relPath={d.mood_image_path ?? d.image_path}
+                    relPath={d.mood_image_path ?? d.image_path ?? d.images[0]}
                     className="h-full w-full"
                   />
                   {isHp && badge && (
@@ -488,7 +488,7 @@ export function CollectionView({
                       <div className="flex items-center gap-2.5">
                         <div className="h-8 w-8 shrink-0 overflow-hidden rounded border border-tm-dark bg-tm-darker">
                           <MediaImage
-                            relPath={d.image_path}
+                            relPath={d.image_path ?? d.images[0]}
                             className="h-full w-full"
                           />
                         </div>
