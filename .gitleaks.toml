@@ -1,0 +1,12 @@
+# Project-level gitleaks configuration.
+# pi-lens extends this file when scanning (its scoped config appends its own
+# allowlist entries, never removing these).
+
+[allowlist]
+description = "Build artifacts and vendored deps are gitignored and never committed; compiled binaries produce regex/entropy noise."
+paths = [
+    '''src-tauri/target/''',
+    '''node_modules/''',
+    '''dist/''',
+    '''.pi-lens/''',
+]
