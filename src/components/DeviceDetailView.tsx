@@ -23,10 +23,11 @@ import { PeqGraph } from "./PeqGraph";
 import { MediaImage } from "./MediaImage";
 import { TubeBadge } from "./TubeBadge";
 import { StarRating } from "./StarRating";
+import { DotRating } from "./DotRating";
 import { InfoTip } from "./InfoTip";
 import { Tip } from "./Tip";
 import { Lightbox } from "./Lightbox";
-import { btnPrimary, cls } from "../ui";
+import { btnPrimary } from "../ui";
 
 interface DeviceDetailViewProps {
   device: Device;
@@ -409,25 +410,6 @@ function EmptyHint({ text }: { text: string }) {
   return <p className="text-sm text-tm-gray">{text}</p>;
 }
 
-function SoundstageDots({ rating }: { rating: number | null }) {
-  if (rating == null) {
-    return <span className="text-sm text-tm-gray">—</span>;
-  }
-  return (
-    <span className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span
-          key={i}
-          className={cls(
-            "h-2.5 w-2.5 rounded-full",
-            i <= rating ? "bg-tm-accent" : "bg-tm-dark",
-          )}
-        />
-      ))}
-      <span className="ml-1 text-xs text-tm-gray">{rating}/5</span>
-    </span>
-  );
-}
 
 type SoundFieldKey =
   | "soundstage"
@@ -512,7 +494,11 @@ function SoundField({
         />
       </p>
       <div className="mt-1">
-        <SoundstageDots rating={rating} />
+{rating == null ? (
+  <span className="text-sm text-tm-gray">—</span>
+) : (
+  <DotRating value={rating} size={10} label={label} />
+)}
       </div>
     </div>
   );

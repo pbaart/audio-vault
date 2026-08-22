@@ -146,11 +146,11 @@ function rowToDevice(row: Row): Device {
       row.drive_difficulty,
     ) as Device["drive_difficulty"],
     sound_signature: asString(row.sound_signature) as Device["sound_signature"],
-    soundstage_rating: asInt(row.soundstage_rating),
-    imaging_rating: asInt(row.imaging_rating),
-    detail_retrieval_rating: asInt(row.detail_retrieval_rating),
-    timbre_rating: asInt(row.timbre_rating),
-    tonal_balance_rating: asInt(row.tonal_balance_rating),
+    soundstage_rating: ratingFromRow(row.soundstage_rating),
+    imaging_rating: ratingFromRow(row.imaging_rating),
+    detail_retrieval_rating: ratingFromRow(row.detail_retrieval_rating),
+    timbre_rating: ratingFromRow(row.timbre_rating),
+    tonal_balance_rating: ratingFromRow(row.tonal_balance_rating),
     overall_rating: ratingFromRow(row.overall_rating),
     listening_notes: asString(row.listening_notes),
     fr_graph_path: asString(row.fr_graph_path),
@@ -282,11 +282,21 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.tube_amp_suitable,
     device.drive_difficulty,
     device.sound_signature,
-    device.soundstage_rating,
-    device.imaging_rating,
-    device.detail_retrieval_rating,
-    device.timbre_rating,
-    device.tonal_balance_rating,
+    device.soundstage_rating == null
+      ? null
+      : Math.round(device.soundstage_rating * 2),
+    device.imaging_rating == null
+      ? null
+      : Math.round(device.imaging_rating * 2),
+    device.detail_retrieval_rating == null
+      ? null
+      : Math.round(device.detail_retrieval_rating * 2),
+    device.timbre_rating == null
+      ? null
+      : Math.round(device.timbre_rating * 2),
+    device.tonal_balance_rating == null
+      ? null
+      : Math.round(device.tonal_balance_rating * 2),
     device.overall_rating == null
       ? null
       : Math.round(device.overall_rating * 2),

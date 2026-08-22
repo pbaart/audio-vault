@@ -570,6 +570,16 @@ pub fn run() {
     description: "add_tonal_balance_rating_column",
     sql: "ALTER TABLE devices ADD COLUMN tonal_balance_rating INTEGER;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 14,
+    description: "double_sound_ratings_for_half_steps",
+    // Sound ratings now use the same 2x storage convention as
+    // overall_rating so half dots fit in INTEGER columns (1..=10 maps to
+    // 0.5..=5.0). Existing whole-number ratings are doubled in place;
+    // NULL * 2 stays NULL.
+    sql: "UPDATE devices SET soundstage_rating = soundstage_rating * 2, imaging_rating = imaging_rating * 2, detail_retrieval_rating = detail_retrieval_rating * 2, timbre_rating = timbre_rating * 2, tonal_balance_rating = tonal_balance_rating * 2;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

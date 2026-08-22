@@ -61,6 +61,7 @@ import { FrPreview } from "./FrPreview";
 import { MediaImage } from "./MediaImage";
 import { Modal } from "./Modal";
 import { StarRating } from "./StarRating";
+import { DotRating } from "./DotRating";
 import { TubeBadge } from "./TubeBadge";
 import { Tip } from "./Tip";
 import {
@@ -228,15 +229,20 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
     e.impedance_ohms = t("form.validation.impedanceInt");
   if (f.sensitivity_db !== "" && !Number.isFinite(Number(f.sensitivity_db)))
     e.sensitivity_db = t("form.validation.sensitivityNumber");
-  if (
-    f.soundstage_rating !== "" &&
-    !(
-      Number.isInteger(Number(f.soundstage_rating)) &&
-      Number(f.soundstage_rating) >= 1 &&
-      Number(f.soundstage_rating) <= 5
-    )
-  )
-    e.soundstage_rating = t("form.validation.soundstageRange");
+  const checkHalfRating = (v: string, key: string) => {
+    if (
+      v !== "" &&
+      !(
+        Number.isFinite(Number(v)) &&
+        Number(v) >= 0.5 &&
+        Number(v) <= 5 &&
+        Number(v) % 0.5 === 0
+      )
+    ) {
+      e[key] = t("form.validation.rangeHalf1to5");
+    }
+  };
+  checkHalfRating(f.soundstage_rating, "soundstage_rating");
   if (
     f.overall_rating !== "" &&
     !(
@@ -247,18 +253,10 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
     )
   )
     e.overall_rating = t("form.validation.ratingRange");
-  const checkRange1to5 = (v: string, key: string) => {
-    if (
-      v !== "" &&
-      !(Number.isInteger(Number(v)) && Number(v) >= 1 && Number(v) <= 5)
-    ) {
-      e[key] = t("form.validation.range1to5");
-    }
-  };
-  checkRange1to5(f.imaging_rating, "imaging_rating");
-  checkRange1to5(f.detail_retrieval_rating, "detail_retrieval_rating");
-  checkRange1to5(f.timbre_rating, "timbre_rating");
-  checkRange1to5(f.tonal_balance_rating, "tonal_balance_rating");
+  checkHalfRating(f.imaging_rating, "imaging_rating");
+  checkHalfRating(f.detail_retrieval_rating, "detail_retrieval_rating");
+  checkHalfRating(f.timbre_rating, "timbre_rating");
+  checkHalfRating(f.tonal_balance_rating, "tonal_balance_rating");
   if (
     f.manufacturer_url.trim() !== "" &&
     normalizeUrl(f.manufacturer_url) == null
@@ -1194,80 +1192,75 @@ export function DeviceFormDialog({
               label={t("form.soundstage")}
               error={errors.soundstage_rating}
             >
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.soundstage_rating}
-                onChange={(e) => set("soundstage_rating", e.target.value)}
-              >
-                <option value="">{t("form.unknown")}</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+                            <DotRating
+                label={t("form.soundstage")}
+                value={
+                  form.soundstage_rating === ""
+                    ? null
+                    : Number(form.soundstage_rating)
+                }
+                onChange={(v) =>
+                  set("soundstage_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
             <Field label={t("form.imaging")} error={errors.imaging_rating}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.imaging_rating}
-                onChange={(e) => set("imaging_rating", e.target.value)}
-              >
-                <option value="">{t("form.unknown")}</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+                            <DotRating
+                label={t("form.imaging")}
+                value={
+                  form.imaging_rating === ""
+                    ? null
+                    : Number(form.imaging_rating)
+                }
+                onChange={(v) =>
+                  set("imaging_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
             <Field
               label={t("form.detailRetrieval")}
               error={errors.detail_retrieval_rating}
             >
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.detail_retrieval_rating}
-                onChange={(e) => set("detail_retrieval_rating", e.target.value)}
-              >
-                <option value="">{t("form.unknown")}</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+                            <DotRating
+                label={t("form.detailRetrieval")}
+                value={
+                  form.detail_retrieval_rating === ""
+                    ? null
+                    : Number(form.detail_retrieval_rating)
+                }
+                onChange={(v) =>
+                  set("detail_retrieval_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
             <Field label={t("form.timbre")} error={errors.timbre_rating}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.timbre_rating}
-                onChange={(e) => set("timbre_rating", e.target.value)}
-              >
-                <option value="">{t("form.unknown")}</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+                            <DotRating
+                label={t("form.timbre")}
+                value={
+                  form.timbre_rating === ""
+                    ? null
+                    : Number(form.timbre_rating)
+                }
+                onChange={(v) =>
+                  set("timbre_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
             <Field
               label={t("form.tonalBalance")}
               error={errors.tonal_balance_rating}
             >
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.tonal_balance_rating}
-                onChange={(e) => set("tonal_balance_rating", e.target.value)}
-              >
-                <option value="">{t("form.unknown")}</option>
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
+                            <DotRating
+                label={t("form.tonalBalance")}
+                value={
+                  form.tonal_balance_rating === ""
+                    ? null
+                    : Number(form.tonal_balance_rating)
+                }
+                onChange={(v) =>
+                  set("tonal_balance_rating", v == null ? "" : String(v))
+                }
+              />
             </Field>
           </div>
         </FormSection>
