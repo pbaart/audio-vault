@@ -1,4 +1,4 @@
-import { Flame } from "lucide-react";
+import { Siren } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { TubeBadgeValue } from "../types";
 import { tubeBadgeLabel } from "../lib/tube";
@@ -50,7 +50,7 @@ export function TubeBadge({ badge, size = "md", dot = false }: TubeBadgeProps) {
         BADGE_STYLES[badge],
       )}
     >
-      <Flame size={size === "sm" ? 12 : 14} />
+      <Siren size={size === "sm" ? 12 : 14} />
       {tubeBadgeLabel(badge, (k) => t(k))}
     </span>
   );
