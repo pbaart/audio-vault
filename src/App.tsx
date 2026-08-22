@@ -233,9 +233,9 @@ export default function App() {
             {t("delete.confirm", {
               name: `${deleteTarget.brand} ${deleteTarget.model}`,
             })}
-            {(deleteTarget.image_path || deleteTarget.mood_image_path || deleteTarget.fr_graph_path) && (
-              <> {t("delete.mediaNote")}</>
-            )}{" "}
+            {(deleteTarget.image_path ||
+              deleteTarget.mood_image_path ||
+              deleteTarget.fr_graph_path) && <> {t("delete.mediaNote")}</>}{" "}
             {t("delete.unundoable")}
           </p>
         </Modal>

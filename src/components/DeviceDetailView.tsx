@@ -37,9 +37,13 @@ export function DeviceDetailView({
   onDelete,
 }: DeviceDetailViewProps) {
   const { t } = useTranslation();
-  const [lightbox, setLightbox] = useState<null | "image" | "mood" | "fr">(null);
+  const [lightbox, setLightbox] = useState<null | "image" | "mood" | "fr">(
+    null,
+  );
   const mainImage = device.mood_image_path ?? device.image_path;
-  const mainLightbox: "image" | "mood" = device.mood_image_path ? "mood" : "image";
+  const mainLightbox: "image" | "mood" = device.mood_image_path
+    ? "mood"
+    : "image";
   const showProductThumb = !!device.image_path && !!device.mood_image_path;
   const badge = deriveTubeBadge(device.impedance_ohms, device.driver_type);
 
