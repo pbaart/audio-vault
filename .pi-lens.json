@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "false-positives": {
+      "disable": [
+        "find-import-file-without-extension",
+        "no-typeof-undefined",
+        "no-console-except-error-js"
+      ]
+    },
+    "ts-design-preferences": {
+      "disable": [
+        "no-runtime-typeof",
+        "no-unknown-parameters",
+        "no-unsafe-dictionary-unknown",
+        "no-known-value-widening"
+      ]
+    }
+  }
+}

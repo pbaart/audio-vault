@@ -1,0 +1,21 @@
+# Typos config for Audio Vault.
+#
+# The locale files are intentionally multilingual (EN/DE/NL/FR), so the
+# English-only typos dictionary flags valid words there (appareil, Modell,
+# Collectie, …). Exclude them. Docs are excluded too (they quote UI strings
+# in all four languages).
+[files]
+extend-exclude = [
+  "src/locales/*.json",
+  "docs/",
+]
+
+# "BA" is the "Balanced Armature" driver-type abbreviation, not a typo.
+[default.extend-identifiers]
+BA = "BA"
+ba = "ba"
+
+# "ba" (as in "ba driver") is the Balanced Armature abbreviation in spec text,
+# not a typo.
+[default.extend-words]
+ba = "ba"
