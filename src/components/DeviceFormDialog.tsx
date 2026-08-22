@@ -1842,7 +1842,9 @@ export function DeviceFormDialog({
                   </div>
                 </div>
               </Field>
-              {form.images.length > 0 && (
+              <Field label={t("form.productImages")}>
+                <div className="space-y-3">
+                {form.images.length > 0 && (
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
                   {form.images.map((rel, i) => (
                     <div
@@ -1913,7 +1915,9 @@ export function DeviceFormDialog({
                     ? t("form.downloading")
                     : t("form.downloadImage")}
                 </button>
-              </div>
+                </div>
+                </div>
+              </Field>
             </div>
           )}
         </FormSection>
