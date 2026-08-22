@@ -42,7 +42,7 @@ export function StarRating({
       className={cls("flex items-center", className)}
       role={onChange ? "radiogroup" : "img"}
       aria-label={
-        value != null ? `${t("fields.rating")}: ${value}/5` : t("fields.rating")
+        value == null ? t("fields.rating") : `${t("fields.rating")}: ${value}/5`
       }
       onMouseLeave={() => setHover(null)}
     >
