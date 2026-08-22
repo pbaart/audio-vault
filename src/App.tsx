@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AudioLines, Headphones, Plus, Settings } from "lucide-react";
-import type { Device } from "./types";
+import { AudioLines, Cpu, Headphones, Settings } from "lucide-react";
+import type { Device, DeviceCategory } from "./types";
 import { deleteDevice, getDevice, listDevices } from "./lib/db";
 import { getAppPaths } from "./lib/paths";
 import i18n, { localizeNote } from "./lib/i18n";
@@ -16,7 +16,7 @@ import { Modal } from "./components/Modal";
 import { btnDanger, btnSecondary, cls } from "./ui";
 
 type View =
-  | { name: "collection" }
+  | { name: "collection"; category: DeviceCategory }
   | { name: "device"; id: string }
   | { name: "settings" };
 
@@ -31,6 +31,7 @@ function histState(): HistState {
   return (
     (window.history.state as HistState | null) ?? {
       name: "collection",
+      category: "headphones",
       idx: 0,
     }
   );
@@ -42,11 +43,12 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
   const [selected, setSelected] = useState<Device | null>(null);
-  const [view, setView] = useState<View>({ name: "collection" });
+  const [view, setView] = useState<View>({ name: "collection", category: "headphones" });
   const [formState, setFormState] = useState<{
     open: boolean;
     device: Device | null;
-  }>({ open: false, device: null });
+    category: DeviceCategory;
+  }>({ open: false, device: null, category: "headphones" });
   const [deleteTarget, setDeleteTarget] = useState<Device | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,7 +81,10 @@ export default function App() {
 
   // Tag the initial history entry so back/forward have a baseline.
   useEffect(() => {
-    window.history.replaceState({ name: "collection", idx: 0 }, "");
+    window.history.replaceState(
+      { name: "collection", category: "headphones", idx: 0 },
+      "",
+    );
   }, []);
 
   // Mouse back/forward (and Alt+Left/Right) navigate the app views.
@@ -87,10 +92,11 @@ export default function App() {
     function onPop(e: PopStateEvent) {
       const st = (e.state as HistState | null) ?? {
         name: "collection",
+        category: "headphones",
         idx: 0,
       };
       if (st.name === "collection") {
-        setView({ name: "collection" });
+        setView({ name: "collection", category: st.category });
         setSelected(null);
       } else if (st.name === "settings") {
         setView({ name: "settings" });
@@ -102,9 +108,12 @@ export default function App() {
             setView({ name: "device", id: st.id });
           } else {
             // Stale entry (device deleted) — drop it.
-            setView({ name: "collection" });
+            setView({ name: "collection", category: "headphones" });
             setSelected(null);
-            window.history.replaceState({ name: "collection", idx: 0 }, "");
+            window.history.replaceState(
+              { name: "collection", category: "headphones", idx: 0 },
+              "",
+            );
           }
         });
       }
@@ -133,15 +142,26 @@ export default function App() {
     }
   }
 
-  /** Return to the collection, popping any pushed history entries. */
-  function goCollection() {
+  /** Pop one history entry (back arrow, mouse back, delete flow). */
+  function goBack() {
+    if (histState().idx === 0) return;
+    window.history.back();
+  }
+
+  /** Navigate to a collection page, pushing a history entry. */
+  function openCollection(cat: DeviceCategory) {
     const cur = histState();
-    if (cur.idx === 0) return;
-    window.history.go(-cur.idx);
+    if (cur.name === "collection" && cur.category === cat) return;
+    setSelected(null);
+    setView({ name: "collection", category: cat });
+    window.history.pushState(
+      { name: "collection", category: cat, idx: cur.idx + 1 },
+      "",
+    );
   }
 
   function handleSaved(device: Device) {
-    setFormState({ open: false, device: null });
+    setFormState({ open: false, device: null, category: "headphones" });
     void refresh();
     if (view.name === "device" && view.id === device.id) {
       setSelected(device);
@@ -159,7 +179,7 @@ export default function App() {
       void removeMediaFile(d.fr_graph_path);
       setDeleteTarget(null);
       if (view.name === "device" && view.id === d.id) {
-        goCollection();
+        goBack();
       }
       await refresh();
     } catch (err) {
@@ -209,24 +229,25 @@ export default function App() {
           <span className="text-lg font-semibold">{t("app.title")}</span>
         </div>
         <nav className="flex items-center gap-1">
-          <NavButton active={view.name !== "settings"} onClick={goCollection}>
+          <NavButton
+            active={view.name === "collection" && view.category === "headphones"}
+            onClick={() => openCollection("headphones")}
+          >
             <Headphones size={15} />
             {t("nav.collection")}
+          </NavButton>
+          <NavButton
+            active={view.name === "collection" && view.category === "devices"}
+            onClick={() => openCollection("devices")}
+          >
+            <Cpu size={15} />
+            {t("nav.devices")}
           </NavButton>
           <NavButton active={view.name === "settings"} onClick={openSettings}>
             <Settings size={15} />
             {t("nav.settings")}
           </NavButton>
         </nav>
-        <div className="ml-auto">
-          <button
-            className="flex items-center gap-2 rounded bg-tm-accent px-3 py-1.5 text-sm font-medium text-tm-darker transition hover:bg-tm-blue"
-            onClick={() => setFormState({ open: true, device: null })}
-          >
-            <Plus size={16} />
-            {t("actions.addDevice")}
-          </button>
-        </div>
       </header>
 
       <main className="flex-1 overflow-y-auto p-6">
@@ -239,28 +260,43 @@ export default function App() {
           <DeviceDetailView
             device={selected}
             settings={settings}
-            onBack={goCollection}
-            onEdit={() => setFormState({ open: true, device: selected })}
+            onBack={goBack}
+            onEdit={() =>
+              setFormState({
+                open: true,
+                device: selected,
+                category: selected.category,
+              })
+            }
             onDelete={() => setDeleteTarget(selected)}
           />
-        ) : (
+        ) : view.name === "collection" ? (
           <CollectionView
             devices={devices}
+            category={view.category}
             settings={settings}
             onOpenDevice={openDevice}
-            onAddDevice={() => setFormState({ open: true, device: null })}
-            onEditDevice={(d) => setFormState({ open: true, device: d })}
+            onAddDevice={() =>
+              setFormState({
+                open: true,
+                device: null,
+                category: view.category,
+              })
+            }
+            onEditDevice={(d) =>
+              setFormState({ open: true, device: d, category: d.category })
+            }
             onDeleteDevice={(d) => setDeleteTarget(d)}
           />
-        )}
+        ) : null}
       </main>
 
       {formState.open && (
         <DeviceFormDialog
           device={formState.device}
-          category="headphones"
+          category={formState.category}
           settings={settings}
-          onClose={() => setFormState({ open: false, device: null })}
+          onClose={() => setFormState({ open: false, device: null, category: "headphones" })}
           onSaved={handleSaved}
         />
       )}

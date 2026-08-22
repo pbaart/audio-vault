@@ -6,6 +6,7 @@
   },
   "nav": {
     "collection": "Kopfhörer",
+    "devices": "Geräte",
     "settings": "Einstellungen"
   },
   "actions": {
@@ -118,6 +119,7 @@
     "empty": {
       "title": "Deine Sammlung ist leer",
       "hint": "Füge deine ersten Kopfhörer oder IEMs hinzu, um loszulegen.",
+      "hintDevices": "Füge deinen ersten DAC, Verstärker oder AVR hinzu, um loszulegen.",
       "add": "Erstes Gerät hinzufügen"
     },
     "search": "Marke oder Modell suchen …",

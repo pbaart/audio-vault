@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Cpu,
   Headphones,
   LayoutGrid,
   Pencil,
@@ -9,8 +10,8 @@ import {
   Search,
   Trash2,
 } from "lucide-react";
-import type { Device } from "../types";
-import { DRIVER_TYPES, HEADPHONE_TYPES } from "../types";
+import type { Device, DeviceCategory } from "../types";
+import { DEVICE_TYPES, DRIVER_TYPES, HEADPHONE_TYPES } from "../types";
 import { formatPrice } from "../lib/format";
 import { enumLabel, localeFor } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
@@ -23,6 +24,8 @@ import { cls, btnPrimary, btnSecondary } from "../ui";
 
 interface CollectionViewProps {
   devices: Device[];
+  /** Which top-level category this page lists. */
+  category: DeviceCategory;
   settings: AppSettings;
   onOpenDevice: (id: string) => void;
   onAddDevice: () => void;
@@ -30,7 +33,10 @@ interface CollectionViewProps {
   onDeleteDevice: (device: Device) => void;
 }
 
-type TypeFilter = "all" | (typeof HEADPHONE_TYPES)[number];
+type TypeFilter =
+  | "all"
+  | (typeof HEADPHONE_TYPES)[number]
+  | (typeof DEVICE_TYPES)[number];
 type DriverFilter = "all" | (typeof DRIVER_TYPES)[number];
 type TubeFilter = "all" | "yes" | "partial" | "no";
 type SortKey = "name" | "added" | "modified" | "impedance" | "price";
@@ -50,6 +56,7 @@ function loadViewMode(): ViewMode {
 
 export function CollectionView({
   devices,
+  category,
   settings,
   onOpenDevice,
   onAddDevice,
@@ -65,6 +72,22 @@ export function CollectionView({
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [viewMode, setViewMode] = useState<ViewMode>(loadViewMode);
 
+  const isHp = category === "headphones";
+
+  /** Devices of this page's category only. */
+  const inCategory = useMemo(
+    () => devices.filter((d) => d.category === category),
+    [devices, category],
+  );
+
+  // Filter/sort selections are category-specific — reset on page switch.
+  useEffect(() => {
+    setTypeFilter("all");
+    setDriverFilter("all");
+    setTubeFilter("all");
+    setSortKey("name");
+  }, [category]);
+
   const hasActiveFilters =
     query.trim() !== "" ||
     typeFilter !== "all" ||
@@ -73,12 +96,13 @@ export function CollectionView({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return devices.filter((d) => {
+    return inCategory.filter((d) => {
       if (q && !`${d.brand} ${d.model}`.toLowerCase().includes(q)) {
         return false;
       }
-      if (typeFilter !== "all" && d.type !== typeFilter) {
-        return false;
+      if (typeFilter !== "all") {
+        const v = isHp ? d.type : d.device_type;
+        if (v !== typeFilter) return false;
       }
       if (driverFilter !== "all" && d.driver_type !== driverFilter) {
         return false;
@@ -95,7 +119,7 @@ export function CollectionView({
       }
       return true;
     });
-  }, [devices, query, typeFilter, driverFilter, tubeFilter]);
+  }, [inCategory, query, typeFilter, driverFilter, tubeFilter, isHp]);
 
   const sorted = useMemo(() => {
     const arr = [...filtered];
@@ -137,18 +161,18 @@ export function CollectionView({
     setTubeFilter("all");
   }
 
-  if (devices.length === 0) {
+  if (inCategory.length === 0) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 py-24 text-center">
         <div className="rounded-full border border-tm-dark bg-tm-darker p-6 text-tm-gray">
-          <Headphones size={48} />
+          {isHp ? <Headphones size={48} /> : <Cpu size={48} />}
         </div>
         <div>
           <h2 className="text-lg font-semibold text-tm-fg">
             {t("collection.empty.title")}
           </h2>
           <p className="mt-1 text-sm text-tm-gray">
-            {t("collection.empty.hint")}
+            {t(isHp ? "collection.empty.hint" : "collection.empty.hintDevices")}
           </p>
         </div>
         <button className={btnPrimary} onClick={onAddDevice}>
@@ -178,14 +202,16 @@ export function CollectionView({
         <FilterSelect
           value={typeFilter}
           onChange={(v) => setTypeFilter(v as TypeFilter)}
-          options={["all", ...HEADPHONE_TYPES]}
+          options={["all", ...(isHp ? HEADPHONE_TYPES : DEVICE_TYPES)]}
           label={(v) =>
             v === "all" ? t("collection.filter.typeAll") : enumLabel(v, t)
           }
         />
-        <FilterSelect
-          value={driverFilter}
-          onChange={(v) => setDriverFilter(v as DriverFilter)}
+        {isHp && (
+          <>
+          <FilterSelect
+            value={driverFilter}
+            onChange={(v) => setDriverFilter(v as DriverFilter)}
           options={["all", ...DRIVER_TYPES]}
           label={(v) =>
             v === "all" ? t("collection.filter.driverAll") : enumLabel(v, t)
@@ -203,8 +229,10 @@ export function CollectionView({
                 : v === "partial"
                   ? t("collection.filter.tubePartial")
                   : t("collection.filter.tubeNo")
-          }
-        />
+            }
+          />
+          </>
+        )}
         <div className="flex items-center gap-1">
           <select
             className="rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg focus:border-tm-accent focus:outline-none"
@@ -215,7 +243,9 @@ export function CollectionView({
             <option value="name">{t("collection.sort.name")}</option>
             <option value="added">{t("collection.sort.added")}</option>
             <option value="modified">{t("collection.sort.modified")}</option>
-            <option value="impedance">{t("collection.sort.impedance")}</option>
+            {isHp && (
+              <option value="impedance">{t("collection.sort.impedance")}</option>
+            )}
             <option value="price">{t("collection.sort.price")}</option>
           </select>
           <button
@@ -271,8 +301,8 @@ export function CollectionView({
       <p className="text-xs text-tm-gray">
         {t("collection.count", {
           shown: sorted.length,
-          total: devices.length,
-          count: devices.length,
+          total: inCategory.length,
+          count: inCategory.length,
         })}
       </p>
 
@@ -299,7 +329,7 @@ export function CollectionView({
                     relPath={d.mood_image_path ?? d.image_path}
                     className="h-full w-full"
                   />
-                  {badge && (
+                  {isHp && badge && (
                     <div className="absolute right-2 top-2">
                       <Tip label={t(`tube.dot.${badge}`)} side="bottom">
                         <TubeBadge badge={badge} size="sm" dot tooltip={null} />
@@ -313,16 +343,39 @@ export function CollectionView({
                       {d.brand} {d.model}
                     </h3>
                     <p className="text-xs text-tm-gray">
-                      {d.type ? enumLabel(d.type, t) : ""}
-                      {d.driver_type ? ` · ${enumLabel(d.driver_type, t)}` : ""}
+                      {isHp
+                        ? `${d.type ? enumLabel(d.type, t) : ""}${
+                            d.driver_type
+                              ? ` · ${enumLabel(d.driver_type, t)}`
+                              : ""
+                          }`
+                        : d.device_type
+                          ? enumLabel(d.device_type, t)
+                          : ""}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-tm-gray">
-                    {d.impedance_ohms != null && (
-                      <span>{d.impedance_ohms} Ω</span>
-                    )}
-                    {d.sensitivity_db != null && (
-                      <span>{d.sensitivity_db} dB</span>
+                    {isHp ? (
+                      <>
+                        {d.impedance_ohms != null && (
+                          <span>{d.impedance_ohms} Ω</span>
+                        )}
+                        {d.sensitivity_db != null && (
+                          <span>{d.sensitivity_db} dB</span>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {d.dac_chip && <span>{d.dac_chip}</span>}
+                        {d.output_power && <span>{d.output_power}</span>}
+                        {d.snr_db != null && <span>{d.snr_db} dB</span>}
+                        {d.bluetooth_codecs.length > 0 && (
+                          <span>
+                            {d.bluetooth_codecs.slice(0, 2).join(", ")}
+                            {d.bluetooth_codecs.length > 2 ? " …" : ""}
+                          </span>
+                        )}
+                      </>
                     )}
                     {d.price != null && (
                       <span>
@@ -333,7 +386,7 @@ export function CollectionView({
                         )}
                       </span>
                     )}
-                    {d.soundstage_rating != null && (
+                    {isHp && d.soundstage_rating != null && (
                       <span>
                         {t("collection.stage", { n: d.soundstage_rating })}
                       </span>
@@ -378,24 +431,39 @@ export function CollectionView({
                 <th className="px-3 py-2 font-semibold">{t("fields.brand")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.model")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.type")}</th>
-                <th className="px-3 py-2 font-semibold">
-                  {t("fields.driver")}
-                </th>
-                <th className="px-3 py-2 text-right font-semibold">
-                  {t("fields.impedance")}
-                </th>
-                <th className="px-3 py-2 text-right font-semibold">
-                  {t("fields.sensitivity")}
-                </th>
+                {isHp ? (
+                  <>
+                    <th className="px-3 py-2 font-semibold">
+                      {t("fields.driver")}
+                    </th>
+                    <th className="px-3 py-2 text-right font-semibold">
+                      {t("fields.impedance")}
+                    </th>
+                    <th className="px-3 py-2 text-right font-semibold">
+                      {t("fields.sensitivity")}
+                    </th>
+                  </>
+                ) : (
+                  <>
+                    <th className="px-3 py-2 font-semibold">
+                      {t("fields.dacChip")}
+                    </th>
+                    <th className="px-3 py-2 font-semibold">
+                      {t("fields.outputs")}
+                    </th>
+                  </>
+                )}
                 <th className="px-3 py-2 text-right font-semibold">
                   {t("fields.price")}
                 </th>
                 <th className="px-3 py-2 font-semibold">
                   {t("fields.rating")}
                 </th>
-                <th className="px-3 py-2 font-semibold">
-                  {t("fields.tubeAmp")}
-                </th>
+                {isHp && (
+                  <th className="px-3 py-2 font-semibold">
+                    {t("fields.tubeAmp")}
+                  </th>
+                )}
                 <th className="px-3 py-2 text-right font-semibold">
                   {t("fields.actions")}
                 </th>
@@ -425,19 +493,40 @@ export function CollectionView({
                     </td>
                     <td className="px-3 py-2 text-tm-fg">{d.model}</td>
                     <td className="px-3 py-2 text-tm-gray">
-                      {d.type ? enumLabel(d.type, t) : "—"}
+                      {isHp
+                        ? d.type
+                          ? enumLabel(d.type, t)
+                          : "—"
+                        : d.device_type
+                          ? enumLabel(d.device_type, t)
+                          : "—"}
                     </td>
-                    <td className="px-3 py-2 text-tm-gray">
-                      {d.driver_type ? enumLabel(d.driver_type, t) : "—"}
-                    </td>
-                    <td className="px-3 py-2 text-right text-tm-gray">
-                      {d.impedance_ohms == null ? "—" : `${d.impedance_ohms} Ω`}
-                    </td>
-                    <td className="px-3 py-2 text-right text-tm-gray">
-                      {d.sensitivity_db == null
-                        ? "—"
-                        : `${d.sensitivity_db} dB`}
-                    </td>
+                    {isHp ? (
+                      <>
+                        <td className="px-3 py-2 text-tm-gray">
+                          {d.driver_type ? enumLabel(d.driver_type, t) : "—"}
+                        </td>
+                        <td className="px-3 py-2 text-right text-tm-gray">
+                          {d.impedance_ohms == null
+                            ? "—"
+                            : `${d.impedance_ohms} Ω`}
+                        </td>
+                        <td className="px-3 py-2 text-right text-tm-gray">
+                          {d.sensitivity_db == null
+                            ? "—"
+                            : `${d.sensitivity_db} dB`}
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="px-3 py-2 text-tm-gray">
+                          {d.dac_chip ?? "—"}
+                        </td>
+                        <td className="px-3 py-2 text-tm-gray">
+                          {d.outputs.length === 0 ? "—" : d.outputs.join(", ")}
+                        </td>
+                      </>
+                    )}
                     <td className="px-3 py-2 text-right text-tm-gray">
                       {d.price == null
                         ? "—"
@@ -458,15 +547,17 @@ export function CollectionView({
                         />
                       )}
                     </td>
-                    <td className="px-3 py-2">
-                      {badge ? (
-                        <Tip label={t("fields.tubeAmp")}>
-                          <TubeBadge badge={badge} size="sm" tooltip={null} />
-                        </Tip>
-                      ) : (
-                        <span className="text-tm-gray">—</span>
-                      )}
-                    </td>
+                    {isHp && (
+                      <td className="px-3 py-2">
+                        {badge ? (
+                          <Tip label={t("fields.tubeAmp")}>
+                            <TubeBadge badge={badge} size="sm" tooltip={null} />
+                          </Tip>
+                        ) : (
+                          <span className="text-tm-gray">—</span>
+                        )}
+                      </td>
+                    )}
                     <td className="px-3 py-2">
                       <div
                         className="flex items-center justify-end gap-1"

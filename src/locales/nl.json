@@ -6,6 +6,7 @@
   },
   "nav": {
     "collection": "Headphones",
+    "devices": "Apparaten",
     "settings": "Instellingen"
   },
   "actions": {
@@ -118,6 +119,7 @@
     "empty": {
       "title": "Je collectie is leeg",
       "hint": "Voeg je eerste koptelefoon of IEM toe om te beginnen.",
+      "hintDevices": "Voeg je eerste DAC, versterker of AVR toe om te beginnen.",
       "add": "Voeg je eerste apparaat toe"
     },
     "search": "Merk of model zoeken…",

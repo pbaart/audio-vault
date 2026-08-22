@@ -6,6 +6,7 @@
   },
   "nav": {
     "collection": "Casques",
+    "devices": "Appareils",
     "settings": "Paramètres"
   },
   "actions": {
@@ -118,6 +119,7 @@
     "empty": {
       "title": "Votre collection est vide",
       "hint": "Ajoutez votre premier casque ou IEM pour commencer.",
+      "hintDevices": "Ajoutez votre premier DAC, ampli ou AVR pour commencer.",
       "add": "Ajouter votre premier appareil"
     },
     "search": "Rechercher une marque ou un modèle…",

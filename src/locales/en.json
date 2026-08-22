@@ -6,6 +6,7 @@
   },
   "nav": {
     "collection": "Headphones",
+    "devices": "Devices",
     "settings": "Settings"
   },
   "actions": {
@@ -118,6 +119,7 @@
     "empty": {
       "title": "Your collection is empty",
       "hint": "Add your first headphone or IEM to get started.",
+      "hintDevices": "Add your first DAC, amp or AVR to get started.",
       "add": "Add your first device"
     },
     "search": "Search brand or model…",
