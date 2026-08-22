@@ -31,7 +31,6 @@
     "image": "Image"
   },
   "tube": {
-    "tooltip": "Compatibilité avec ampli à tubes",
     "badges": {
       "Yes": "Correspondance parfaite",
       "OTL Only": "Compatibilité limitée",
@@ -158,6 +157,9 @@
     "custom": "Extra"
   },
   "form": {
+    "basic": "Base",
+    "images": "Images",
+    "links": "Liens",
     "titleEdit": "Modifier {{name}}",
     "saving": "Enregistrement…",
     "saveChanges": "Enregistrer les modifications",
@@ -203,7 +205,6 @@
     "impedance": "Impédance (Ω)",
     "sensitivity": "Sensibilité (dB)",
     "connector": "Connecteur (côté ampli)",
-    "tube": "Compatibilité ampli à tubes",
     "tubeAuto": "Auto (d'après les specs)",
     "ruleResult": "Résultat de la règle :",
     "soundstage": "Scène sonore (1–5)",

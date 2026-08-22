@@ -31,7 +31,6 @@
     "image": "Image"
   },
   "tube": {
-    "tooltip": "Tube amp compatibility",
     "badges": {
       "Yes": "Perfect Match",
       "OTL Only": "Limited Compatibility",
@@ -158,6 +157,9 @@
     "custom": "Extra"
   },
   "form": {
+    "basic": "Basic",
+    "images": "Images",
+    "links": "Links",
     "titleEdit": "Edit {{name}}",
     "saving": "Saving…",
     "saveChanges": "Save changes",
@@ -203,7 +205,6 @@
     "impedance": "Impedance (Ω)",
     "sensitivity": "Sensitivity (dB)",
     "connector": "Connector (amp-side plug)",
-    "tube": "Tube amp compatibility",
     "tubeAuto": "Auto (from specs)",
     "ruleResult": "Rule result:",
     "soundstage": "Soundstage (1–5)",

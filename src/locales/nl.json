@@ -31,7 +31,6 @@
     "image": "Afbeelding"
   },
   "tube": {
-    "tooltip": "Buizenversterker-compatibiliteit",
     "badges": {
       "Yes": "Perfecte match",
       "OTL Only": "Beperkte compatibiliteit",
@@ -158,6 +157,9 @@
     "custom": "Extra"
   },
   "form": {
+    "basic": "Basis",
+    "images": "Afbeeldingen",
+    "links": "Links",
     "titleEdit": "{{name}} bewerken",
     "saving": "Bezig met opslaan…",
     "saveChanges": "Wijzigingen opslaan",
@@ -203,7 +205,6 @@
     "impedance": "Impedantie (Ω)",
     "sensitivity": "Gevoeligheid (dB)",
     "connector": "Aansluiting (versterkerzijde)",
-    "tube": "Buizenversterker-compatibiliteit",
     "tubeAuto": "Automatisch (uit specificaties)",
     "ruleResult": "Regelresultaat:",
     "soundstage": "Soundstage (1–5)",

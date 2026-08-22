@@ -31,7 +31,6 @@
     "image": "Bild"
   },
   "tube": {
-    "tooltip": "Röhrenverstärker-Kompatibilität",
     "badges": {
       "Yes": "Perfektes Match",
       "OTL Only": "Begrenzte Kompatibilität",
@@ -158,6 +157,9 @@
     "custom": "Extra"
   },
   "form": {
+    "basic": "Basis",
+    "images": "Bilder",
+    "links": "Links",
     "titleEdit": "{{name}} bearbeiten",
     "saving": "Wird gespeichert …",
     "saveChanges": "Änderungen speichern",
@@ -203,7 +205,6 @@
     "impedance": "Impedanz (Ω)",
     "sensitivity": "Empfindlichkeit (dB)",
     "connector": "Anschluss (Verstärkerseite)",
-    "tube": "Röhrenverstärker-Kompatibilität",
     "tubeAuto": "Automatisch (aus den Daten)",
     "ruleResult": "Regelergebnis:",
     "soundstage": "Klangbühne (1–5)",

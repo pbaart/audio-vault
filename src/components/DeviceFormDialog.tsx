@@ -766,91 +766,60 @@ export function DeviceFormDialog({
       }
     >
       <div className="space-y-6">
-        {/* Basics */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Field label={`${t("form.brand")} *`} error={errors.brand}>
-            <input
-              className={inputCls}
-              list="brand-suggestions"
-              value={form.brand}
-              onChange={(e) => set("brand", e.target.value)}
-              placeholder={t("form.phBrand")}
-              autoComplete="off"
-            />
-            <datalist id="brand-suggestions">
-              {brands.map((b) => (
-                <option key={b} value={b} />
-              ))}
-            </datalist>
-          </Field>
-          <Field label={`${t("form.model")} *`} error={errors.model}>
-            <input
-              className={inputCls}
-              value={form.model}
-              onChange={(e) => set("model", e.target.value)}
-              placeholder={t("form.phModel")}
-            />
-          </Field>
-          <Field label={`${t("form.type")} *`} error={errors.type}>
-            <select
-              className={cls(selectCls, "w-full")}
-              value={form.type}
-              onChange={(e) => set("type", e.target.value as DeviceType | "")}
-            >
-              <option value="">{t("form.select")}</option>
-              {DEVICE_TYPES.map((v) => (
-                <option key={v} value={v}>
-                  {enumLabel(v, t)}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label={t("form.color")}>
-            <input
-              className={inputCls}
-              list="color-suggestions"
-              value={form.color}
-              onChange={(e) => set("color", e.target.value)}
-              placeholder={t("form.phColor")}
-              autoComplete="off"
-            />
-            <datalist id="color-suggestions">
-              {colors.map((c) => (
-                <option key={c} value={c} />
-              ))}
-            </datalist>
-          </Field>
-            <Field label={t("form.driverType")}>
+        {/* Basic */}
+        <FormSection title={t("form.basic")}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Field label={`${t("form.brand")} *`} error={errors.brand}>
+              <input
+                className={inputCls}
+                list="brand-suggestions"
+                value={form.brand}
+                onChange={(e) => set("brand", e.target.value)}
+                placeholder={t("form.phBrand")}
+                autoComplete="off"
+              />
+              <datalist id="brand-suggestions">
+                {brands.map((b) => (
+                  <option key={b} value={b} />
+                ))}
+              </datalist>
+            </Field>
+            <Field label={`${t("form.model")} *`} error={errors.model}>
+              <input
+                className={inputCls}
+                value={form.model}
+                onChange={(e) => set("model", e.target.value)}
+                placeholder={t("form.phModel")}
+              />
+            </Field>
+            <Field label={`${t("form.type")} *`} error={errors.type}>
               <select
                 className={cls(selectCls, "w-full")}
-                value={form.driver_type}
-                onChange={(e) =>
-                  set("driver_type", e.target.value as DriverType | "")
-                }
+                value={form.type}
+                onChange={(e) => set("type", e.target.value as DeviceType | "")}
               >
-                <option value="">{t("form.unknown")}</option>
-                {DRIVER_TYPES.map((v) => (
+                <option value="">{t("form.select")}</option>
+                {DEVICE_TYPES.map((v) => (
                   <option key={v} value={v}>
                     {enumLabel(v, t)}
                   </option>
                 ))}
               </select>
             </Field>
-            <Field label={t("form.connector")}>
-              <select
-                className={cls(selectCls, "w-full")}
-                value={form.connector_type}
-                onChange={(e) =>
-                  set("connector_type", e.target.value as ConnectorType | "")
-                }
-              >
-                <option value="">{t("form.unknown")}</option>
-                {CONNECTOR_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
+            <Field label={t("form.color")}>
+              <input
+                className={inputCls}
+                list="color-suggestions"
+                value={form.color}
+                onChange={(e) => set("color", e.target.value)}
+                placeholder={t("form.phColor")}
+                autoComplete="off"
+              />
+              <datalist id="color-suggestions">
+                {colors.map((c) => (
+                  <option key={c} value={c} />
                 ))}
-              </select>
+              </datalist>
             </Field>
             <Field label={t("form.rating")} error={errors.overall_rating}>
               <StarRating
@@ -864,38 +833,12 @@ export function DeviceFormDialog({
                 }
               />
             </Field>
-        </div>
-
-        {/* Links */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field
-            label={t("form.manufacturerUrl")}
-            error={errors.manufacturer_url}
-          >
-            <input
-              className={inputCls}
-              value={form.manufacturer_url}
-              onChange={(e) => set("manufacturer_url", e.target.value)}
-              placeholder={t("form.phManufacturerUrl")}
-              autoComplete="off"
-            />
-          </Field>
-          <Field label={t("form.webshop")} error={errors.webshop_url}>
-            <input
-              className={inputCls}
-              value={form.webshop_url}
-              onChange={(e) => set("webshop_url", e.target.value)}
-              placeholder={t("form.phWebshop")}
-              autoComplete="off"
-            />
-          </Field>
-        </div>
+          </div>
+        </FormSection>
 
         {/* Web fetch */}
-        <fieldset className="rounded border border-tm-dark bg-tm-darker/40 p-4">
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.webFetch")}
-          </legend>
+        <FormSection title={t("form.webFetch")}>
+
           <div className="flex flex-wrap items-center gap-3">
             <button
               className={btnSecondary}
@@ -1017,147 +960,11 @@ export function DeviceFormDialog({
               </button>
             </div>
           )}
-        </fieldset>
-
-        {/* Product image */}
-        <Field label={t("form.productImage")}>
-          <div className="flex items-start gap-3">
-            <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-              <MediaImage
-                relPath={form.image_path}
-                className="aspect-video w-full"
-                placeholderIcon={28}
-              />
-            </div>
-            <div className="flex flex-col items-start gap-2 pt-1">
-              <button
-                className={btnSecondary}
-                onClick={() => void handlePickImage("image")}
-              >
-                <FolderOpen size={14} />
-                {form.image_path ? t("form.replaceImage") : t("form.pickImage")}
-              </button>
-              {form.image_path && (
-                <button
-                  className="text-xs text-tm-red hover:underline"
-                  onClick={() => handleRemoveImage("image")}
-                >
-                  {t("form.removeImage")}
-                </button>
-              )}
-              <div className="flex items-center gap-2">
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder={t("form.imageUrlPlaceholder")}
-                  className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
-                />
-                <button
-                  className={btnSecondary}
-                  onClick={() => void handleDownloadImage("image")}
-                  disabled={imageDownloading || !imageUrl.trim()}
-                >
-                  <CloudDownload size={14} />
-                  {imageDownloading
-                    ? t("form.downloading")
-                    : t("form.downloadImage")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </Field>
-
-        {/* Mood image */}
-        <Field label={t("form.moodImage")}>
-          <div className="flex items-start gap-3">
-            <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-              <MediaImage
-                relPath={form.mood_image_path}
-                className="aspect-video w-full"
-                placeholderIcon={28}
-              />
-            </div>
-            <div className="flex flex-col items-start gap-2 pt-1">
-              <button
-                className={btnSecondary}
-                onClick={() => void handlePickImage("mood")}
-              >
-                <FolderOpen size={14} />
-                {form.mood_image_path
-                  ? t("form.replaceImage")
-                  : t("form.pickImage")}
-              </button>
-              {form.mood_image_path && (
-                <button
-                  className="text-xs text-tm-red hover:underline"
-                  onClick={() => handleRemoveImage("mood")}
-                >
-                  {t("form.removeImage")}
-                </button>
-              )}
-              <div className="flex items-center gap-2">
-                <input
-                  type="url"
-                  value={moodImageUrl}
-                  onChange={(e) => setMoodImageUrl(e.target.value)}
-                  placeholder={t("form.imageUrlPlaceholder")}
-                  className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
-                />
-                <button
-                  className={btnSecondary}
-                  onClick={() => void handleDownloadImage("mood")}
-                  disabled={moodImageDownloading || !moodImageUrl.trim()}
-                >
-                  <CloudDownload size={14} />
-                  {moodImageDownloading
-                    ? t("form.downloading")
-                    : t("form.downloadImage")}
-                </button>
-              </div>
-            </div>
-          </div>
-        </Field>
-
-        {/* Tube compatibility */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("form.tube")}
-          </legend>
-          <div className="flex flex-wrap items-center gap-4">
-            <select
-              className={selectCls}
-              value={form.tube_amp_suitable}
-              onChange={(e) =>
-                set("tube_amp_suitable", e.target.value as TubeBadgeValue | "")
-              }
-            >
-              <option value="">{t("form.tubeAuto")}</option>
-              {TUBE_BADGES.map((b) => (
-                <option key={b} value={b}>
-                  {tubeBadgeLabel(b, (k) => t(k))}
-                </option>
-              ))}
-            </select>
-            {previewBadge && form.tube_amp_suitable === "" && (
-              <div className="flex items-center gap-2 text-xs text-tm-gray">
-                <span>{t("form.ruleResult")}</span>
-                <Tip label={t("fields.tubeAmp")}>
-                  <TubeBadge badge={previewBadge} size="sm" tooltip={null} />
-                </Tip>
-              </div>
-            )}
-          </div>
-          <p className="mt-2 text-xs text-tm-gray">
-            {describeTubeRule((k) => t(k))}
-          </p>
-        </fieldset>
+        
+        </FormSection>
 
         {/* Technical specs */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.specs")}
-          </legend>
+        <FormSection title={t("detail.specs")}>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field label={t("form.impedance")} error={errors.impedance_ohms}>
               <input
@@ -1199,6 +1006,38 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
+            <Field label={t("form.driverType")}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.driver_type}
+                onChange={(e) =>
+                  set("driver_type", e.target.value as DriverType | "")
+                }
+              >
+                <option value="">{t("form.unknown")}</option>
+                {DRIVER_TYPES.map((v) => (
+                  <option key={v} value={v}>
+                    {enumLabel(v, t)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("form.connector")}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.connector_type}
+                onChange={(e) =>
+                  set("connector_type", e.target.value as ConnectorType | "")
+                }
+              >
+                <option value="">{t("form.unknown")}</option>
+                {CONNECTOR_TYPES.map((v) => (
+                  <option key={v} value={v}>
+                    {enumLabel(v, t)}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <Field
               label={t("form.purchaseDate", { format: settings.dateFormat })}
               error={errors.purchase_date}
@@ -1227,6 +1066,114 @@ export function DeviceFormDialog({
                 placeholder="349"
               />
             </Field>
+            <Field label={t("fields.tubeAmp")} className="col-span-2 sm:col-span-3">
+              <div className="flex flex-wrap items-center gap-4">
+                <select
+                  className={selectCls}
+                  value={form.tube_amp_suitable}
+                  onChange={(e) =>
+                    set("tube_amp_suitable", e.target.value as TubeBadgeValue | "")
+                  }
+                >
+                  <option value="">{t("form.tubeAuto")}</option>
+                  {TUBE_BADGES.map((b) => (
+                    <option key={b} value={b}>
+                      {tubeBadgeLabel(b, (k) => t(k))}
+                    </option>
+                  ))}
+                </select>
+                {previewBadge && form.tube_amp_suitable === "" && (
+                  <div className="flex items-center gap-2 text-xs text-tm-gray">
+                    <span>{t("form.ruleResult")}</span>
+                    <Tip label={t("fields.tubeAmp")}>
+                      <TubeBadge badge={previewBadge} size="sm" tooltip={null} />
+                    </Tip>
+                  </div>
+                )}
+              </div>
+              <p className="mt-2 text-xs text-tm-gray">
+                {describeTubeRule((k) => t(k))}
+              </p>
+        
+            </Field>
+          </div>
+        </FormSection>
+
+        {/* Extra */}
+        <FormSection title={t("detail.custom")}>
+
+          <div className="space-y-2">
+            <datalist id="custom-key-suggestions">
+              {customKeys.map((k) => (
+                <option key={k} value={k} />
+              ))}
+            </datalist>
+            {form.custom.length === 0 && (
+              <p className="text-sm text-tm-gray">{t("form.noCustom")}</p>
+            )}
+            {form.custom.map((cf, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <input
+                  className={cls(inputCls, "w-48")}
+                  value={cf.key}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.map((c, idx) =>
+                        idx === i ? { ...c, key: e.target.value } : c,
+                      ),
+                    }))
+                  }
+                  placeholder={t("form.phCustomKey")}
+                  list="custom-key-suggestions"
+                  autoComplete="off"
+                />
+                <input
+                  className={inputCls}
+                  value={cf.value}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.map((c, idx) =>
+                        idx === i ? { ...c, value: e.target.value } : c,
+                      ),
+                    }))
+                  }
+                  placeholder={t("form.phCustomValue")}
+                />
+                <button
+                  className="mt-1 rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-red"
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      custom: f.custom.filter((_, idx) => idx !== i),
+                    }))
+                  }
+                  aria-label={t("form.ariaRemoveCustom", { index: i + 1 })}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+            <button
+              className={btnSecondary}
+              onClick={() =>
+                setForm((f) => ({
+                  ...f,
+                  custom: [...f.custom, { key: "", value: "" }],
+                }))
+              }
+            >
+              <Plus size={14} />
+              {t("form.addCustom")}
+            </button>
+          </div>
+        
+        </FormSection>
+
+        {/* Sound */}
+        <FormSection title={t("detail.theSound")}>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field label={t("fields.soundSignature")}>
               <select
                 className={cls(selectCls, "w-full")}
@@ -1243,15 +1190,6 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
-          </div>
-        </fieldset>
-
-        {/* Sound */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.theSound")}
-          </legend>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field
               label={t("form.soundstage")}
               error={errors.soundstage_rating}
@@ -1332,99 +1270,152 @@ export function DeviceFormDialog({
               </select>
             </Field>
           </div>
-        </fieldset>
-
-        {/* Extra */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.custom")}
-          </legend>
-          <div className="space-y-2">
-            <datalist id="custom-key-suggestions">
-              {customKeys.map((k) => (
-                <option key={k} value={k} />
-              ))}
-            </datalist>
-            {form.custom.length === 0 && (
-              <p className="text-sm text-tm-gray">{t("form.noCustom")}</p>
-            )}
-            {form.custom.map((cf, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <input
-                  className={cls(inputCls, "w-48")}
-                  value={cf.key}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.map((c, idx) =>
-                        idx === i ? { ...c, key: e.target.value } : c,
-                      ),
-                    }))
-                  }
-                  placeholder={t("form.phCustomKey")}
-                  list="custom-key-suggestions"
-                  autoComplete="off"
-                />
-                <input
-                  className={inputCls}
-                  value={cf.value}
-                  onChange={(e) =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.map((c, idx) =>
-                        idx === i ? { ...c, value: e.target.value } : c,
-                      ),
-                    }))
-                  }
-                  placeholder={t("form.phCustomValue")}
-                />
-                <button
-                  className="mt-1 rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-red"
-                  onClick={() =>
-                    setForm((f) => ({
-                      ...f,
-                      custom: f.custom.filter((_, idx) => idx !== i),
-                    }))
-                  }
-                  aria-label={t("form.ariaRemoveCustom", { index: i + 1 })}
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))}
-            <button
-              className={btnSecondary}
-              onClick={() =>
-                setForm((f) => ({
-                  ...f,
-                  custom: [...f.custom, { key: "", value: "" }],
-                }))
-              }
-            >
-              <Plus size={14} />
-              {t("form.addCustom")}
-            </button>
-          </div>
-        </fieldset>
+        </FormSection>
 
         {/* Listening notes */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.notes")}
-          </legend>
+        <FormSection title={t("detail.notes")}>
+
           <textarea
             className={cls(inputCls, "min-h-24 resize-y")}
             value={form.listening_notes}
             onChange={(e) => set("listening_notes", e.target.value)}
             placeholder={t("form.phListeningNotes")}
           />
-        </fieldset>
+        
+        </FormSection>
+
+        {/* Images */}
+        <FormSection title={t("form.images")}>
+          <div className="space-y-4">
+            <Field label={t("form.moodImage")}>
+              <div className="flex items-start gap-3">
+                <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                  <MediaImage
+                    relPath={form.mood_image_path}
+                    className="aspect-video w-full"
+                    placeholderIcon={28}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-2 pt-1">
+                  <button
+                    className={btnSecondary}
+                    onClick={() => void handlePickImage("mood")}
+                  >
+                    <FolderOpen size={14} />
+                    {form.mood_image_path
+                      ? t("form.replaceImage")
+                      : t("form.pickImage")}
+                  </button>
+                  {form.mood_image_path && (
+                    <button
+                      className="text-xs text-tm-red hover:underline"
+                      onClick={() => handleRemoveImage("mood")}
+                    >
+                      {t("form.removeImage")}
+                    </button>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="url"
+                      value={moodImageUrl}
+                      onChange={(e) => setMoodImageUrl(e.target.value)}
+                      placeholder={t("form.imageUrlPlaceholder")}
+                      className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                    />
+                    <button
+                      className={btnSecondary}
+                      onClick={() => void handleDownloadImage("mood")}
+                      disabled={moodImageDownloading || !moodImageUrl.trim()}
+                    >
+                      <CloudDownload size={14} />
+                      {moodImageDownloading
+                        ? t("form.downloading")
+                        : t("form.downloadImage")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Field>
+            <Field label={t("form.productImage")}>
+              <div className="flex items-start gap-3">
+                <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                  <MediaImage
+                    relPath={form.image_path}
+                    className="aspect-video w-full"
+                    placeholderIcon={28}
+                  />
+                </div>
+                <div className="flex flex-col items-start gap-2 pt-1">
+                  <button
+                    className={btnSecondary}
+                    onClick={() => void handlePickImage("image")}
+                  >
+                    <FolderOpen size={14} />
+                    {form.image_path ? t("form.replaceImage") : t("form.pickImage")}
+                  </button>
+                  {form.image_path && (
+                    <button
+                      className="text-xs text-tm-red hover:underline"
+                      onClick={() => handleRemoveImage("image")}
+                    >
+                      {t("form.removeImage")}
+                    </button>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder={t("form.imageUrlPlaceholder")}
+                      className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                    />
+                    <button
+                      className={btnSecondary}
+                      onClick={() => void handleDownloadImage("image")}
+                      disabled={imageDownloading || !imageUrl.trim()}
+                    >
+                      <CloudDownload size={14} />
+                      {imageDownloading
+                        ? t("form.downloading")
+                        : t("form.downloadImage")}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Field>
+          </div>
+        </FormSection>
+
+        {/* Links */}
+        <FormSection title={t("form.links")}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Field
+              label={t("form.manufacturerUrl")}
+              error={errors.manufacturer_url}
+            >
+              <input
+                className={inputCls}
+                value={form.manufacturer_url}
+                onChange={(e) => set("manufacturer_url", e.target.value)}
+                placeholder={t("form.phManufacturerUrl")}
+                autoComplete="off"
+              />
+            </Field>
+            <Field label={t("form.webshop")} error={errors.webshop_url}>
+              <input
+                className={inputCls}
+                value={form.webshop_url}
+                onChange={(e) => set("webshop_url", e.target.value)}
+                placeholder={t("form.phWebshop")}
+                autoComplete="off"
+              />
+            </Field>
+          </div>
+        </FormSection>
 
         {/* Frequency response */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.fr")}
-          </legend>
+        <FormSection title={t("detail.fr")}>
+
           <Field label={t("form.frGraph")}>
             <div className="flex items-start gap-3">
               <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
@@ -1465,13 +1456,12 @@ export function DeviceFormDialog({
             </div>
           </Field>
 
-        </fieldset>
+        
+        </FormSection>
 
         {/* PEQ */}
-        <fieldset>
-          <legend className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-            {t("detail.peq")}
-          </legend>
+        <FormSection title={t("detail.peq")}>
+
           <div className="space-y-3">
             {form.peq.length > 0 ? (
               <div className="flex flex-wrap items-center gap-3 rounded border border-tm-dark bg-tm-darker p-3">
@@ -1618,7 +1608,8 @@ export function DeviceFormDialog({
               </div>
             )}
           </div>
-        </fieldset>
+        
+        </FormSection>
 
         {pickError && (
           <p className={cls(btnDanger, "w-fit py-1 text-xs")}>
@@ -1627,6 +1618,23 @@ export function DeviceFormDialog({
         )}
       </div>
     </Modal>
+  );
+}
+
+function FormSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-lg border border-tm-dark bg-tm-darker/40 p-4">
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+        {title}
+      </h3>
+      {children}
+    </section>
   );
 }
 
