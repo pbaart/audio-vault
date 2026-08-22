@@ -3,8 +3,12 @@ import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   Globe,
+  Headphones,
+  Palette,
   Pencil,
+  Plug,
   ShoppingBag,
+  Speaker,
   Trash2,
   ZoomIn,
 } from "lucide-react";
@@ -101,25 +105,12 @@ export function DeviceDetailView({
                 placeholderIcon={56}
               />
             )}
-          </div>
-          {showProductThumb && (
-            <button
-              className="group flex w-full items-center gap-2 rounded-lg border border-tm-dark bg-tm-bg p-2 text-left transition hover:border-tm-accent/60"
-              onClick={() => setLightbox("image")}
-              title={t("detail.zoom")}
-            >
-              <div className="h-12 w-12 shrink-0 overflow-hidden rounded border border-tm-dark bg-tm-darker">
-                <MediaImage
-                  relPath={device.image_path}
-                  className="h-full w-full"
-                />
-              </div>
-              <span className="text-xs text-tm-gray">
+            {mainImage && !device.mood_image_path && (
+              <p className="border-t border-tm-dark bg-tm-bg px-3 py-1.5 text-xs text-tm-gray">
                 {t("detail.productImage")}
-              </span>
-            </button>
-          )}
-
+              </p>
+            )}
+          </div>
           <div className="rounded-lg border border-tm-dark bg-tm-bg p-4">
             <p className="text-xs uppercase tracking-wide text-tm-gray">
               {t("detail.device")}
@@ -127,22 +118,33 @@ export function DeviceDetailView({
             <h2 className="mt-1 text-xl font-semibold text-tm-fg">
               {device.brand} {device.model}
             </h2>
+            {device.overall_rating != null && (
+              <div className="mt-2">
+                <StarRating value={device.overall_rating} />
+              </div>
+            )}
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Chip label={enumLabel(device.type, t)} />
+              <Chip
+                label={enumLabel(device.type, t)}
+                icon={<Headphones size={12} />}
+              />
               {device.driver_type && (
-                <Chip label={enumLabel(device.driver_type, t)} />
+                <Chip
+                  label={enumLabel(device.driver_type, t)}
+                  icon={<Speaker size={12} />}
+                />
               )}
-              {device.color && <Chip label={device.color} />}
+              {device.color && (
+                <Chip label={device.color} icon={<Palette size={12} />} />
+              )}
+              {device.connector_type && (
+                <Chip
+                  label={enumLabel(device.connector_type, t)}
+                  icon={<Plug size={12} />}
+                />
+              )}
               {badge && <TubeBadge badge={badge} size="sm" />}
             </div>
-            {device.connector_type && (
-              <p className="mt-3 text-sm text-tm-gray">
-                {t("detail.connectorLabel")}{" "}
-                <span className="text-tm-fg">
-                  {enumLabel(device.connector_type, t)}
-                </span>
-              </p>
-            )}
             {(device.manufacturer_url || device.webshop_url) && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {device.manufacturer_url && (
@@ -160,22 +162,35 @@ export function DeviceDetailView({
               </div>
             )}
           </div>
+
+          {/* Product image below the device card — only when the hero shows
+              the mood image instead. */}
+          {showProductThumb && (
+            <div>
+              <button
+                className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark transition hover:border-tm-accent/60"
+                onClick={() => setLightbox("image")}
+                title={t("detail.zoom")}
+              >
+                <MediaImage
+                  relPath={device.image_path}
+                  className="aspect-video w-full"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
+                  <ZoomIn size={28} className="text-white" />
+                </div>
+              </button>
+              <p className="mt-1.5 text-xs text-tm-gray">
+                {t("detail.productImage")}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Right column: detail sections */}
         <div className="space-y-4">
           <Section title={t("detail.specs")}>
             <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
-              <div>
-                <p className="text-xs text-tm-gray">{t("fields.rating")}</p>
-                <div className="mt-1">
-                  {device.overall_rating != null ? (
-                    <StarRating value={device.overall_rating} />
-                  ) : (
-                    <span className="text-sm text-tm-gray">—</span>
-                  )}
-                </div>
-              </div>
               <SpecItem
                 label={t("fields.impedance")}
                 value={
@@ -380,9 +395,10 @@ function UrlButton({ url, icon }: { url: string; icon: ReactNode }) {
   );
 }
 
-function Chip({ label }: { label: string }) {
+function Chip({ label, icon }: { label: string; icon?: ReactNode }) {
   return (
-    <span className="rounded-full border border-tm-dark bg-tm-darker px-2.5 py-0.5 text-xs text-tm-fg">
+    <span className="flex items-center gap-1.5 rounded-full border border-tm-dark bg-tm-darker px-2.5 py-0.5 text-xs text-tm-fg">
+      {icon && <span className="text-tm-gray">{icon}</span>}
       {label}
     </span>
   );

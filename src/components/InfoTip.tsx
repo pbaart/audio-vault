@@ -64,7 +64,9 @@ export function InfoTip({
           role="tooltip"
           className="absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 rounded-lg border border-tm-dark bg-tm-bg p-3 text-left shadow-xl"
         >
-          <span className="block text-xs font-semibold text-tm-fg">{label}</span>
+          <span className="block text-xs font-semibold text-tm-fg">
+            {label}
+          </span>
           <span className="mt-1.5 block text-xs leading-relaxed text-tm-gray">
             <span className="font-semibold uppercase tracking-wide text-tm-fg">
               {t("soundInfo.definition")}

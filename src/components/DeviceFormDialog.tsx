@@ -244,11 +244,7 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
   const checkRange1to5 = (v: string, key: string) => {
     if (
       v !== "" &&
-      !(
-        Number.isInteger(Number(v)) &&
-        Number(v) >= 1 &&
-        Number(v) <= 5
-      )
+      !(Number.isInteger(Number(v)) && Number(v) >= 1 && Number(v) <= 5)
     ) {
       e[key] = t("form.validation.range1to5");
     }
