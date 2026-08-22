@@ -4,7 +4,8 @@ Audio Vault is a lightweight, local-first Linux desktop application designed
 for audiophiles to manage headphones, IEMs, frequency response measurement
 curves, technical specifications, and tube amplifier compatibility.
 
-**Status:** Phases 1 (MVP) and 2 (web auto-fetch) implemented in this repository.
+**Status:** Phases 1 (MVP), 2 (web auto-fetch) and 3 (OPRA preset lookup)
+implemented in this repository.
 The authoritative feature/spec document is `docs/audio-vault-spec.md`.
 
 **License:** MIT — see [LICENSE](LICENSE). Copyright (c) 2026 pbaart.
@@ -68,7 +69,7 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v4 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v14 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
@@ -89,13 +90,18 @@ CREATE TABLE IF NOT EXISTS devices (
   tube_amp_suitable TEXT,                 -- 'Yes' | 'No' | 'OTL Only' | 'Transformer Only'
   drive_difficulty TEXT,                  -- 'Easy' | 'Moderate' | 'Demanding'
   sound_signature TEXT,                   -- 'Neutral' | 'Warm' | 'V-Shaped' | 'Bright' | 'Harman' | 'Dark'
-  soundstage_rating INTEGER,              -- Scale 1-5
+  soundstage_rating INTEGER,              -- 0.5–5 in 0.5 steps, stored 2x (v14)
   listening_notes TEXT,
   fr_graph_path TEXT,                     -- Relative path to measurement graph image
   peq_settings TEXT,                      -- JSON array: [{ type, freq_hz, gain_db, q }]
   peq_source TEXT,                        -- Provenance of the bands (OPRA preset / imported file); NULL when manual/none
   custom_fields TEXT,                     -- JSON array: [{ key, value }]
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  overall_rating INTEGER,                 -- v9: 0.5–5 in 0.5 steps, stored 2x
+  imaging_rating INTEGER,                 -- v10: The Sound attribute, stored 2x
+  detail_retrieval_rating INTEGER,        -- v11: The Sound attribute, stored 2x
+  timbre_rating INTEGER,                  -- v12: The Sound attribute, stored 2x
+  tonal_balance_rating INTEGER            -- v13: The Sound attribute, stored 2x
 );
 ```
 
@@ -110,11 +116,12 @@ type, and can be overridden manually per device:
 | --- | --- | --- |
 | Impedance ≥ 120 Ω | `Yes` | **Perfect Match** |
 | 32–119 Ω + Dynamic driver | `OTL Only` | **Limited Compatibility** |
-| 32–119 Ω + non-Dynamic driver | `Transformer Only` | **Not Recommended** |
-| < 32 Ω | `No` | **Not Supported** |
+| 32–119 Ω + non-Dynamic driver | `Transformer Only` | **Not Advised** |
+| < 32 Ω | `No` | **Not Possible** |
 | Impedance unknown (NULL) | — | no badge |
 
-Display labels live in `TUBE_BADGE_LABELS` (src/types.ts); the DB keeps the short stored codes, so relabeling needs no migration.
+Display labels live in the locale files (`tube.badges.*`, rendered via
+`tubeBadgeLabel`); the DB keeps the short stored codes, so relabeling needs no migration.
 
 ---
 
@@ -137,8 +144,9 @@ Display labels live in `TUBE_BADGE_LABELS` (src/types.ts); the DB keeps the shor
    The purchase date is a plain text input rendered/validated in the
    *configured* date format (not the OS-locale native date picker); it
    is stored as ISO `YYYY-MM-DD` after `parseDateToISO()` converts it
-   (`src/lib/format.ts`). Brand and color inputs have `<datalist>`
-   autocomplete fed by `getDistinctBrands()` / `getDistinctColors()`.
+   (`src/lib/format.ts`). Brand, color and custom-field-key inputs have `<datalist>`
+   autocomplete fed by `getDistinctBrands()` / `getDistinctColors()` /
+   `getDistinctCustomKeys()`.
    The FiiO DSP XML encoding used by the import parser: type
    0=PK/1=LSC/2=HSC, freq raw Hz, gain `(raw - 120) / 10` dB, Q
    `raw / 10`, `s` (shelf slope) ignored. Gain offset 120 is **confirmed**
@@ -151,14 +159,20 @@ Display labels live in `TUBE_BADGE_LABELS` (src/types.ts); the DB keeps the shor
    response graph (combined magnitude of the biquad bands, RBJ
    cookbook formulas — `src/lib/peqCurve.ts`, OPRA-styled: fixed ±15 dB
    window, gradient fill, band markers, legend) with the persisted
-   `peq_source` attribution line, FR graph with lightbox, custom fields.
+   `peq_source` attribution line, FR graph with lightbox, extra (custom)
+   fields. The device card shows the overall star rating under the name
+   plus icon chips (type/driver/color/connector/tube badge) with styled
+   field-name tooltips; "The Sound" lists the five rated attributes as
+   read-only dot ratings with info popovers. Empty sections (extra, FR,
+   PEQ) are hidden when they have no data.
 5. **Deletion:** confirm dialog; the device's media files (image + FR
    graph) are removed from `media/` on delete. Replacing an image in the
    form deletes the superseded file on successful save.
 6. **Settings:** XDG path display, "open media folder" (system file
    manager), theme (5 selectable dark color schemes, default Tokyo Night),
-   currency + date format,
-   web-fetch info, tube-rule reference, about.
+   language (EN/DE/NL/FR), currency + date format, web-fetch info,
+   tube-rule reference, and an About section showing the running app
+   version (Tauri `getVersion()`, embedded from tauri.conf.json).
 
 ### Phase 2 — Web auto-fetch (implemented)
 
@@ -271,12 +285,16 @@ npm run tauri dev
 # Frontend-only typecheck + bundle
 npm run build
 
+# Locale key parity across en/de/nl/fr
+npm run i18n:check
+
 # Rust checks (in src-tauri/)
 cargo check
 
 # Package native deb + RPM installers
 # (NO_STRIP=1 required on current Fedora: system libs use RELR sections
-#  that linuxdeploy's bundled strip cannot parse)
+#  that linuxdeploy's bundled strip cannot parse. This box has no dpkg-deb,
+#  so RPM-only unless `sudo dnf install dpkg-dev` first.)
 NO_STRIP=1 npm run tauri build
 # → src-tauri/target/release/bundle/rpm/Audio Vault-*.rpm
 # → src-tauri/target/release/bundle/deb/audio-vault_*.deb

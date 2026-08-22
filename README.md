@@ -9,7 +9,8 @@ A local-first desktop application for audiophiles to manage a collection of
 headphones and IEMs. Built with [Tauri v2](https://tauri.app) (Rust) and
 React + TypeScript, styled with Tailwind CSS in one of five dark color
 schemes (Tokyo Night default, Gruvbox Dark, Dracula, Catppuccin Mocha,
-Monokai — switchable in Settings).
+Monokai — switchable in Settings). The interface is available in English,
+German, Dutch and French.
 
 All data lives on this machine in XDG directories — nothing leaves it:
 
@@ -34,11 +35,18 @@ Device detail view:
 
 - Collection overview with grid, search, filters (type / driver / tube-amp
   compatibility) and sorting (name, added, impedance, price)
-- Device detail view: tech specs, listening notes, PEQ response graph
-  (OPRA-styled, with source attribution), frequency response graph,
-  custom fields
-- Add/Edit dialog with validation, image + FR-graph picking, custom
-  key/value fields, and the PEQ section:
+- **Overall star rating** with half-star support (0.5–5), shown in the
+  form, the detail view and both collection views
+- **"The Sound"** section in the detail view: five rated attributes
+  (soundstage, imaging, detail retrieval, timbre, tonal balance) scored
+  with interactive half-dot inputs, each label carrying an info popover
+  explaining what it is and how it sounds
+- Device detail view: tech specs, The Sound, listening notes, PEQ response
+  graph (OPRA-styled, with source attribution), frequency response graph,
+  extra (custom) fields — empty sections stay hidden
+- Add/Edit dialog organized like the detail view, with validation,
+  image + FR-graph picking, autocomplete for brand / color / custom-field
+  keys, and the PEQ section:
   - **OPRA preset lookup** (primary source): entering brand + model
     auto-checks the [OPRA](https://opra.roon.app) community-preset
     database (downloaded + cached in the background, ~13 MB); matching
@@ -50,7 +58,9 @@ Device detail view:
 - Tube-amp compatibility badge computed from impedance + driver type
   (override-able per device)
 - Lightbox image viewer
-- Settings screen showing the XDG paths and an "open media folder" action
+- Settings screen: language (EN/DE/NL/FR), currency, date format, color
+  scheme, XDG paths, an "open media folder" action, and an About section
+  showing the running app version
 - Bundles: Linux (`.deb`, `.rpm`, `.AppImage`) and macOS (`.app`, `.dmg`), built via GitHub Actions CI
 
 ### Tube-amp compatibility rule
@@ -59,8 +69,8 @@ Device detail view:
 | --- | --- |
 | Impedance ≥ 120 Ω | **Perfect Match** |
 | 32–119 Ω + Dynamic driver | **Limited Compatibility** |
-| 32–119 Ω + non-Dynamic driver | **Not Recommended** |
-| < 32 Ω | **Not Supported** |
+| 32–119 Ω + non-Dynamic driver | **Not Advised** |
+| < 32 Ω | **Not Possible** |
 | Impedance unknown | no badge |
 
 Those are the display labels — the database stores the short codes (`Yes`, `OTL Only`, `Transformer Only`, `No`), so changing display names never requires a migration.
@@ -91,7 +101,7 @@ Behaviour notes:
   `~/.local/share/audio-vault/cache/` (24 h for the main index, 7 days for
   the federation list and federated books), so only the first lookup is
   slow.
-- **Privacy.** Requests go out with a plain user agent (`AudioVault/0.2`)
+- **Privacy.** Requests go out with a plain user agent (`AudioVault/0.3`)
   to squig.link, DuckDuckGo and the result pages. No API keys or
   credentials are needed or stored.
 - FR data files use squig.link's REW text format (`frequency\tamp\tphase`);
@@ -122,6 +132,8 @@ NO_STRIP=1 npm run tauri build
 
 The frontend type-checks and bundles with `npm run build`
 (`tsc && vite build`); the Rust side with `cargo check` in `src-tauri/`.
+Locale key parity across the four languages is enforced with
+`npm run i18n:check`.
 
 ## Project layout
 
@@ -138,6 +150,8 @@ app/
 │   │   ├── tube.ts         # Tube-amp compatibility rule
 │   │   ├── settings.ts     # Config access (theme, currency, dates)
 │   │   ├── themes.ts       # Color schemes: tokens, chart palettes, applyTheme
+│   │   ├── format.ts       # Price/date formatting helpers
+│   │   ├── i18n.ts         # i18next setup, enum labels, note localization
 │   │   ├── fetchSpecs.ts   # Phase 2: fetch/download command wrappers
 │   │   ├── renderFr.ts     # Phase 2: FR curve → PNG (canvas) + SVG preview
 │   │   ├── opra.ts         # Phase 3: OPRA lookup wrapper + band conversion
@@ -148,8 +162,13 @@ app/
 │       ├── CollectionView.tsx
 │       ├── DeviceDetailView.tsx
 │       ├── DeviceFormDialog.tsx  # incl. the "Web fetch" panel + OPRA PEQ section
+│       ├── DotRating.tsx         # half-dot rating input (sound attributes)
+│       ├── FrPreview.tsx         # fetched FR curve mini-chart (SVG)
+│       ├── InfoTip.tsx           # hover/click info popover (The Sound labels)
 │       ├── PeqGraph.tsx          # PEQ response graph (JSX, themed)
 │       ├── SettingsView.tsx      # incl. the "Web fetch" info section
+│       ├── StarRating.tsx        # half-star rating input (overall rating)
+│       ├── Tip.tsx               # styled hover tooltip for badges/pills
 │       ├── Lightbox.tsx
 │       ├── MediaImage.tsx
 │       ├── Modal.tsx
@@ -161,7 +180,7 @@ app/
     │   │                   #   media_save_bytes, media_download_image,
     │   │                   #   open_media_folder, read_config, save_config,
     │   │                   #   fetch_specs, fetch_opra_presets
-    │   │                   #   + DB migrations (v5 adds peq_source)
+    │   │                   #   + DB migrations (v1–v14; v9+ ratings, v14 doubles sound ratings)
     │   ├── fetch_specs.rs  # Phase 2: squig.link index matching, REW
     │   │                   #   parsing, web search, spec scraping
     │   └── fetch_opra.rs   # Phase 3: OPRA database download/cache, parse,
