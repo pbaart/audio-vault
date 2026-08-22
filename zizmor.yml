@@ -1,0 +1,11 @@
+# Zizmor configuration for Audio Vault.
+#
+# The release workflow (.github/workflows/tauri.yml) uses actions/setup-node
+# v4.4.0, which has no automatic caching, and the project has no packageManager
+# field in package.json. The cache-poisoning audit false-positives on it
+# (zizmor issue #1485), so we ignore that rule for this file. The explicit npm
+# cache is still disabled on tag (release) runs in the workflow itself.
+rules:
+  cache-poisoning:
+    ignore:
+      - tauri.yml
