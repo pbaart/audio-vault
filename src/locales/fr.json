@@ -2,7 +2,11 @@
   "app": {
     "title": "Audio Vault",
     "loading": "Chargement de la collection…",
-    "error": "Une erreur est survenue"
+    "error": "Une erreur est survenue",
+      "minimize": "Étroquer",
+      "maximize": "Agrandir",
+      "restore": "Restaurer",
+      "close": "Fermer"
   },
   "nav": {
     "collection": "Casques",

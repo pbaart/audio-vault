@@ -9,6 +9,7 @@ import { getSettings, updateSettings, type AppSettings } from "./lib/settings";
 import { setTheme } from "./lib/themes";
 import { removeMediaFile, setMediaDir } from "./lib/media";
 import { CollectionView } from "./components/CollectionView";
+import { TitleBar, isCsd } from "./components/TitleBar";
 import { DeviceDetailView } from "./components/DeviceDetailView";
 import { DeviceFormDialog } from "./components/DeviceFormDialog";
 import { SettingsView } from "./components/SettingsView";
@@ -39,6 +40,7 @@ function histState(): HistState {
 
 export default function App() {
   const { t } = useTranslation();
+  const csd = isCsd();
   const [booted, setBooted] = useState(false);
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -204,25 +206,32 @@ export default function App() {
 
   if (error) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-3 bg-tm-bg p-8 text-center">
-        <h1 className="text-lg font-semibold text-tm-red">{t("app.error")}</h1>
-        <p className="max-w-md break-all text-sm text-tm-gray">
-          {localizeNote(error)}
-        </p>
+      <div className="flex h-screen flex-col bg-tm-bg">
+        {csd && <TitleBar />}
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
+          <h1 className="text-lg font-semibold text-tm-red">{t("app.error")}</h1>
+          <p className="max-w-md break-all text-sm text-tm-gray">
+            {localizeNote(error)}
+          </p>
+        </div>
       </div>
     );
   }
 
   if (!booted || !settings) {
     return (
-      <div className="flex h-screen items-center justify-center bg-tm-bg">
-        <p className="text-sm text-tm-gray">{t("app.loading")}</p>
+      <div className="flex h-screen flex-col bg-tm-bg">
+        {csd && <TitleBar />}
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-sm text-tm-gray">{t("app.loading")}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="flex h-screen flex-col bg-tm-bg text-tm-fg">
+      {csd && <TitleBar />}
       <header className="flex items-center gap-4 border-b border-tm-dark bg-tm-darker px-4 py-2">
         <div className="flex items-center gap-2">
           <AudioLines size={20} className="text-tm-accent" />

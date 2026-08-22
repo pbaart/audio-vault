@@ -1,0 +1,14 @@
+{
+  "app": {
+    "windows": [
+      {
+        "title": "Audio Vault",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1200,
+        "minHeight": 840,
+        "decorations": false
+      }
+    ]
+  }
+}

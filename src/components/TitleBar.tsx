@@ -1,0 +1,86 @@
+import { useEffect, useState } from "react";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { Copy, Minus, Square, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { isTauri } from "../lib/paths";
+import { cls } from "../ui";
+
+/**
+ * True when we draw our own window chrome: on Linux the native frame is
+ * disabled (tauri.linux.conf.json) because KWin/GNOME title bars follow
+ * the system theme, not the app's active color scheme.
+ */
+export function isCsd(): boolean {
+  return isTauri() && /Linux/.test(navigator.userAgent);
+}
+
+/**
+ * Custom title bar shown instead of the native one on Linux. Styled with
+ * the app's CSS variables so it always matches the active color scheme.
+ * Dragging works via data-tauri-drag-region; double-clicking the region
+ * toggles maximize (handled by Tauri's injected drag script).
+ */
+export function TitleBar() {
+  const { t } = useTranslation();
+  const win = getCurrentWindow();
+  const [maximized, setMaximized] = useState(false);
+
+  useEffect(() => {
+    let unlisten: (() => void) | undefined;
+    win
+      .isMaximized()
+      .then(setMaximized)
+      .catch(() => {});
+    win
+      .onResized(() => {
+        win.isMaximized().then(setMaximized).catch(() => {});
+      })
+      .then((un) => {
+        unlisten = un;
+      })
+      .catch(() => {});
+    return () => {
+      unlisten?.();
+    };
+  }, [win]);
+
+  const btn =
+    "flex h-7 w-9 items-center justify-center text-tm-gray transition hover:bg-tm-dark hover:text-tm-fg";
+
+  return (
+    <div
+      data-tauri-drag-region
+      className="flex h-9 w-full shrink-0 select-none items-center justify-between border-b border-tm-dark bg-tm-darker pl-3"
+    >
+      <span className="text-xs font-medium tracking-wide text-tm-gray">
+        Audio Vault
+      </span>
+      <div className="flex items-center">
+        <button
+          className={btn}
+          onClick={() => void win.minimize()}
+          aria-label={t("app.minimize")}
+          title={t("app.minimize")}
+        >
+          <Minus size={14} />
+        </button>
+        <button
+          className={btn}
+          onClick={() => void (maximized ? win.unmaximize() : win.maximize())}
+          aria-label={maximized ? t("app.restore") : t("app.maximize")}
+          title={maximized ? t("app.restore") : t("app.maximize")}
+        >
+          {maximized ? <Copy size={13} /> : <Square size={13} />}
+        </button>
+        <button
+          className={cls(btn, "hover:bg-red-500/80 hover:text-white")}
+          onClick={() => void win.close()}
+          aria-label={t("app.close")}
+          title={t("app.close")}
+        >
+          <X size={15} />
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -2,7 +2,11 @@
   "app": {
     "title": "Audio Vault",
     "loading": "Loading collection…",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+      "minimize": "Minimize",
+      "maximize": "Maximize",
+      "restore": "Restore",
+      "close": "Close"
   },
   "nav": {
     "collection": "Headphones",

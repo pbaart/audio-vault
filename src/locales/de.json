@@ -2,7 +2,11 @@
   "app": {
     "title": "Audio Vault",
     "loading": "Sammlung wird geladen …",
-    "error": "Etwas ist schiefgelaufen"
+    "error": "Etwas ist schiefgelaufen",
+      "minimize": "Minimieren",
+      "maximize": "Maximieren",
+      "restore": "Herstellen",
+      "close": "Schließen"
   },
   "nav": {
     "collection": "Kopfhörer",

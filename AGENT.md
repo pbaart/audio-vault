@@ -36,6 +36,16 @@ The authoritative feature/spec document is `docs/audio-vault-spec.md`.
 sudo dnf install rpm-build gcc-c++ webkit2gtk4.1-devel openssl-devel librsvg2-devel
 ```
 
+Window chrome (Linux): `src-tauri/tauri.linux.conf.json` (merged over the
+base config for Linux builds) sets `decorations: false`, and the frontend
+renders its own title bar (`TitleBar.tsx`, shown when `isCsd()` — Tauri +
+Linux user agent). KWin/GNOME title bars follow the system theme, not the
+app's active color scheme, so the in-app bar (styled with the same CSS
+variables) is the only way to match it. Dragging via
+`data-tauri-drag-region`; double-click toggles maximize (Tauri's injected
+drag script); min/max/close call `getCurrentWindow()` APIs. Other
+platforms keep native decorations.
+
 Bundle config lives in `src-tauri/tauri.conf.json`:
 
 ```json

@@ -2,7 +2,11 @@
   "app": {
     "title": "Audio Vault",
     "loading": "Collectie laden…",
-    "error": "Er ging iets mis"
+    "error": "Er ging iets mis",
+      "minimize": "Minimaliseren",
+      "maximize": "Maximaliseren",
+      "restore": "Herstellen",
+      "close": "Sluiten"
   },
   "nav": {
     "collection": "Headphones",
