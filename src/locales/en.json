@@ -93,6 +93,10 @@
     "driveDifficulty": "Drive difficulty",
     "soundSignature": "Sound signature",
     "soundstage": "Soundstage",
+    "imaging": "Imaging",
+    "detailRetrieval": "Detail retrieval",
+    "timbre": "Timbre",
+    "tonalBalance": "Tonal balance",
     "rating": "Rating",
     "tubeAmp": "Tube amp",
     "actions": "Actions"
@@ -143,6 +147,7 @@
     "device": "Device",
     "connectorLabel": "Connector:",
     "specs": "Technical Specs",
+    "theSound": "The Sound",
     "notes": "Listening Notes",
     "noNotes": "No listening notes.",
     "peq": "PEQ Settings",
@@ -207,6 +212,10 @@
     "ruleResult": "Rule result:",
     "sound": "Sound",
     "soundstage": "Soundstage (1–5)",
+    "imaging": "Imaging (1–5)",
+    "detailRetrieval": "Detail retrieval (1–5)",
+    "timbre": "Timbre (1–5)",
+    "tonalBalance": "Tonal balance (1–5)",
     "rating": "Overall rating",
     "starAria": "Rate {{n}} out of 5",
     "starClearAria": "Clear rating",
@@ -247,6 +256,7 @@
       "sensitivityNumber": "Sensitivity must be a number",
       "soundstageRange": "Soundstage must be 1–5",
       "ratingRange": "Rating must be between 0.5 and 5",
+      "range1to5": "Must be 1–5",
       "urlInvalid": "Enter a valid URL (http or https)",
       "peqFreqRequired": "Frequency is required",
       "peqNumber": "Enter a number",
@@ -254,6 +264,37 @@
       "peqQRequired": "Q is required for this type",
       "peqQPositive": "Q must be > 0",
       "dateInvalid": "Invalid date — expected {{format}}"
+    }
+  },
+  "soundInfo": {
+    "aria": "More information about {{field}}",
+    "definition": "Definition",
+    "traits": "Traits",
+    "experience": "Experience",
+    "soundstage": {
+      "definition": "The perceived size and space of the sound field.",
+      "traits": "Width, depth, and height of the virtual room.",
+      "experience": "Makes music feel like an open live concert or an intimate small room."
+    },
+    "imaging": {
+      "definition": "The precise placement of instruments and voices within the soundstage.",
+      "traits": "Focus, separation, and directional accuracy.",
+      "experience": "Allows you to point your finger at where the singer or guitar stands."
+    },
+    "detailRetrieval": {
+      "definition": "The ability to reveal micro-textures and subtle background sounds.",
+      "traits": "Clarity, resolution, and speed.",
+      "experience": "Lets you hear a breath intake, finger slides on guitar strings, or distant drum echoes."
+    },
+    "timbre": {
+      "definition": "The natural, realistic tone quality of instruments and human voices.",
+      "traits": "Realism, body, and lack of artificial metallic or plastic ringing.",
+      "experience": "Makes a violin sound like wood and strings rather than a digital tone."
+    },
+    "tonalBalance": {
+      "definition": "The relative volume levels of the bass, midrange, and treble frequencies.",
+      "traits": "Neutrality, warmth, brightness, or bass-heavy response.",
+      "experience": "Ensures no single frequency range overwhelms the music unnaturally."
     }
   },
   "notes": {

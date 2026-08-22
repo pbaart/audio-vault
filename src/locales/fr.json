@@ -93,6 +93,10 @@
     "driveDifficulty": "Difficulté de pilotage",
     "soundSignature": "Signature sonore",
     "soundstage": "Scène sonore",
+    "imaging": "Imagerie",
+    "detailRetrieval": "Restitution du détail",
+    "timbre": "Timbre",
+    "tonalBalance": "Équilibre tonal",
     "rating": "Note",
     "tubeAmp": "Ampli à tubes",
     "actions": "Actions"
@@ -143,6 +147,7 @@
     "device": "Appareil",
     "connectorLabel": "Connecteur :",
     "specs": "Caractéristiques techniques",
+    "theSound": "Le Son",
     "notes": "Notes d'écoute",
     "noNotes": "Aucune note d'écoute.",
     "peq": "Réglages PEQ",
@@ -207,6 +212,10 @@
     "ruleResult": "Résultat de la règle :",
     "sound": "Son",
     "soundstage": "Scène sonore (1–5)",
+    "imaging": "Imagerie (1–5)",
+    "detailRetrieval": "Restitution du détail (1–5)",
+    "timbre": "Timbre (1–5)",
+    "tonalBalance": "Équilibre tonal (1–5)",
     "rating": "Note globale",
     "starAria": "Noter {{n}} sur 5",
     "starClearAria": "Effacer la note",
@@ -247,6 +256,7 @@
       "sensitivityNumber": "La sensibilité doit être un nombre",
       "soundstageRange": "La scène sonore doit être entre 1 et 5",
       "ratingRange": "La note doit être comprise entre 0,5 et 5",
+      "range1to5": "Doit être entre 1 et 5",
       "urlInvalid": "Saisissez une URL valide (http ou https)",
       "peqFreqRequired": "La fréquence est requise",
       "peqNumber": "Saisissez un nombre",
@@ -254,6 +264,37 @@
       "peqQRequired": "Q est requis pour ce type",
       "peqQPositive": "Q doit être > 0",
       "dateInvalid": "Date invalide — format attendu {{format}}"
+    }
+  },
+  "soundInfo": {
+    "aria": "Plus d'informations sur {{field}}",
+    "definition": "Définition",
+    "traits": "Caractéristiques",
+    "experience": "Expérience",
+    "soundstage": {
+      "definition": "La taille et l'espace perçus du champ sonore.",
+      "traits": "Largeur, profondeur et hauteur de la pièce virtuelle.",
+      "experience": "Donne à la musique le sentiment d'un concert live ouvert ou d'une petite salle intime."
+    },
+    "imaging": {
+      "definition": "Le placement précis des instruments et des voix dans la scène sonore.",
+      "traits": "Focus, séparation et précision directionnelle.",
+      "experience": "Permet de pointer du doigt l'endroit où se trouvent le chanteur ou la guitare."
+    },
+    "detailRetrieval": {
+      "definition": "La capacité à révéler les micro-textures et les sons subtils en arrière-plan.",
+      "traits": "Clarté, résolution et rapidité.",
+      "experience": "Permet d'entendre une prise de souffle, des doigts sur les cordes d'une guitare ou des échos lointains de batterie."
+    },
+    "timbre": {
+      "definition": "La qualité tonale naturelle et réaliste des instruments et des voix humaines.",
+      "traits": "Réalisme, corps et absence de son métallique ou plastique artificiel.",
+      "experience": "Fait qu'un violon sonne comme du bois et des cordes plutôt que comme un ton numérique."
+    },
+    "tonalBalance": {
+      "definition": "Les niveaux de volume relatifs des fréquences graves, médiums et aigus.",
+      "traits": "Neutralité, chaleur, brillance ou réponse chargée dans les graves.",
+      "experience": "Assure qu'aucune bande de fréquences n'écrase la musique de façon artificielle."
     }
   },
   "notes": {

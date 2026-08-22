@@ -64,6 +64,15 @@ export interface Device {
  sound_signature: SoundSignature | null;
  soundstage_rating: number | null;
  /**
+  * "The Sound" sub-ratings (1–5, null = unrated): imaging, detail
+  * retrieval, timbre and tonal balance. See the detail view's The Sound
+  * section for the user-facing definitions.
+  */
+ imaging_rating: number | null;
+ detail_retrieval_rating: number | null;
+ timbre_rating: number | null;
+ tonal_balance_rating: number | null;
+ /**
   * User's overall rating in 0.5 steps (0.5–5). Stored as 2× the value in
   * the database (`overall_rating` INTEGER); `null` = unrated.
   */

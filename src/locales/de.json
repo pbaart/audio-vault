@@ -93,6 +93,10 @@
     "driveDifficulty": "Ansteuerbarkeit",
     "soundSignature": "Klangcharakter",
     "soundstage": "Klangbühne",
+    "imaging": "Imaging",
+    "detailRetrieval": "Detailauflösung",
+    "timbre": "Klangfarbe",
+    "tonalBalance": "Tonale Balance",
     "rating": "Bewertung",
     "tubeAmp": "Röhrenverstärker",
     "actions": "Aktionen"
@@ -143,6 +147,7 @@
     "device": "Gerät",
     "connectorLabel": "Anschluss:",
     "specs": "Technische Daten",
+    "theSound": "Der Klang",
     "notes": "Hörnotizen",
     "noNotes": "Keine Hörnotizen.",
     "peq": "PEQ-Einstellungen",
@@ -207,6 +212,10 @@
     "ruleResult": "Regelergebnis:",
     "sound": "Klang",
     "soundstage": "Klangbühne (1–5)",
+    "imaging": "Imaging (1–5)",
+    "detailRetrieval": "Detailauflösung (1–5)",
+    "timbre": "Klangfarbe (1–5)",
+    "tonalBalance": "Tonale Balance (1–5)",
     "rating": "Gesamtbewertung",
     "starAria": "{{n}} von 5 bewerten",
     "starClearAria": "Bewertung entfernen",
@@ -247,6 +256,7 @@
       "sensitivityNumber": "Empfindlichkeit muss eine Zahl sein",
       "soundstageRange": "Klangbühne muss 1–5 sein",
       "ratingRange": "Bewertung muss zwischen 0,5 und 5 liegen",
+      "range1to5": "Muss 1–5 sein",
       "urlInvalid": "Gültige URL eingeben (http oder https)",
       "peqFreqRequired": "Frequenz ist erforderlich",
       "peqNumber": "Zahl eingeben",
@@ -254,6 +264,37 @@
       "peqQRequired": "Q ist für diesen Typ erforderlich",
       "peqQPositive": "Q muss > 0 sein",
       "dateInvalid": "Ungültiges Datum — erwartet {{format}}"
+    }
+  },
+  "soundInfo": {
+    "aria": "Weitere Informationen zu {{field}}",
+    "definition": "Definition",
+    "traits": "Eigenschaften",
+    "experience": "Erfahrung",
+    "soundstage": {
+      "definition": "Die wahrgenommene Größe und der Raum des Klangfeldes.",
+      "traits": "Breite, Tiefe und Höhe des virtuellen Raums.",
+      "experience": "Lässt Musik wie ein offenes Live-Konzert oder einen intimen kleinen Raum wirken."
+    },
+    "imaging": {
+      "definition": "Die präzise Platzierung von Instrumenten und Stimmen innerhalb der Klangbühne.",
+      "traits": "Fokus, Trennung und Richtungstreue.",
+      "experience": "Erlaubt es, mit dem Finger darauf zu zeigen, wo der Sänger oder die Gitarre steht."
+    },
+    "detailRetrieval": {
+      "definition": "Die Fähigkeit, Mikrostrukturen und dezente Hintergrundgeräusche offenbaren zu können.",
+      "traits": "Klarheit, Auflösung und Geschwindigkeit.",
+      "experience": "Lässt Atemzüge, Fingerbewegungen auf Gitarrensaiten oder ferne Trommelechos hören."
+    },
+    "timbre": {
+      "definition": "Die natürliche, realistische Tonqualität von Instrumenten und menschlichen Stimmen.",
+      "traits": "Realismus, Körperlichkeit und fehlendes künstliches metallisches oder plastisches Klingeln.",
+      "experience": "Lässt eine Violine wie Holz und Saiten klingen statt wie ein digitaler Ton."
+    },
+    "tonalBalance": {
+      "definition": "Die relativen Lautstärken der Bass-, Mittel- und Höhenfrequenzen.",
+      "traits": "Neutralität, Wärme, Helligkeit oder bassbetonter Abgang.",
+      "experience": "Stellt sicher, dass kein einzelner Frequenzbereich die Musik unnatürlich überlagert."
     }
   },
   "notes": {

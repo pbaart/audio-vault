@@ -546,6 +546,30 @@ pub fn run() {
     // 1..=10 maps to 0.5..=5.0; NULL means unrated.
     sql: "ALTER TABLE devices ADD COLUMN overall_rating INTEGER;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 10,
+    description: "add_imaging_rating_column",
+    sql: "ALTER TABLE devices ADD COLUMN imaging_rating INTEGER;",
+    kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 11,
+    description: "add_detail_retrieval_rating_column",
+    sql: "ALTER TABLE devices ADD COLUMN detail_retrieval_rating INTEGER;",
+    kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 12,
+    description: "add_timbre_rating_column",
+    sql: "ALTER TABLE devices ADD COLUMN timbre_rating INTEGER;",
+    kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 13,
+    description: "add_tonal_balance_rating_column",
+    sql: "ALTER TABLE devices ADD COLUMN tonal_balance_rating INTEGER;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

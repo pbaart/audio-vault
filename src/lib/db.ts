@@ -9,8 +9,9 @@ const UPDATE_SQL =
   "price = ?, purchase_date = ?, driver_type = ?, impedance_ohms = ?, " +
   "sensitivity_db = ?, connector_type = ?, tube_amp_suitable = ?, " +
   "drive_difficulty = ?, sound_signature = ?, soundstage_rating = ?, " +
-  "overall_rating = ?, listening_notes = ?, fr_graph_path = ?, " +
-  "peq_settings = ?, peq_source = ?, custom_fields = ? " +
+  "imaging_rating = ?, detail_retrieval_rating = ?, timbre_rating = ?, " +
+  "tonal_balance_rating = ?, overall_rating = ?, listening_notes = ?, " +
+  "fr_graph_path = ?, peq_settings = ?, peq_source = ?, custom_fields = ? " +
   "WHERE id = ?";
 
 const INSERT_SQL =
@@ -18,9 +19,10 @@ const INSERT_SQL =
   "webshop_url, image_path, mood_image_path, price, " +
   "purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, " +
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
-  "overall_rating, listening_notes, fr_graph_path, peq_settings, peq_source, " +
-  "custom_fields) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "imaging_rating, detail_retrieval_rating, timbre_rating, " +
+  "tonal_balance_rating, overall_rating, listening_notes, fr_graph_path, " +
+  "peq_settings, peq_source, custom_fields) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -145,6 +147,10 @@ function rowToDevice(row: Row): Device {
     ) as Device["drive_difficulty"],
     sound_signature: asString(row.sound_signature) as Device["sound_signature"],
     soundstage_rating: asInt(row.soundstage_rating),
+    imaging_rating: asInt(row.imaging_rating),
+    detail_retrieval_rating: asInt(row.detail_retrieval_rating),
+    timbre_rating: asInt(row.timbre_rating),
+    tonal_balance_rating: asInt(row.tonal_balance_rating),
     overall_rating: ratingFromRow(row.overall_rating),
     listening_notes: asString(row.listening_notes),
     fr_graph_path: asString(row.fr_graph_path),
@@ -246,6 +252,10 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.drive_difficulty,
     device.sound_signature,
     device.soundstage_rating,
+    device.imaging_rating,
+    device.detail_retrieval_rating,
+    device.timbre_rating,
+    device.tonal_balance_rating,
     device.overall_rating == null
       ? null
       : Math.round(device.overall_rating * 2),

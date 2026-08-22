@@ -93,6 +93,10 @@
     "driveDifficulty": "Aandrijfmoeilijkheid",
     "soundSignature": "Klanksignatuur",
     "soundstage": "Soundstage",
+    "imaging": "Imaging",
+    "detailRetrieval": "Detailweergave",
+    "timbre": "Timbre",
+    "tonalBalance": "Tonaal evenwicht",
     "rating": "Beoordeling",
     "tubeAmp": "Buizenversterker",
     "actions": "Acties"
@@ -143,6 +147,7 @@
     "device": "Apparaat",
     "connectorLabel": "Aansluiting:",
     "specs": "Technische specificaties",
+    "theSound": "De Klank",
     "notes": "Luisternotities",
     "noNotes": "Geen luisternotities.",
     "peq": "PEQ-instellingen",
@@ -207,6 +212,10 @@
     "ruleResult": "Regelresultaat:",
     "sound": "Klank",
     "soundstage": "Soundstage (1–5)",
+    "imaging": "Imaging (1–5)",
+    "detailRetrieval": "Detailweergave (1–5)",
+    "timbre": "Timbre (1–5)",
+    "tonalBalance": "Tonaal evenwicht (1–5)",
     "rating": "Totale beoordeling",
     "starAria": "Beoordeel met {{n}} van 5",
     "starClearAria": "Beoordeling wissen",
@@ -247,6 +256,7 @@
       "sensitivityNumber": "Gevoeligheid moet een getal zijn",
       "soundstageRange": "Soundstage moet 1–5 zijn",
       "ratingRange": "Beoordeling moet tussen 0,5 en 5 liggen",
+      "range1to5": "Moet 1–5 zijn",
       "urlInvalid": "Vul een geldige URL in (http of https)",
       "peqFreqRequired": "Frequentie is verplicht",
       "peqNumber": "Vul een getal in",
@@ -254,6 +264,37 @@
       "peqQRequired": "Q is verplicht voor dit type",
       "peqQPositive": "Q moet > 0 zijn",
       "dateInvalid": "Ongeldige datum — verwacht {{format}}"
+    }
+  },
+  "soundInfo": {
+    "aria": "Meer informatie over {{field}}",
+    "definition": "Definitie",
+    "traits": "Kenmerken",
+    "experience": "Ervaring",
+    "soundstage": {
+      "definition": "De waargenomen grootte en ruimte van het geluidsveld.",
+      "traits": "Breedte, diepte en hoogte van de virtuele kamer.",
+      "experience": "Laat muziek klinken als een open live-concert of een intieme kleine kamer."
+    },
+    "imaging": {
+      "definition": "De nauwkeurige plaatsing van instrumenten en stemmen binnen het geluidsveld.",
+      "traits": "Focus, separatie en richtingsnauwkeurigheid.",
+      "experience": "Je kunt met je vinger wijzen naar waar de zanger of gitarist staat."
+    },
+    "detailRetrieval": {
+      "definition": "Het vermogen om microtexturen en subtiele achtergeluiden te onthullen.",
+      "traits": "Helderheid, resolutie en snelheid.",
+      "experience": "Je hoort een inademhaling, vingers over gitaarsnaren of verre trommelnaklanken."
+    },
+    "timbre": {
+      "definition": "De natuurlijke, realistische toonkwaliteit van instrumenten en menselijke stemmen.",
+      "traits": "Realisme, lichamelijkheid en geen kunstmatig metaal- of plasticgerinkel.",
+      "experience": "Maakt dat een viool klinkt als hout en snaren in plaats van een digitaal geluid."
+    },
+    "tonalBalance": {
+      "definition": "De relatieve luidheden van de bas-, midden- en hoogfrequenties.",
+      "traits": "Neutraliteit, warmte, helderheid of baszware weergave.",
+      "experience": "Zorgt ervoor dat geen enkel frequentiegebied de muziek onnatuurlijk overheerst."
     }
   },
   "notes": {

@@ -11,7 +11,7 @@ import {
 import { openUrl } from "@tauri-apps/plugin-opener";
 import type { Device } from "../types";
 import { formatDate, formatPrice } from "../lib/format";
-import { enumLabel, localeFor } from "../lib/i18n";
+import { enumLabel, localeFor, type TranslateFn } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
 import { deriveTubeBadge } from "../lib/tube";
 import { summarizePeq } from "../lib/peqCurve";
@@ -19,6 +19,7 @@ import { PeqGraph } from "./PeqGraph";
 import { MediaImage } from "./MediaImage";
 import { TubeBadge } from "./TubeBadge";
 import { StarRating } from "./StarRating";
+import { InfoTip } from "./InfoTip";
 import { Lightbox } from "./Lightbox";
 import { btnPrimary, cls } from "../ui";
 
@@ -219,12 +220,25 @@ export function DeviceDetailView({
                     : null
                 }
               />
-              <div>
-                <p className="text-xs text-tm-gray">{t("fields.soundstage")}</p>
-                <div className="mt-1">
-                  <SoundstageDots rating={device.soundstage_rating} />
-                </div>
-              </div>
+            </div>
+          </Section>
+
+          <Section title={t("detail.theSound")}>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+              <SoundField
+                field="soundstage"
+                rating={device.soundstage_rating}
+              />
+              <SoundField field="imaging" rating={device.imaging_rating} />
+              <SoundField
+                field="detailRetrieval"
+                rating={device.detail_retrieval_rating}
+              />
+              <SoundField field="timbre" rating={device.timbre_rating} />
+              <SoundField
+                field="tonalBalance"
+                rating={device.tonal_balance_rating}
+              />
             </div>
           </Section>
 
@@ -395,5 +409,94 @@ function SoundstageDots({ rating }: { rating: number | null }) {
       ))}
       <span className="ml-1 text-xs text-tm-gray">{rating}/5</span>
     </span>
+  );
+}
+
+type SoundFieldKey =
+  | "soundstage"
+  | "imaging"
+  | "detailRetrieval"
+  | "timbre"
+  | "tonalBalance";
+
+function soundLabel(t: TranslateFn, key: SoundFieldKey): string {
+  switch (key) {
+    case "soundstage":
+      return t("fields.soundstage");
+    case "imaging":
+      return t("fields.imaging");
+    case "detailRetrieval":
+      return t("fields.detailRetrieval");
+    case "timbre":
+      return t("fields.timbre");
+    case "tonalBalance":
+      return t("fields.tonalBalance");
+  }
+}
+
+function soundInfo(
+  t: TranslateFn,
+  key: SoundFieldKey,
+): { definition: string; traits: string; experience: string } {
+  switch (key) {
+    case "soundstage":
+      return {
+        definition: t("soundInfo.soundstage.definition"),
+        traits: t("soundInfo.soundstage.traits"),
+        experience: t("soundInfo.soundstage.experience"),
+      };
+    case "imaging":
+      return {
+        definition: t("soundInfo.imaging.definition"),
+        traits: t("soundInfo.imaging.traits"),
+        experience: t("soundInfo.imaging.experience"),
+      };
+    case "detailRetrieval":
+      return {
+        definition: t("soundInfo.detailRetrieval.definition"),
+        traits: t("soundInfo.detailRetrieval.traits"),
+        experience: t("soundInfo.detailRetrieval.experience"),
+      };
+    case "timbre":
+      return {
+        definition: t("soundInfo.timbre.definition"),
+        traits: t("soundInfo.timbre.traits"),
+        experience: t("soundInfo.timbre.experience"),
+      };
+    case "tonalBalance":
+      return {
+        definition: t("soundInfo.tonalBalance.definition"),
+        traits: t("soundInfo.tonalBalance.traits"),
+        experience: t("soundInfo.tonalBalance.experience"),
+      };
+  }
+}
+
+/** One rated attribute of The Sound: label + info icon + dot rating. */
+function SoundField({
+  field,
+  rating,
+}: {
+  field: SoundFieldKey;
+  rating: number | null;
+}) {
+  const { t } = useTranslation();
+  const label = soundLabel(t, field);
+  const info = soundInfo(t, field);
+  return (
+    <div>
+      <p className="flex items-center gap-1.5 text-xs text-tm-gray">
+        {label}
+        <InfoTip
+          label={label}
+          definition={info.definition}
+          traits={info.traits}
+          experience={info.experience}
+        />
+      </p>
+      <div className="mt-1">
+        <SoundstageDots rating={rating} />
+      </div>
+    </div>
   );
 }

@@ -111,6 +111,10 @@ interface FormState {
   drive_difficulty: DriveDifficulty | "";
   sound_signature: SoundSignature | "";
   soundstage_rating: string;
+  imaging_rating: string;
+  detail_retrieval_rating: string;
+  timbre_rating: string;
+  tonal_balance_rating: string;
   overall_rating: string;
   listening_notes: string;
   fr_graph_path: string | null;
@@ -143,6 +147,18 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
     sound_signature: device?.sound_signature ?? "",
     soundstage_rating:
       device?.soundstage_rating == null ? "" : String(device.soundstage_rating),
+    imaging_rating:
+      device?.imaging_rating == null ? "" : String(device.imaging_rating),
+    detail_retrieval_rating:
+      device?.detail_retrieval_rating == null
+        ? ""
+        : String(device.detail_retrieval_rating),
+    timbre_rating:
+      device?.timbre_rating == null ? "" : String(device.timbre_rating),
+    tonal_balance_rating:
+      device?.tonal_balance_rating == null
+        ? ""
+        : String(device.tonal_balance_rating),
     overall_rating:
       device?.overall_rating == null ? "" : String(device.overall_rating),
     listening_notes: device?.listening_notes ?? "",
@@ -225,6 +241,22 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
     )
   )
     e.overall_rating = t("form.validation.ratingRange");
+  const checkRange1to5 = (v: string, key: string) => {
+    if (
+      v !== "" &&
+      !(
+        Number.isInteger(Number(v)) &&
+        Number(v) >= 1 &&
+        Number(v) <= 5
+      )
+    ) {
+      e[key] = t("form.validation.range1to5");
+    }
+  };
+  checkRange1to5(f.imaging_rating, "imaging_rating");
+  checkRange1to5(f.detail_retrieval_rating, "detail_retrieval_rating");
+  checkRange1to5(f.timbre_rating, "timbre_rating");
+  checkRange1to5(f.tonal_balance_rating, "tonal_balance_rating");
   if (
     f.manufacturer_url.trim() !== "" &&
     normalizeUrl(f.manufacturer_url) == null
@@ -656,6 +688,22 @@ export function DeviceFormDialog({
           form.soundstage_rating === ""
             ? null
             : Math.min(5, Math.max(1, Number(form.soundstage_rating))),
+        imaging_rating:
+          form.imaging_rating === ""
+            ? null
+            : Math.min(5, Math.max(1, Number(form.imaging_rating))),
+        detail_retrieval_rating:
+          form.detail_retrieval_rating === ""
+            ? null
+            : Math.min(5, Math.max(1, Number(form.detail_retrieval_rating))),
+        timbre_rating:
+          form.timbre_rating === ""
+            ? null
+            : Math.min(5, Math.max(1, Number(form.timbre_rating))),
+        tonal_balance_rating:
+          form.tonal_balance_rating === ""
+            ? null
+            : Math.min(5, Math.max(1, Number(form.tonal_balance_rating))),
         overall_rating:
           form.overall_rating === ""
             ? null
@@ -1191,6 +1239,68 @@ export function DeviceFormDialog({
                 className={cls(selectCls, "w-full")}
                 value={form.soundstage_rating}
                 onChange={(e) => set("soundstage_rating", e.target.value)}
+              >
+                <option value="">{t("form.unknown")}</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("form.imaging")} error={errors.imaging_rating}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.imaging_rating}
+                onChange={(e) => set("imaging_rating", e.target.value)}
+              >
+                <option value="">{t("form.unknown")}</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field
+              label={t("form.detailRetrieval")}
+              error={errors.detail_retrieval_rating}
+            >
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.detail_retrieval_rating}
+                onChange={(e) => set("detail_retrieval_rating", e.target.value)}
+              >
+                <option value="">{t("form.unknown")}</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label={t("form.timbre")} error={errors.timbre_rating}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.timbre_rating}
+                onChange={(e) => set("timbre_rating", e.target.value)}
+              >
+                <option value="">{t("form.unknown")}</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field
+              label={t("form.tonalBalance")}
+              error={errors.tonal_balance_rating}
+            >
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.tonal_balance_rating}
+                onChange={(e) => set("tonal_balance_rating", e.target.value)}
               >
                 <option value="">{t("form.unknown")}</option>
                 {[1, 2, 3, 4, 5].map((n) => (
