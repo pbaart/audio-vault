@@ -15,8 +15,8 @@ OUT_DIR="${1:-$REPO_ROOT/dist}"
 NAME_BASE="audio-vault"
 
 # Version from package.json (single source of truth for the frontend).
-VERSION="$(grep -m1 '"version"' "$REPO_ROOT/package.json" \
-  | sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')"
+VERSION="$(grep -m1 '"version"' "$REPO_ROOT/package.json" |
+  sed -E 's/.*"version"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')"
 if [ -z "$VERSION" ]; then
   echo "error: could not determine version from package.json" >&2
   exit 1
@@ -30,9 +30,9 @@ STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/${NAME}"
 tar -C "$REPO_ROOT" \
-    --exclude='node_modules' --exclude='target' --exclude='dist' \
-    --exclude='.git' --exclude='.DS_Store' \
-    -cf - . | tar -C "$STAGE/${NAME}" -xf -
+  --exclude='node_modules' --exclude='target' --exclude='dist' \
+  --exclude='.git' --exclude='.DS_Store' \
+  -cf - . | tar -C "$STAGE/${NAME}" -xf -
 
 tar -czf "$OUT_DIR/${NAME}.tar.gz" -C "$STAGE" "${NAME}"
 
