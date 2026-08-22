@@ -21,6 +21,7 @@ jobs:
       contents: write
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         include:
           - platform: ubuntu-22.04
@@ -66,6 +67,7 @@ jobs:
           NO_STRIP: ${{ matrix.no_strip }}
         with:
           tagName: v__VERSION__
+          releaseName: v__VERSION__
           args: --bundles ${{ matrix.bundles }}
 
       - name: Package source tarball
