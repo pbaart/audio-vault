@@ -157,6 +157,7 @@
     "custom": "Extra"
   },
   "form": {
+    "calendarAria": "Pick a date from the calendar",
     "basic": "Basic",
     "images": "Images",
     "links": "Links",

@@ -141,9 +141,14 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    field rows, a live tube-badge preview, and the Phase 2 **Web fetch**
    panel (see below). There are **no manual PEQ rows** — the PEQ section
    is fully driven by OPRA lookup + file import (see Phase 3 below).
-   The purchase date is a plain text input rendered/validated in the
-   *configured* date format (not the OS-locale native date picker); it
-   is stored as ISO `YYYY-MM-DD` after `parseDateToISO()` converts it
+   The purchase date is a text input rendered/validated in the
+   *configured* date format (not the OS-locale native date picker —
+   WebKitGTK's date input has no reliable popup) plus a calendar icon
+   button opening a themed month-grid popover
+   (`src/components/DateCalendar.tsx`, Monday-first, Intl month/weekday
+   names, closes on outside click / Escape); picking a day writes the
+   display-formatted string back into the input. It is stored as ISO
+   `YYYY-MM-DD` after `parseDateToISO()` converts it
    (`src/lib/format.ts`). Brand, color and custom-field-key inputs have `<datalist>`
    autocomplete fed by `getDistinctBrands()` / `getDistinctColors()` /
    `getDistinctCustomKeys()`.

@@ -157,6 +157,7 @@
     "custom": "Extra"
   },
   "form": {
+    "calendarAria": "Datum im Kalender wählen",
     "basic": "Basis",
     "images": "Bilder",
     "links": "Links",

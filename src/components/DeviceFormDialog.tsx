@@ -29,7 +29,7 @@ import {
   TUBE_BADGES,
 } from "../types";
 import { deriveTubeBadge, describeTubeRule, tubeBadgeLabel } from "../lib/tube";
-import { enumLabel, localizeNote, type TranslateFn } from "../lib/i18n";
+import { enumLabel, localizeNote, localeFor, type TranslateFn } from "../lib/i18n";
 import {
   getDistinctBrands,
   getDistinctColors,
@@ -58,6 +58,7 @@ import {
 } from "../lib/fetchSpecs";
 import { renderFrPng } from "../lib/renderFr";
 import { FrPreview } from "./FrPreview";
+import { DateCalendar } from "./DateCalendar";
 import { MediaImage } from "./MediaImage";
 import { Modal } from "./Modal";
 import { StarRating } from "./StarRating";
@@ -1040,13 +1041,28 @@ export function DeviceFormDialog({
               label={t("form.purchaseDate", { format: settings.dateFormat })}
               error={errors.purchase_date}
             >
-              <input
-                className={inputCls}
-                value={form.purchase_date}
-                onChange={(e) => set("purchase_date", e.target.value)}
-                placeholder={settings.dateFormat}
-                autoComplete="off"
-              />
+              <div className="flex items-center gap-1.5">
+                <input
+                  className={cls(inputCls, "min-w-0 flex-1")}
+                  value={form.purchase_date}
+                  onChange={(e) => set("purchase_date", e.target.value)}
+                  placeholder={settings.dateFormat}
+                  autoComplete="off"
+                />
+                <DateCalendar
+                  value={parseDateToISO(
+                    form.purchase_date,
+                    settings.dateFormat,
+                  )}
+                  locale={localeFor(settings.language)}
+                  onSelect={(iso) =>
+                    set(
+                      "purchase_date",
+                      formatDate(iso, settings.dateFormat) ?? iso,
+                    )
+                  }
+                />
+              </div>
             </Field>
             <Field
               label={t("form.price", {
