@@ -24,9 +24,11 @@ jobs:
       matrix:
         include:
           - platform: ubuntu-22.04
-            bundles: deb,rpm
+            bundles: deb,rpm,appimage
+            no_strip: "1"
           - platform: macos-latest
             bundles: app,dmg
+            no_strip: "0"
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
@@ -56,6 +58,9 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Linux: skip strip — some system libs use RELR ELF sections that
+          # linuxdeploy's bundled strip can't parse (aborts AppImage bundling).
+          NO_STRIP: ${{ matrix.no_strip }}
         with:
           tagName: v__VERSION__
           args: --bundles ${{ matrix.bundles }}

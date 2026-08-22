@@ -22,7 +22,7 @@ The authoritative feature/spec document is `docs/audio-vault-spec.md`.
 - **File System:** `tauri-plugin-fs` & `tauri-plugin-dialog`
 - **Image display:** Tauri asset protocol (`protocol-asset` feature,
   scope `$APPDATA/media/**`) with a base64 data-URL fallback command
-- **Packaging Targets:** Linux `.deb` + `.rpm`, macOS `.app` + `.dmg`
+- **Packaging Targets:** Linux `.deb` + `.rpm` + `.AppImage`, macOS `.app` + `.dmg`
   (built via GitHub Actions CI — `.github/workflows/tauri.yml`); Windows out of scope
 
 ---

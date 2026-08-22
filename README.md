@@ -51,7 +51,7 @@ Device detail view:
   (override-able per device)
 - Lightbox image viewer
 - Settings screen showing the XDG paths and an "open media folder" action
-- Bundles for Linux: RPM and AppImage
+- Bundles: Linux (`.deb`, `.rpm`, `.AppImage`) and macOS (`.app`, `.dmg`), built via GitHub Actions CI
 
 ### Tube-amp compatibility rule
 
