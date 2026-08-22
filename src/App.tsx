@@ -229,35 +229,42 @@ export default function App() {
     );
   }
 
+  const nav = (
+    <nav className="flex items-center gap-1">
+      <NavButton
+        active={view.name === "collection" && view.category === "headphones"}
+        onClick={() => openCollection("headphones")}
+      >
+        <Headphones size={15} />
+        {t("nav.collection")}
+      </NavButton>
+      <NavButton
+        active={view.name === "collection" && view.category === "devices"}
+        onClick={() => openCollection("devices")}
+      >
+        <Cpu size={15} />
+        {t("nav.devices")}
+      </NavButton>
+      <NavButton active={view.name === "settings"} onClick={openSettings}>
+        <Settings size={15} />
+        {t("nav.settings")}
+      </NavButton>
+    </nav>
+  );
+
   return (
     <div className="flex h-screen flex-col bg-tm-bg text-tm-fg">
-      {csd && <TitleBar />}
-      <header className="flex items-center gap-4 border-b border-tm-dark bg-tm-darker px-4 py-2">
-        <div className="flex items-center gap-2">
-          <AudioLines size={20} className="text-tm-accent" />
-          <span className="text-lg font-semibold">{t("app.title")}</span>
-        </div>
-        <nav className="flex items-center gap-1">
-          <NavButton
-            active={view.name === "collection" && view.category === "headphones"}
-            onClick={() => openCollection("headphones")}
-          >
-            <Headphones size={15} />
-            {t("nav.collection")}
-          </NavButton>
-          <NavButton
-            active={view.name === "collection" && view.category === "devices"}
-            onClick={() => openCollection("devices")}
-          >
-            <Cpu size={15} />
-            {t("nav.devices")}
-          </NavButton>
-          <NavButton active={view.name === "settings"} onClick={openSettings}>
-            <Settings size={15} />
-            {t("nav.settings")}
-          </NavButton>
-        </nav>
-      </header>
+      {csd ? (
+        <TitleBar>{nav}</TitleBar>
+      ) : (
+        <header className="flex items-center gap-4 border-b border-tm-dark bg-tm-darker px-4 py-2">
+          <div className="flex items-center gap-2">
+            <AudioLines size={20} className="text-tm-accent" />
+            <span className="text-lg font-semibold">{t("app.title")}</span>
+          </div>
+          {nav}
+        </header>
+      )}
 
       <main className="flex-1 overflow-y-auto p-6">
         {view.name === "settings" ? (

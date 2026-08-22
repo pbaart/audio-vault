@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Copy, Minus, Square, X } from "lucide-react";
+import { AudioLines, Copy, Minus, Square, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { isTauri } from "../lib/paths";
 import { cls } from "../ui";
@@ -15,12 +16,17 @@ export function isCsd(): boolean {
 }
 
 /**
- * Custom title bar shown instead of the native one on Linux. Styled with
- * the app's CSS variables so it always matches the active color scheme.
- * Dragging works via data-tauri-drag-region; double-clicking the region
- * toggles maximize (handled by Tauri's injected drag script).
+ * Unified title bar shown instead of the native frame + separate header
+ * on Linux: app identity on the left, optional children (the nav) in the
+ * middle, window controls on the right. Styled with the app's CSS
+ * variables so it always matches the active color scheme.
+ *
+ * data-tauri-drag-region="deep" makes the whole bar draggable (a bare
+ * attribute would only react to clicks on the element itself); clickable
+ * children (nav + window buttons) still work normally, and double-click
+ * toggles maximize via Tauri's injected drag script.
  */
-export function TitleBar() {
+export function TitleBar({ children }: { children?: ReactNode }) {
   const { t } = useTranslation();
   const win = getCurrentWindow();
   const [maximized, setMaximized] = useState(false);
@@ -49,13 +55,15 @@ export function TitleBar() {
 
   return (
     <div
-      data-tauri-drag-region
-      className="flex h-9 w-full shrink-0 select-none items-center justify-between border-b border-tm-dark bg-tm-darker pl-3"
+      data-tauri-drag-region="deep"
+      className="flex h-11 w-full shrink-0 select-none items-center gap-4 border-b border-tm-dark bg-tm-darker pl-4"
     >
-      <span className="text-xs font-medium tracking-wide text-tm-gray">
-        Audio Vault
-      </span>
-      <div className="flex items-center">
+      <div className="flex items-center gap-2">
+        <AudioLines size={20} className="text-tm-accent" />
+        <span className="text-lg font-semibold">{t("app.title")}</span>
+      </div>
+      {children}
+      <div className="ml-auto flex items-center">
         <button
           className={btn}
           onClick={() => void win.minimize()}
