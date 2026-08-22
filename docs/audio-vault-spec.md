@@ -2,6 +2,8 @@
 
 Audio Vault is a lightweight, local-first Linux desktop application designed for audiophiles to manage headphones, IEMs, frequency response measurement curves, technical specifications, and tube amplifier compatibility.
 
+**License:** MIT — see [LICENSE](../LICENSE). Copyright (c) 2026 pbaart.
+
 ---
 
 ## 📌 Build Phasing

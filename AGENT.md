@@ -7,6 +7,8 @@ curves, technical specifications, and tube amplifier compatibility.
 **Status:** Phases 1 (MVP) and 2 (web auto-fetch) implemented in this repository.
 The authoritative feature/spec document is `docs/audio-vault-spec.md`.
 
+**License:** MIT — see [LICENSE](LICENSE). Copyright (c) 2026 pbaart.
+
 ---
 
 ## 🛠️ Linux Tech Stack & Packaging

@@ -153,3 +153,11 @@ app/
     │                       #   brand+model matching
     └── tauri.conf.json     # Asset protocol scope, CSP, bundle targets
 ```
+
+## License
+
+Audio Vault is licensed under the [MIT License](LICENSE). Copyright (c) 2026 pbaart.
+
+Some fetched data (OPRA community presets, squig.link measurements) carries its
+own license (e.g., CC BY-SA 4.0); attribution is stored per device and shown in
+the UI.
