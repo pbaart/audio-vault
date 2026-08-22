@@ -191,7 +191,9 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    single-image fields: add via file picker or URL download, remove,
    and ◀/▶ reorder (first image = cover used in cards and the detail
    hero); removed/superseded files are cleaned up on save like the
-   headphone images.
+   headphone images. Devices also get the single mood-image field above
+   the gallery (shared mood_image_path column; the detail hero prefers
+   it over the cover).
    The FiiO DSP XML encoding used by the import parser: type
    0=PK/1=LSC/2=HSC, freq raw Hz, gain `(raw - 120) / 10` dB, Q
    `raw / 10`, `s` (shelf slope) ignored. Gain offset 120 is **confirmed**

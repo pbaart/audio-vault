@@ -96,10 +96,10 @@ export function DeviceDetailView({
                 className="group block w-full"
                 onClick={() =>
                   setLightbox(
-                    device.category === "devices"
-                      ? { kind: "gallery", index: 0 }
-                      : device.mood_image_path
-                        ? { kind: "mood" }
+                    device.mood_image_path
+                      ? { kind: "mood" }
+                      : device.category === "devices"
+                        ? { kind: "gallery", index: 0 }
                         : { kind: "image" },
                   )
                 }
@@ -224,7 +224,9 @@ export function DeviceDetailView({
           )}
 
           {/* Devices: gallery strip under the identity card */}
-          {device.category === "devices" && device.images.length > 1 && (
+          {device.category === "devices" &&
+            (device.images.length > 1 ||
+              (!!device.mood_image_path && device.images.length >= 1)) && (
             <div className="grid grid-cols-3 gap-2">
               {device.images.map((rel, i) => (
                 <button

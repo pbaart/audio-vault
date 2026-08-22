@@ -312,7 +312,6 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.webshop_url,
     device.image_path,
     device.mood_image_path,
-    JSON.stringify(device.images),
     device.price,
     device.purchase_date,
     device.driver_type,
@@ -358,6 +357,7 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.channels,
     device.hdmi,
     device.room_correction,
+    JSON.stringify(device.images),
   ];
 
   const now = sqlNow();

@@ -1793,6 +1793,55 @@ export function DeviceFormDialog({
             </div>
           ) : (
             <div className="space-y-3">
+              <Field label={t("form.moodImage")}>
+                <div className="flex items-start gap-3">
+                  <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                    <MediaImage
+                      relPath={form.mood_image_path}
+                      className="aspect-video w-full"
+                      placeholderIcon={28}
+                    />
+                  </div>
+                  <div className="flex flex-col items-start gap-2 pt-1">
+                    <button
+                      className={btnSecondary}
+                      onClick={() => void handlePickImage("mood")}
+                    >
+                      <FolderOpen size={14} />
+                      {form.mood_image_path
+                        ? t("form.replaceImage")
+                        : t("form.pickImage")}
+                    </button>
+                    {form.mood_image_path && (
+                      <button
+                        className="text-xs text-tm-red hover:underline"
+                        onClick={() => handleRemoveImage("mood")}
+                      >
+                        {t("form.removeImage")}
+                      </button>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="url"
+                        value={moodImageUrl}
+                        onChange={(e) => setMoodImageUrl(e.target.value)}
+                        placeholder={t("form.imageUrlPlaceholder")}
+                        className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                      />
+                      <button
+                        className={btnSecondary}
+                        onClick={() => void handleDownloadImage("mood")}
+                        disabled={moodImageDownloading || !moodImageUrl.trim()}
+                      >
+                        <CloudDownload size={14} />
+                        {moodImageDownloading
+                          ? t("form.downloading")
+                          : t("form.downloadImage")}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Field>
               <p className="text-xs text-tm-gray">
                 {t("form.firstImageHint")}
               </p>
