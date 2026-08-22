@@ -190,9 +190,6 @@ export function DeviceDetailView({
                   <ZoomIn size={28} className="text-white" />
                 </div>
               </button>
-              <p className="mt-1.5 text-xs text-tm-gray">
-                {t("detail.productImage")}
-              </p>
             </div>
           )}
         </div>
