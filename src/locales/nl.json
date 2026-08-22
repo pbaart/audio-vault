@@ -354,6 +354,6 @@
     "openMediaFolder": "Mediamap openen",
     "tubeRule": "Buizenversterker-compatibiliteitsregel",
     "about": "Over",
-    "aboutBody": "Audio Vault 0.1.0 — een local-first collectiebeheer voor audioapparatuur. Alle gegevens blijven op deze machine in je XDG-mappen."
+    "aboutBody": "Audio Vault {{version}} — een local-first collectiebeheer voor audioapparatuur. Alle gegevens blijven op deze machine in je XDG-mappen."
   }
 }

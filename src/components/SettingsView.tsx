@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getVersion } from "@tauri-apps/api/app";
 import {
   FolderOpen,
   Globe,
@@ -37,10 +38,15 @@ export function SettingsView({
   const { t } = useTranslation();
   const [paths, setPaths] = useState<AppPaths | null>(null);
   const [folderError, setFolderError] = useState<string | null>(null);
+  const [version, setVersion] = useState("");
 
   useEffect(() => {
     void getAppPaths()
       .then(setPaths)
+      .catch(() => undefined);
+    // App version embedded in the binary by Tauri (tauri.conf.json).
+    void getVersion()
+      .then(setVersion)
       .catch(() => undefined);
   }, []);
 
@@ -212,7 +218,7 @@ export function SettingsView({
           {t("settings.about")}
         </h3>
         <p className="text-sm leading-relaxed text-tm-gray">
-          {t("settings.aboutBody")}
+          {t("settings.aboutBody", { version })}
         </p>
       </section>
     </div>

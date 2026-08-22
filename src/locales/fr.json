@@ -354,6 +354,6 @@
     "openMediaFolder": "Ouvrir le dossier média",
     "tubeRule": "Règle de compatibilité ampli à tubes",
     "about": "À propos",
-    "aboutBody": "Audio Vault 0.1.0 — un gestionnaire de collection local-first pour le matériel audio. Toutes les données restent sur cette machine dans vos répertoires XDG."
+    "aboutBody": "Audio Vault {{version}} — un gestionnaire de collection local-first pour le matériel audio. Toutes les données restent sur cette machine dans vos répertoires XDG."
   }
 }

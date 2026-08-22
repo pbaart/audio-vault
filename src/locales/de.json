@@ -354,6 +354,6 @@
     "openMediaFolder": "Medienordner öffnen",
     "tubeRule": "Röhrenverstärker-Kompatibilitätsregel",
     "about": "Über",
-    "aboutBody": "Audio Vault 0.1.0 – ein lokal-firster Sammlungsverwalter für Audiogeräte. Alle Daten bleiben auf diesem Rechner in deinen XDG-Verzeichnissen."
+    "aboutBody": "Audio Vault {{version}} – ein lokal-firster Sammlungsverwalter für Audiogeräte. Alle Daten bleiben auf diesem Rechner in deinen XDG-Verzeichnissen."
   }
 }

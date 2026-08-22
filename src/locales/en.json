@@ -354,6 +354,6 @@
     "openMediaFolder": "Open media folder",
     "tubeRule": "Tube amp compatibility rule",
     "about": "About",
-    "aboutBody": "Audio Vault 0.1.0 — a local-first collection manager for audio gear. All data stays on this machine in your XDG directories."
+    "aboutBody": "Audio Vault {{version}} — a local-first collection manager for audio gear. All data stays on this machine in your XDG directories."
   }
 }

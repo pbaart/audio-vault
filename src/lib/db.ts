@@ -291,9 +291,7 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.detail_retrieval_rating == null
       ? null
       : Math.round(device.detail_retrieval_rating * 2),
-    device.timbre_rating == null
-      ? null
-      : Math.round(device.timbre_rating * 2),
+    device.timbre_rating == null ? null : Math.round(device.timbre_rating * 2),
     device.tonal_balance_rating == null
       ? null
       : Math.round(device.tonal_balance_rating * 2),
