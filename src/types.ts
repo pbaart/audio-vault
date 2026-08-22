@@ -88,6 +88,8 @@ export interface Device {
  peq_source: string | null;
  custom_fields: CustomField[];
  created_at: string;
+ /** Last save timestamp; equals created_at for never-edited devices. */
+ updated_at: string;
 }
 
 export const DEVICE_TYPES: DeviceType[] = ["Over-Ear", "On-Ear", "IEM"];

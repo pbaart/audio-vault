@@ -33,7 +33,7 @@ interface CollectionViewProps {
 type TypeFilter = "all" | (typeof DEVICE_TYPES)[number];
 type DriverFilter = "all" | (typeof DRIVER_TYPES)[number];
 type TubeFilter = "all" | "yes" | "partial" | "no";
-type SortKey = "name" | "added" | "impedance" | "price";
+type SortKey = "name" | "added" | "modified" | "impedance" | "price";
 type ViewMode = "grid" | "list";
 
 const VIEW_MODE_KEY = "audio-vault.viewMode";
@@ -108,6 +108,8 @@ export function CollectionView({
           );
         case "added":
           return dir * a.created_at.localeCompare(b.created_at);
+        case "modified":
+          return dir * a.updated_at.localeCompare(b.updated_at);
         case "impedance":
           return dir * ((a.impedance_ohms ?? -1) - (b.impedance_ohms ?? -1));
         case "price":
@@ -212,6 +214,7 @@ export function CollectionView({
           >
             <option value="name">{t("collection.sort.name")}</option>
             <option value="added">{t("collection.sort.added")}</option>
+            <option value="modified">{t("collection.sort.modified")}</option>
             <option value="impedance">{t("collection.sort.impedance")}</option>
             <option value="price">{t("collection.sort.price")}</option>
           </select>
@@ -445,14 +448,14 @@ export function CollectionView({
                           )}
                     </td>
                     <td className="px-3 py-2">
-                      {d.overall_rating != null ? (
+                      {d.overall_rating == null ? (
+                        <span className="text-tm-gray">—</span>
+                      ) : (
                         <StarRating
                           value={d.overall_rating}
                           size={14}
                           showValue={false}
                         />
-                      ) : (
-                        <span className="text-tm-gray">—</span>
                       )}
                     </td>
                     <td className="px-3 py-2">

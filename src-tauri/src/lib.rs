@@ -580,6 +580,16 @@ pub fn run() {
     // NULL * 2 stays NULL.
     sql: "UPDATE devices SET soundstage_rating = soundstage_rating * 2, imaging_rating = imaging_rating * 2, detail_retrieval_rating = detail_retrieval_rating * 2, timbre_rating = timbre_rating * 2, tonal_balance_rating = tonal_balance_rating * 2;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 15,
+    description: "add_updated_at_column",
+    // Nullable on purpose (SQLite forbids non-constant defaults on
+    // ADD COLUMN): pre-v15 rows keep NULL and the frontend falls back
+    // to created_at for them. saveDevice stamps it on every insert and
+    // update from then on.
+    sql: "ALTER TABLE devices ADD COLUMN updated_at TEXT;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

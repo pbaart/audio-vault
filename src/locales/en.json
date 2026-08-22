@@ -121,6 +121,7 @@
       "aria": "Sort by",
       "name": "Sort: Name",
       "added": "Sort: Recently added",
+      "modified": "Sort: Recently modified",
       "impedance": "Sort: Impedance",
       "price": "Sort: Price",
       "asc": "Ascending — click for descending",

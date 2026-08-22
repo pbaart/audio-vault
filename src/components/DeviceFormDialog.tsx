@@ -698,23 +698,23 @@ export function DeviceFormDialog({
         soundstage_rating:
           form.soundstage_rating === ""
             ? null
-            : Math.min(5, Math.max(1, Number(form.soundstage_rating))),
+            : Math.min(5, Math.max(0.5, Number(form.soundstage_rating))),
         imaging_rating:
           form.imaging_rating === ""
             ? null
-            : Math.min(5, Math.max(1, Number(form.imaging_rating))),
+            : Math.min(5, Math.max(0.5, Number(form.imaging_rating))),
         detail_retrieval_rating:
           form.detail_retrieval_rating === ""
             ? null
-            : Math.min(5, Math.max(1, Number(form.detail_retrieval_rating))),
+            : Math.min(5, Math.max(0.5, Number(form.detail_retrieval_rating))),
         timbre_rating:
           form.timbre_rating === ""
             ? null
-            : Math.min(5, Math.max(1, Number(form.timbre_rating))),
+            : Math.min(5, Math.max(0.5, Number(form.timbre_rating))),
         tonal_balance_rating:
           form.tonal_balance_rating === ""
             ? null
-            : Math.min(5, Math.max(1, Number(form.tonal_balance_rating))),
+            : Math.min(5, Math.max(0.5, Number(form.tonal_balance_rating))),
         overall_rating:
           form.overall_rating === ""
             ? null
@@ -725,6 +725,7 @@ export function DeviceFormDialog({
         peq_source: form.peq_source.trim() || null,
         custom_fields: custom,
         created_at: device?.created_at ?? new Date().toISOString(),
+              updated_at: device?.updated_at ?? "",
       };
 
       const stored = await saveDevice(saved);

@@ -11,7 +11,8 @@ const UPDATE_SQL =
   "drive_difficulty = ?, sound_signature = ?, soundstage_rating = ?, " +
   "imaging_rating = ?, detail_retrieval_rating = ?, timbre_rating = ?, " +
   "tonal_balance_rating = ?, overall_rating = ?, listening_notes = ?, " +
-  "fr_graph_path = ?, peq_settings = ?, peq_source = ?, custom_fields = ? " +
+  "fr_graph_path = ?, peq_settings = ?, peq_source = ?, custom_fields = ?, " +
+  "updated_at = ? " +
   "WHERE id = ?";
 
 const INSERT_SQL =
@@ -21,8 +22,8 @@ const INSERT_SQL =
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
   "imaging_rating, detail_retrieval_rating, timbre_rating, " +
   "tonal_balance_rating, overall_rating, listening_notes, fr_graph_path, " +
-  "peq_settings, peq_source, custom_fields) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "peq_settings, peq_source, custom_fields, updated_at) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -63,6 +64,11 @@ const asString = (v: unknown): string | null =>
 
 const asInt = (v: unknown): number | null =>
   typeof v === "number" && Number.isInteger(v) ? v : null;
+
+/** Current UTC time in SQLite CURRENT_TIMESTAMP format (`YYYY-MM-DD HH:MM:SS`). */
+function sqlNow(): string {
+  return new Date().toISOString().replace("T", " ").replace(/\.\d+Z$/, "");
+}
 
 /**
  * `overall_rating` is stored as 2× the rating so half stars fit in an
@@ -158,6 +164,8 @@ function rowToDevice(row: Row): Device {
     peq_source: asString(row.peq_source),
     custom_fields: parseCustomFields(row.custom_fields),
     created_at: asString(row.created_at) ?? "",
+    // Pre-v15 rows have no updated_at — treat them as modified at creation.
+    updated_at: asString(row.updated_at) ?? asString(row.created_at) ?? "",
   };
 }
 
@@ -305,13 +313,14 @@ export async function saveDevice(device: Device): Promise<Device> {
     JSON.stringify(device.custom_fields),
   ];
 
+  const now = sqlNow();
   if (device.id) {
-    await db.execute(UPDATE_SQL, [...values, device.id]);
-    return device;
+    await db.execute(UPDATE_SQL, [...values, now, device.id]);
+    return { ...device, updated_at: now };
   }
 
-  const stored: Device = { ...device, id: randomUuid() };
-  await db.execute(INSERT_SQL, [stored.id, ...values]);
+  const stored: Device = { ...device, id: randomUuid(), updated_at: now };
+  await db.execute(INSERT_SQL, [stored.id, ...values, now]);
   return stored;
 }
 

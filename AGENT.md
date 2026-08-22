@@ -69,7 +69,7 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v14 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v15 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
@@ -101,7 +101,8 @@ CREATE TABLE IF NOT EXISTS devices (
   imaging_rating INTEGER,                 -- v10: The Sound attribute, stored 2x
   detail_retrieval_rating INTEGER,        -- v11: The Sound attribute, stored 2x
   timbre_rating INTEGER,                  -- v12: The Sound attribute, stored 2x
-  tonal_balance_rating INTEGER            -- v13: The Sound attribute, stored 2x
+  tonal_balance_rating INTEGER,           -- v13: The Sound attribute, stored 2x
+  updated_at TEXT                         -- v15: last save; NULL pre-v15 (UI falls back to created_at)
 );
 ```
 
@@ -134,7 +135,7 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    localStorage; table rows carry edit + delete icon buttons in a right
    Actions column, stop-propagation so row click still opens the detail),
    search box, filters (type / driver / tube-amp suitability),
-   sort (name / added / impedance / price) with direction toggle.
+   sort (name / added / modified / impedance / price) with direction toggle.
 3. **Add/Edit dialog:** all device fields with validation (required brand,
    model, type; numeric ranges), image + FR-graph picking via the native
    file dialog (files are copied into `media/`), dynamic custom key/value
