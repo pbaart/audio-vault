@@ -62,13 +62,13 @@ export interface Device {
  tube_amp_suitable: TubeBadgeValue | null;
  drive_difficulty: DriveDifficulty | null;
  sound_signature: SoundSignature | null;
-  soundstage_rating: number | null;
-  /**
-   * User's overall rating in 0.5 steps (0.5–5). Stored as 2× the value in
-   * the database (`overall_rating` INTEGER); `null` = unrated.
-   */
-  overall_rating: number | null;
-  listening_notes: string | null;
+ soundstage_rating: number | null;
+ /**
+  * User's overall rating in 0.5 steps (0.5–5). Stored as 2× the value in
+  * the database (`overall_rating` INTEGER); `null` = unrated.
+  */
+ overall_rating: number | null;
+ listening_notes: string | null;
  fr_graph_path: string | null;
  peq_settings: PeqBand[];
  /**

@@ -336,7 +336,9 @@ export function CollectionView({
                       </span>
                     )}
                     {d.overall_rating != null && (
-                      <span>{t("collection.rating", { n: d.overall_rating })}</span>
+                      <span>
+                        {t("collection.rating", { n: d.overall_rating })}
+                      </span>
                     )}
                   </div>
                   <div
