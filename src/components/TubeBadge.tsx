@@ -7,6 +7,8 @@ import { cls } from "../ui";
 interface TubeBadgeProps {
   badge: TubeBadgeValue;
   size?: "sm" | "md";
+  /** Solid, icon-only variant for use on top of images (grid view). */
+  iconOnly?: boolean;
 }
 
 const BADGE_STYLES: Record<TubeBadgeValue, string> = {
@@ -16,9 +18,31 @@ const BADGE_STYLES: Record<TubeBadgeValue, string> = {
   No: "border-tm-gray/40 bg-tm-gray/10 text-tm-gray",
 };
 
+/** Solid (opaque) backgrounds for the icon-only variant on images. */
+const SOLID_STYLES: Record<TubeBadgeValue, string> = {
+  Yes: "bg-tm-green",
+  "OTL Only": "bg-tm-yellow",
+  "Transformer Only": "bg-tm-purple",
+  No: "bg-tm-gray",
+};
+
 /** Colored tube-amp compatibility badge (computed by the rule in lib/tube). */
-export function TubeBadge({ badge, size = "md" }: TubeBadgeProps) {
+export function TubeBadge({ badge, size = "md", iconOnly = false }: TubeBadgeProps) {
   const { t } = useTranslation();
+  if (iconOnly) {
+    return (
+      <span
+        title={tubeBadgeLabel(badge, (k) => t(k))}
+        className={cls(
+          "inline-flex items-center justify-center rounded-full text-white ring-2 ring-black/30",
+          size === "sm" ? "h-6 w-6" : "h-7 w-7",
+          SOLID_STYLES[badge],
+        )}
+      >
+        <Flame size={size === "sm" ? 14 : 16} />
+      </span>
+    );
+  }
   return (
     <span
       title={t("tube.tooltip")}

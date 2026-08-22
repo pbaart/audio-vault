@@ -300,7 +300,7 @@ export function CollectionView({
                   />
                   {badge && (
                     <div className="absolute right-2 top-2">
-                      <TubeBadge badge={badge} size="sm" />
+                      <TubeBadge badge={badge} size="sm" iconOnly />
                     </div>
                   )}
                 </div>
