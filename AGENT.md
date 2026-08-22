@@ -69,7 +69,7 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v18 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v20 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS devices (
   color TEXT,                             -- v2: free-text color (autocomplete)
   manufacturer_url TEXT,                  -- v3: manufacturer website (http/https)
   webshop_url TEXT,                       -- v4: webshop where bought (http/https)
-  image_path TEXT,                        -- Relative path in media/
+  image_path TEXT,                        -- deprecated since v20 (data moved to images); kept NULL for compatibility
   price REAL,                             -- EUR/USD
   purchase_date TEXT,                     -- ISO 'YYYY-MM-DD'
   driver_type TEXT,                       -- 'Dynamic' | 'Planar' | 'BA' | 'Electrostatic' | 'Hybrid' | 'Tribrid'
@@ -186,14 +186,16 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    `TagInput` chip component (type + Enter adds, datalist suggestions,
    × removes) and AVR extras (channels, HDMI, room correction); spec
    groups hide per device type, and Web fetch, The Sound, FR and PEQ
-   sections are headphones-only (OPRA auto-check gated too). For
-   devices, the Images section is a gallery manager instead of the two
-   single-image fields: add via file picker or URL download, remove,
-   and ◀/▶ reorder; removed/superseded files are cleaned up on save
-   like the headphone images. The mood image (shared mood_image_path
-   column, field above the gallery) is the cover shown in cards and the
-   detail hero; product images are just a gallery — the first one is
-   only a fallback when no mood image is set.
+   sections are headphones-only (OPRA auto-check gated too). The
+   Images section is identical for both categories: a single mood-image
+   field plus a "Product images" gallery (add via file picker or URL
+   download, remove, ◀/▶ reorder). Removed/superseded files are
+   cleaned up on save. The mood image (mood_image_path) is the cover
+   shown in cards and the detail hero; product images live in the
+   images JSON array — the first one is only a fallback when no mood
+   image is set. Legacy image_path values were moved into images by
+   migrations v19/v20; the column is retired (kept NULL for
+   compatibility).
    The FiiO DSP XML encoding used by the import parser: type
    0=PK/1=LSC/2=HSC, freq raw Hz, gain `(raw - 120) / 10` dB, Q
    `raw / 10`, `s` (shelf slope) ignored. Gain offset 120 is **confirmed**

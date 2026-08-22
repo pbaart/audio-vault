@@ -174,7 +174,6 @@ export default function App() {
     try {
       await deleteDevice(d.id);
       // Clean up media files owned by this device (best effort).
-      void removeMediaFile(d.image_path);
       void removeMediaFile(d.mood_image_path);
       d.images.forEach((rel) => void removeMediaFile(rel));
       void removeMediaFile(d.fr_graph_path);
@@ -328,9 +327,9 @@ export default function App() {
             {t("delete.confirm", {
               name: `${deleteTarget.brand} ${deleteTarget.model}`,
             })}
-            {(deleteTarget.image_path ||
-              deleteTarget.mood_image_path ||
-              deleteTarget.fr_graph_path) && <> {t("delete.mediaNote")}</>}{" "}
+            {(deleteTarget.mood_image_path ||
+              deleteTarget.fr_graph_path ||
+              deleteTarget.images.length > 0) && <> {t("delete.mediaNote")}</>}{" "}
             {t("delete.unundoable")}
           </p>
         </Modal>

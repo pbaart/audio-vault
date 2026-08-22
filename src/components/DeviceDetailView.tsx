@@ -47,16 +47,13 @@ export function DeviceDetailView({
 }: DeviceDetailViewProps) {
   const { t } = useTranslation();
   const [lightbox, setLightbox] = useState<
-    | { kind: "image" }
     | { kind: "mood" }
     | { kind: "fr" }
     | { kind: "gallery"; index: number }
     | null
   >(null);
-  // Devices without a mood image fall back to the first product image.
-  const mainImage =
-    device.mood_image_path ?? device.image_path ?? device.images[0] ?? null;
-  const showProductThumb = !!device.image_path && !!device.mood_image_path;
+  // Without a mood image, the first product image becomes the hero.
+  const mainImage = device.mood_image_path ?? device.images[0] ?? null;
   const badge = deriveTubeBadge(device.impedance_ohms, device.driver_type);
 
   return (
@@ -98,9 +95,7 @@ export function DeviceDetailView({
                   setLightbox(
                     device.mood_image_path
                       ? { kind: "mood" }
-                      : device.category === "devices"
-                        ? { kind: "gallery", index: 0 }
-                        : { kind: "image" },
+                      : { kind: "gallery", index: 0 },
                   )
                 }
                 title={t("detail.zoom")}
@@ -203,30 +198,9 @@ export function DeviceDetailView({
             )}
           </div>
 
-          {/* Product image below the device card — only when the hero shows
-              the mood image instead. */}
-          {showProductThumb && (
-            <div>
-              <button
-                className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark transition hover:border-tm-accent/60"
-                onClick={() => setLightbox({ kind: "image" })}
-                title={t("detail.zoom")}
-              >
-                <MediaImage
-                  relPath={device.image_path}
-                  className="aspect-video w-full"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
-                  <ZoomIn size={28} className="text-white" />
-                </div>
-              </button>
-            </div>
-          )}
-
-          {/* Devices: gallery strip under the identity card */}
-          {device.category === "devices" &&
-            (device.images.length > 1 ||
-              (!!device.mood_image_path && device.images.length >= 1)) && (
+          {/* Product image gallery strip under the identity card */}
+          {(device.images.length > 1 ||
+            (!!device.mood_image_path && device.images.length >= 1)) && (
             <div className="grid grid-cols-3 gap-2">
               {device.images.map((rel, i) => (
                 <button
@@ -467,13 +441,6 @@ export function DeviceDetailView({
         </div>
       </div>
 
-      {lightbox?.kind === "image" && (
-        <Lightbox
-          relPath={device.image_path}
-          title={`${device.brand} ${device.model}`}
-          onClose={() => setLightbox(null)}
-        />
-      )}
       {lightbox?.kind === "mood" && (
         <Lightbox
           relPath={device.mood_image_path}

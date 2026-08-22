@@ -5,7 +5,7 @@ import { getAppPaths } from "./paths";
 /** Static SQL — all values are bound via `?` placeholders; no string interpolation. */
 const UPDATE_SQL =
   "UPDATE devices SET brand = ?, model = ?, type = ?, color = ?, " +
-  "manufacturer_url = ?, webshop_url = ?, image_path = ?, mood_image_path = ?, " +
+  "manufacturer_url = ?, webshop_url = ?, mood_image_path = ?, " +
   "price = ?, purchase_date = ?, driver_type = ?, impedance_ohms = ?, " +
   "sensitivity_db = ?, connector_type = ?, tube_amp_suitable = ?, " +
   "drive_difficulty = ?, sound_signature = ?, soundstage_rating = ?, " +
@@ -21,7 +21,7 @@ const UPDATE_SQL =
 
 const INSERT_SQL =
   "INSERT INTO devices (id, brand, model, type, color, manufacturer_url, " +
-  "webshop_url, image_path, mood_image_path, price, " +
+  "webshop_url, mood_image_path, price, " +
   "purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, " +
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
   "imaging_rating, detail_retrieval_rating, timbre_rating, " +
@@ -30,7 +30,7 @@ const INSERT_SQL =
   "supported_formats, bluetooth_codecs, inputs, outputs, output_power, " +
   "snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, " +
   "room_correction, images, updated_at) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -152,7 +152,6 @@ function rowToDevice(row: Row): Device {
     color: asString(row.color),
     manufacturer_url: asString(row.manufacturer_url),
     webshop_url: asString(row.webshop_url),
-    image_path: asString(row.image_path),
     mood_image_path: asString(row.mood_image_path),
     images: parseStringArray(row.images),
     price: asNum(row.price),
@@ -310,7 +309,6 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.color,
     device.manufacturer_url,
     device.webshop_url,
-    device.image_path,
     device.mood_image_path,
     device.price,
     device.purchase_date,

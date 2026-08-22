@@ -701,6 +701,17 @@ ALTER TABLE devices_v17 RENAME TO devices;",
     // image_path set.
     sql: "UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE category = 'devices' AND image_path IS NOT NULL AND image_path != '';",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 20,
+    description: "move_headphone_product_images_into_gallery",
+    // Headphones now use the same product-image gallery as devices.
+    // Move any remaining legacy image_path values into the images array
+    // (first position) and clear the column. image_path is retired from
+    // the app code; the column is kept for compatibility and stays NULL.
+    // Idempotent.
+    sql: "UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE image_path IS NOT NULL AND image_path != '';",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

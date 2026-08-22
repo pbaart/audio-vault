@@ -120,7 +120,6 @@ interface FormState {
   color: string;
   manufacturer_url: string;
   webshop_url: string;
-  image_path: string | null;
   mood_image_path: string | null;
   /** Devices category: product image gallery (mood image is the cover). */
   images: string[];
@@ -231,7 +230,6 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
     color: device?.color ?? "",
     manufacturer_url: device?.manufacturer_url ?? "",
     webshop_url: device?.webshop_url ?? "",
-    image_path: device?.image_path ?? null,
     mood_image_path: device?.mood_image_path ?? null,
     images: device?.images ?? [],
     price: device?.price == null ? "" : String(device.price),
@@ -453,8 +451,6 @@ export function DeviceFormDialog({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
-  const [imageDownloading, setImageDownloading] = useState(false);
   const [moodImageUrl, setMoodImageUrl] = useState("");
   const [moodImageDownloading, setMoodImageDownloading] = useState(false);
   /** Devices gallery: URL currently being downloaded into media/. */
@@ -546,17 +542,12 @@ export function DeviceFormDialog({
     [form.impedance_ohms, form.driver_type],
   );
 
-  async function handlePickImage(kind: "image" | "mood" | "fr") {
+  async function handlePickImage(kind: "mood" | "fr") {
     setPickError(null);
     try {
       const rel = await pickImageFile();
       if (!rel) return;
-      if (kind === "image") {
-        if (form.image_path && form.image_path !== rel) {
-          setReplacedMedia((r) => [...r, form.image_path!]);
-        }
-        set("image_path", rel);
-      } else if (kind === "mood") {
+      if (kind === "mood") {
         if (form.mood_image_path && form.mood_image_path !== rel) {
           setReplacedMedia((r) => [...r, form.mood_image_path!]);
         }
@@ -572,46 +563,29 @@ export function DeviceFormDialog({
     }
   }
 
-  /** Download an image from a pasted URL into the media folder. */
-  async function handleDownloadImage(kind: "image" | "mood") {
-    const url = (kind === "image" ? imageUrl : moodImageUrl).trim();
-    const downloading =
-      kind === "image" ? imageDownloading : moodImageDownloading;
-    if (!url || downloading) return;
+  /** Download the mood image from a pasted URL into the media folder. */
+  async function handleDownloadImage() {
+    const url = moodImageUrl.trim();
+    if (!url || moodImageDownloading) return;
     setPickError(null);
-    const setDownloading =
-      kind === "image" ? setImageDownloading : setMoodImageDownloading;
-    const clearUrl = kind === "image" ? setImageUrl : setMoodImageUrl;
-    setDownloading(true);
+    setMoodImageDownloading(true);
     try {
       const name = `${form.brand} ${form.model}`.trim() || "image";
       const rel = await downloadImage(url, name);
-      if (kind === "image") {
-        if (form.image_path && form.image_path !== rel) {
-          setReplacedMedia((r) => [...r, form.image_path!]);
-        }
-        set("image_path", rel);
-      } else {
-        if (form.mood_image_path && form.mood_image_path !== rel) {
-          setReplacedMedia((r) => [...r, form.mood_image_path!]);
-        }
-        set("mood_image_path", rel);
+      if (form.mood_image_path && form.mood_image_path !== rel) {
+        setReplacedMedia((r) => [...r, form.mood_image_path!]);
       }
-      clearUrl("");
+      set("mood_image_path", rel);
+      setMoodImageUrl("");
     } catch (err) {
       setPickError(String(err));
     } finally {
-      setDownloading(false);
+      setMoodImageDownloading(false);
     }
   }
 
-  function handleRemoveImage(kind: "image" | "mood" | "fr") {
-    if (kind === "image") {
-      if (form.image_path) {
-        setReplacedMedia((r) => [...r, form.image_path!]);
-      }
-      set("image_path", null);
-    } else if (kind === "mood") {
+  function handleRemoveImage(kind: "mood" | "fr") {
+    if (kind === "mood") {
       if (form.mood_image_path) {
         setReplacedMedia((r) => [...r, form.mood_image_path!]);
       }
@@ -722,13 +696,13 @@ export function DeviceFormDialog({
     setForm(next);
 
     // Product image: download into the media folder if we don't have one.
-    if (r.imageUrl && !next.image_path) {
+    if (r.imageUrl && next.images.length === 0) {
       try {
         const rel = await downloadImage(
           r.imageUrl,
           `${next.brand} ${next.model}`.trim() || "image",
         );
-        setForm((f) => ({ ...f, image_path: rel }));
+        setForm((f) => ({ ...f, images: [rel, ...f.images] }));
       } catch {
         // best-effort: image download failure is non-fatal
       }
@@ -864,7 +838,6 @@ export function DeviceFormDialog({
         color: form.color.trim() || null,
         manufacturer_url: normalizeUrl(form.manufacturer_url),
         webshop_url: normalizeUrl(form.webshop_url),
-        image_path: form.image_path,
         mood_image_path: form.mood_image_path,
         images: cat === "devices" ? form.images : [],
         price: parseOptFloat(form.price),
@@ -1690,110 +1663,7 @@ export function DeviceFormDialog({
 
         {/* Images */}
         <FormSection title={t("form.images")}>
-          {cat === "headphones" ? (
-            <div className="space-y-4">
-            <Field label={t("form.moodImage")}>
-              <div className="flex items-start gap-3">
-                <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-                  <MediaImage
-                    relPath={form.mood_image_path}
-                    className="aspect-video w-full"
-                    placeholderIcon={28}
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-2 pt-1">
-                  <button
-                    className={btnSecondary}
-                    onClick={() => void handlePickImage("mood")}
-                  >
-                    <FolderOpen size={14} />
-                    {form.mood_image_path
-                      ? t("form.replaceImage")
-                      : t("form.pickImage")}
-                  </button>
-                  {form.mood_image_path && (
-                    <button
-                      className="text-xs text-tm-red hover:underline"
-                      onClick={() => handleRemoveImage("mood")}
-                    >
-                      {t("form.removeImage")}
-                    </button>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="url"
-                      value={moodImageUrl}
-                      onChange={(e) => setMoodImageUrl(e.target.value)}
-                      placeholder={t("form.imageUrlPlaceholder")}
-                      className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
-                    />
-                    <button
-                      className={btnSecondary}
-                      onClick={() => void handleDownloadImage("mood")}
-                      disabled={moodImageDownloading || !moodImageUrl.trim()}
-                    >
-                      <CloudDownload size={14} />
-                      {moodImageDownloading
-                        ? t("form.downloading")
-                        : t("form.downloadImage")}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Field>
-            <Field label={t("form.productImage")}>
-              <div className="flex items-start gap-3">
-                <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-                  <MediaImage
-                    relPath={form.image_path}
-                    className="aspect-video w-full"
-                    placeholderIcon={28}
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-2 pt-1">
-                  <button
-                    className={btnSecondary}
-                    onClick={() => void handlePickImage("image")}
-                  >
-                    <FolderOpen size={14} />
-                    {form.image_path
-                      ? t("form.replaceImage")
-                      : t("form.pickImage")}
-                  </button>
-                  {form.image_path && (
-                    <button
-                      className="text-xs text-tm-red hover:underline"
-                      onClick={() => handleRemoveImage("image")}
-                    >
-                      {t("form.removeImage")}
-                    </button>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder={t("form.imageUrlPlaceholder")}
-                      className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
-                    />
-                    <button
-                      className={btnSecondary}
-                      onClick={() => void handleDownloadImage("image")}
-                      disabled={imageDownloading || !imageUrl.trim()}
-                    >
-                      <CloudDownload size={14} />
-                      {imageDownloading
-                        ? t("form.downloading")
-                        : t("form.downloadImage")}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </Field>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <Field label={t("form.moodImage")}>
+                        <Field label={t("form.moodImage")}>
                 <div className="flex items-start gap-3">
                   <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
                     <MediaImage
@@ -1830,7 +1700,7 @@ export function DeviceFormDialog({
                       />
                       <button
                         className={btnSecondary}
-                        onClick={() => void handleDownloadImage("mood")}
+                        onClick={() => void handleDownloadImage()}
                         disabled={moodImageDownloading || !moodImageUrl.trim()}
                       >
                         <CloudDownload size={14} />
@@ -1918,8 +1788,6 @@ export function DeviceFormDialog({
                 </div>
                 </div>
               </Field>
-            </div>
-          )}
         </FormSection>
 
         {/* Links */}

@@ -69,7 +69,6 @@ export interface Device {
  color: string | null;
  manufacturer_url: string | null;
  webshop_url: string | null;
- image_path: string | null;
  mood_image_path: string | null;
  /** Devices category: product image gallery (mood image is the cover). */
  images: string[];
