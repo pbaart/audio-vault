@@ -275,6 +275,8 @@ export function DeviceFormDialog({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageDownloading, setImageDownloading] = useState(false);
   /** Media files superseded in this session — deleted only on successful save. */
   const [replacedMedia, setReplacedMedia] = useState<string[]>([]);
   const [fetchState, setFetchState] = useState<FetchState>({ status: "idle" });
@@ -369,6 +371,27 @@ export function DeviceFormDialog({
       }
     } catch (err) {
       setPickError(String(err));
+    }
+  }
+
+  /** Download an image from a pasted URL into the media folder. */
+  async function handleDownloadImage() {
+    const url = imageUrl.trim();
+    if (!url || imageDownloading) return;
+    setPickError(null);
+    setImageDownloading(true);
+    try {
+      const name = `${form.brand} ${form.model}`.trim() || "image";
+      const rel = await downloadImage(url, name);
+      if (form.image_path && form.image_path !== rel) {
+        setReplacedMedia((r) => [...r, form.image_path!]);
+      }
+      set("image_path", rel);
+      setImageUrl("");
+    } catch (err) {
+      setPickError(String(err));
+    } finally {
+      setImageDownloading(false);
     }
   }
 
@@ -878,6 +901,23 @@ export function DeviceFormDialog({
                   {t("form.removeImage")}
                 </button>
               )}
+              <div className="flex items-center gap-2">
+                <input
+                  type="url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder={t("form.imageUrlPlaceholder")}
+                  className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                />
+                <button
+                  className={btnSecondary}
+                  onClick={() => void handleDownloadImage()}
+                  disabled={imageDownloading || !imageUrl.trim()}
+                >
+                  <CloudDownload size={14} />
+                  {imageDownloading ? t("form.downloading") : t("form.downloadImage")}
+                </button>
+              </div>
             </div>
           </div>
         </Field>
