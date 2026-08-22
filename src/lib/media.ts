@@ -14,15 +14,11 @@ export function setMediaDir(dir: string): void {
   mediaDir = dir.replace(/\/+$/, "");
 }
 
-export function getMediaDir(): string | null {
-  return mediaDir;
-}
-
 /**
  * Build an `asset://` URL for a media-relative path. Returns null when the
  * path is missing or we are not inside a Tauri webview.
  */
-export function mediaSrc(relPath: string | null): string | null {
+function mediaSrc(relPath: string | null): string | null {
   if (!relPath || !mediaDir || !isTauri()) {
     return null;
   }

@@ -15,12 +15,12 @@ export const LANGUAGES: { id: LanguageId; nativeName: string }[] = [
  { id: "fr", nativeName: "Français" },
 ];
 
-const LOCALES: Record<LanguageId, string> = {
+const LOCALES = {
  en: "en-GB",
  de: "de-DE",
  nl: "nl-NL",
  fr: "fr-FR",
-};
+} satisfies Record<LanguageId, string>;
 
 export function isLanguageId(v: unknown): v is LanguageId {
  return typeof v === "string" && LANGUAGES.some((l) => l.id === v);
@@ -32,7 +32,7 @@ export function localeFor(lang: LanguageId): string {
 }
 
 /** Detect the browser/OS language on first launch; falls back to "en". */
-export function detectLanguage(): LanguageId {
+function detectLanguage(): LanguageId {
  const nav = typeof navigator === "undefined" ? "" : (navigator.language ?? "");
  const prefix = nav.slice(0, 2).toLowerCase();
  return isLanguageId(prefix) ? prefix : "en";

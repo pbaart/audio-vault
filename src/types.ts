@@ -3,7 +3,7 @@ export type DeviceType = "Over-Ear" | "On-Ear" | "IEM";
 export type DriverType =
  | "Dynamic"
  | "Planar"
- | "BA"
+ | "Balanced Armature"
  | "Electrostatic"
  | "Hybrid"
  | "Tribrid";
@@ -81,7 +81,7 @@ export const DEVICE_TYPES: DeviceType[] = ["Over-Ear", "On-Ear", "IEM"];
 export const DRIVER_TYPES: DriverType[] = [
  "Dynamic",
  "Planar",
- "BA",
+ "Balanced Armature",
  "Electrostatic",
  "Hybrid",
  "Tribrid",
@@ -122,5 +122,3 @@ export const CONNECTOR_TYPES: ConnectorType[] = [
  "XLR",
  "Mini-XLR",
 ];
-
-export const PEQ_TYPES: PeqType[] = ["PK", "LSC", "HSC"];

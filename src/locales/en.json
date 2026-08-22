@@ -61,7 +61,7 @@
     "IEM": "IEM",
     "Dynamic": "Dynamic",
     "Planar": "Planar",
-    "BA": "BA",
+    "Balanced Armature": "Balanced Armature",
     "Electrostatic": "Electrostatic",
     "Hybrid": "Hybrid",
     "Tribrid": "Tribrid",
@@ -266,7 +266,7 @@
       "search_no_results": "Search returned no results",
       "search_no_specs": "Searched {{p0}} page(s) but could not parse any specs",
       "search_failed": "Web search failed: {{p0}}",
-      "search_unparseable": "DuckDuckGo returned no parseable results"
+      "search_unparsable": "DuckDuckGo returned no parseable results"
     },
     "opra": {
       "stale_cache": "OPRA database could not be refreshed — using the last cached copy",

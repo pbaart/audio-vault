@@ -14,7 +14,7 @@ export interface AppSettings {
   language: LanguageId;
 }
 
-export const DEFAULT_SETTINGS: AppSettings = {
+const DEFAULT_SETTINGS: AppSettings = {
   theme: "tokyonight",
   currency: "EUR",
   dateFormat: "DD/MM/YYYY",

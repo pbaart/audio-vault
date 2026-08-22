@@ -136,7 +136,7 @@ export function parseFiioEqXml(
   // long identical tail runs so the user can drop them deliberately.
   const trailing = trailingIdenticalRun(bands);
   if (trailing >= 10) {
-    const last = bands[bands.length - 1];
+    const last = bands.at(-1)!;
     notes.push(
       i18n.t("fiioeq.trailingPadding", {
         p0: trailing,
@@ -174,7 +174,7 @@ function round2(v: number): number {
 
 /** Count how many trailing bands are identical to the very last band. */
 function trailingIdenticalRun(bands: PeqBand[]): number {
-  const last = bands[bands.length - 1];
+  const last = bands.at(-1)!;
   let n = 0;
   for (let i = bands.length - 1; i >= 0; i--) {
     const b = bands[i];

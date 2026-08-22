@@ -13,7 +13,7 @@ import i18n from "./i18n";
  */
 
 /** One EQ band, already mapped to the Audio Vault PEQ model by Rust. */
-export interface OpraBand {
+interface OpraBand {
  kind: "PK" | "LSC" | "HSC";
  freq: number;
  gain: number;
@@ -39,7 +39,7 @@ export interface OpraProfile {
 }
 
 /** A matched product with all of its presets. */
-export interface OpraCandidate {
+interface OpraCandidate {
  vendor: string;
  name: string;
  /** `in_ear`, `over_the_ear`, `earbuds`, `on_ear`, … */

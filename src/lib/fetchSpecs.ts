@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
  * Web auto-fetch (Phase 2) — result shapes as returned by the Rust
  * `fetch_specs` command (camelCase).
  */
-export interface SpecMatch {
+interface SpecMatch {
  brand: string;
  model: string;
  price?: number;

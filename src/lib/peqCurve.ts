@@ -80,7 +80,7 @@ function toBiquad(band: PeqBand): Biquad | null {
   return peaking(f0, gain, band.q);
 }
 
-export interface PeqCurve {
+interface PeqCurve {
   /** Log-spaced frequencies, Hz. */
   freqs: number[];
   /** Composite response at each frequency, dB. */
@@ -92,7 +92,7 @@ export interface PeqCurve {
  * grid. EQ bands cascade, so the total gain in dB is the sum of the
  * per-band dB responses. Returns null when there are no usable bands.
  */
-export function computePeqCurve(bands: PeqBand[]): PeqCurve | null {
+function computePeqCurve(bands: PeqBand[]): PeqCurve | null {
   const filters = bands.map(toBiquad).filter((f): f is Biquad => f !== null);
   if (filters.length === 0) return null;
 
@@ -155,7 +155,11 @@ function yRange(dbs: number[]): YRange {
   lo = Math.floor(lo);
   hi = Math.ceil(hi);
   const span = hi - lo;
-  const step = span > 30 ? 10 : span > 15 ? 5 : span > 6 ? 2 : 1;
+  let step: number;
+  if (span > 30) step = 10;
+  else if (span > 15) step = 5;
+  else if (span > 6) step = 2;
+  else step = 1;
   return { lo, hi, step };
 }
 
@@ -282,7 +286,7 @@ export function buildPeqSvgModel(bands: PeqBand[]): PeqSvgModel | null {
   const fillPath =
     `M${pts[0].x.toFixed(1)},${(margin.top + plotH).toFixed(1)} ` +
     pts.map((p) => `L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ") +
-    ` L${pts[pts.length - 1].x.toFixed(1)},${(margin.top + plotH).toFixed(1)} Z`;
+    ` L${pts.at(-1)!.x.toFixed(1)},${(margin.top + plotH).toFixed(1)} Z`;
 
   return {
     w,
@@ -309,55 +313,6 @@ export function buildPeqSvgModel(bands: PeqBand[]): PeqSvgModel | null {
     curve: C.curve,
     axisTitle: { x: margin.left + plotW / 2, y: h - 6, fill: C.label },
   };
-}
-
-/**
- * Self-contained inline SVG of the PEQ response (string form — used by
- * Node tests). Returns "" when there is nothing to draw. The SVG uses a
- * viewBox and w-full so it scales with the detail view.
- */
-export function buildPeqSvg(bands: PeqBand[]): string {
-  const m = buildPeqSvgModel(bands);
-  if (!m) return "";
-
-  const grid: string[] = [];
-  grid.push(
-    `<defs><linearGradient id="${m.fillGradient.id}" x1="0" y1="0" x2="0" y2="1">` +
-      `<stop offset="0%" stop-color="${m.fillGradient.top}"/>` +
-      `<stop offset="100%" stop-color="${m.fillGradient.bottom}"/>` +
-      `</linearGradient></defs>`,
-  );
-  for (const l of m.lines) {
-    grid.push(
-      `<line x1="${l.x1.toFixed(1)}" y1="${l.y1.toFixed(1)}" x2="${l.x2.toFixed(1)}" y2="${l.y2.toFixed(1)}" stroke="${l.stroke}" stroke-width="${l.width}"/>`,
-    );
-  }
-  for (const t of m.labels) {
-    grid.push(
-      `<text x="${t.x.toFixed(1)}" y="${t.y.toFixed(1)}" fill="${t.fill}" font-size="11" text-anchor="${t.anchor}">${t.text}</text>`,
-    );
-  }
-  grid.push(
-    `<text x="${m.legend.x}" y="${m.legend.y}" fill="${m.legend.fill}" font-size="11">${m.legend.text}</text>`,
-  );
-
-  const markerSvg = m.markers
-    .map(
-      (mk) =>
-        `<circle cx="${mk.x.toFixed(1)}" cy="${mk.y.toFixed(1)}" r="3" fill="${m.markerFill}"/>`,
-    )
-    .join("");
-
-  return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${m.w} ${m.h}" ` +
-    `class="w-full" style="background:${m.bg};border:1px solid ${m.border};border-radius:6px">` +
-    grid.join("") +
-    `<path d="${m.fillPath}" fill="url(#${m.fillGradient.id})"/>` +
-    markerSvg +
-    `<path d="${m.curvePath}" fill="none" stroke="${m.curve}" stroke-width="2.5" stroke-linejoin="round"/>` +
-    `<text x="${m.axisTitle.x.toFixed(1)}" y="${m.axisTitle.y.toFixed(1)}" fill="${m.axisTitle.fill}" font-size="11" text-anchor="middle">Frequency (Hz)</text>` +
-    `</svg>`
-  );
 }
 
 /** Compact summary line for under the graph, e.g. "7 bands: PK ×5 · LSC ×1 · HSC ×1". */

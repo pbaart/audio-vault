@@ -121,7 +121,7 @@ function parseBand(
  *  - an OPRA product entry: `{ type: "product", data: { profiles: [...] } }`
  *    (first profile is used).
  */
-export function parseGenericPeqJson(json: string): PeqImportResult {
+function parseGenericPeqJson(json: string): PeqImportResult {
   let root: unknown;
   try {
     root = JSON.parse(json);

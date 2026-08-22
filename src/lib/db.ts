@@ -27,7 +27,7 @@ let dbPromise: Promise<Database> | null = null;
  * Load (once) the SQLite database. The URL must match the one the Rust
  * side registered migrations for, so both derive it from `init_app_data`.
  */
-export async function getDb(): Promise<Database> {
+async function getDb(): Promise<Database> {
   if (!dbPromise) {
     dbPromise = (async () => {
       const paths = await getAppPaths();
@@ -38,7 +38,7 @@ export async function getDb(): Promise<Database> {
 }
 
 /** Generate a random UUIDv4 (works without `crypto.randomUUID`). */
-export function randomUuid(): string {
+function randomUuid(): string {
   if (
     typeof crypto !== "undefined" &&
     typeof crypto.randomUUID === "function"

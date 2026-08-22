@@ -178,10 +178,6 @@ export function chartPalette(): ChartPalette {
   return CHART_PALETTES[current];
 }
 
-export function getTheme(): ThemeId {
-  return current;
-}
-
 /**
  * Activate a theme: CSS variables via `data-theme`, plus the localStorage
  * mirror index.html reads before first paint. DOM access is guarded so the

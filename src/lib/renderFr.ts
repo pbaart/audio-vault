@@ -114,7 +114,7 @@ function drawCurve(
   C: ReturnType<typeof chartPalette>,
 ): void {
   const plotH = H - MARGIN.top - MARGIN.bottom;
-  const last = plot.pts[plot.pts.length - 1];
+  const last = plot.pts.at(-1)!;
 
   // Area fill under the curve.
   const grad = ctx.createLinearGradient(0, MARGIN.top, 0, MARGIN.top + plotH);
@@ -246,28 +246,4 @@ export function buildFrSvgModel(
     curve: C.curve,
     label: C.label,
   };
-}
-
-/**
- * Inline preview for the fetch panel (string form — used by tests): a small
- * self-contained SVG of the curve (no canvas needed, so it can render
- * before the user applies).
- */
-export function buildFrPreviewSvg(curve: number[][], w = 560, h = 220): string {
-  const m = buildFrSvgModel(curve, w, h);
-  if (!m) return "";
-  const gridLines = m.lines.map(
-    (l) =>
-      `<line x1="${l.x1.toFixed(1)}" y1="${l.y1.toFixed(1)}" x2="${l.x2.toFixed(1)}" y2="${l.y2.toFixed(1)}" stroke="${l.stroke}" stroke-width="${l.width}"/>`,
-  );
-
-  return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${m.w}" height="${m.h}" ` +
-    `viewBox="0 0 ${m.w} ${m.h}" style="background:${m.bg};border:1px solid ${m.border};border-radius:6px">` +
-    gridLines.join("") +
-    `<path d="${m.path}" fill="none" stroke="${m.curve}" stroke-width="2" stroke-linejoin="round"/>` +
-    `<text x="8" y="${m.h - 8}" fill="${m.label}" font-size="12">20 Hz</text>` +
-    `<text x="${m.w - 8}" y="${m.h - 8}" fill="${m.label}" font-size="12" text-anchor="end">20 kHz</text>` +
-    `</svg>`
-  );
 }

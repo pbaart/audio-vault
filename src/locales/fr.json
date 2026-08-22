@@ -61,7 +61,7 @@
     "IEM": "IEM",
     "Dynamic": "Dynamique",
     "Planar": "Planaire",
-    "BA": "BA",
+    "Balanced Armature": "BA",
     "Electrostatic": "Électrostatique",
     "Hybrid": "Hybride",
     "Tribrid": "Tribrid",
@@ -266,7 +266,7 @@
       "search_no_results": "La recherche n'a retourné aucun résultat",
       "search_no_specs": "{{p0}} page(s) consultée(s), mais aucune spécification n'a pu être analysée",
       "search_failed": "Échec de la recherche web : {{p0}}",
-      "search_unparseable": "DuckDuckGo n'a retourné aucun résultat exploitable"
+      "search_unparsable": "DuckDuckGo n'a retourné aucun résultat exploitable"
     },
     "opra": {
       "stale_cache": "Impossible de rafraîchir la base OPRA — utilisation de la dernière copie en cache",
