@@ -219,8 +219,6 @@
     "tagPlaceholder": "Eingeben und Enter drücken",
     "tagRemoveAria": "{{tag}} entfernen",
       "addImage": "Bild hinzufügen",
-      "coverTag": "Titelbild",
-      "firstImageHint": "Das erste Bild wird als Cover verwendet (Karten und Detailansicht).",
       "moveLeft": "Nach links",
       "moveRight": "Nach rechts",
     "impedance": "Impedanz (Ω)",

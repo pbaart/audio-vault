@@ -71,7 +71,7 @@ export interface Device {
  webshop_url: string | null;
  image_path: string | null;
  mood_image_path: string | null;
- /** Devices category: product image gallery (first entry = cover). */
+ /** Devices category: product image gallery (mood image is the cover). */
  images: string[];
  price: number | null;
  purchase_date: string | null;

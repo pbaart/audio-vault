@@ -622,9 +622,10 @@ pub fn run() {
     version: 18,
     description: "add_device_images_column",
     // Devices-category gallery: JSON string array of relative media
-    // paths (same convention as inputs/outputs). The first entry is the
-    // cover shown in collection cards and the detail hero. Headphones
-    // keep using image_path / mood_image_path and leave this empty.
+    // paths (same convention as inputs/outputs). Product shots for the
+    // devices detail view; the mood image stays the cover shown in cards
+    // and the hero (the first product image is only a fallback when no
+    // mood image is set). Headphones leave this empty.
     sql: "ALTER TABLE devices ADD COLUMN images TEXT;",
     kind: MigrationKind::Up,
   },

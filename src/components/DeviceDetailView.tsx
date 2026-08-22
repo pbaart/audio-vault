@@ -53,7 +53,7 @@ export function DeviceDetailView({
     | { kind: "gallery"; index: number }
     | null
   >(null);
-  // Devices use the gallery's first image as their cover.
+  // Devices without a mood image fall back to the first product image.
   const mainImage =
     device.mood_image_path ?? device.image_path ?? device.images[0] ?? null;
   const showProductThumb = !!device.image_path && !!device.mood_image_path;

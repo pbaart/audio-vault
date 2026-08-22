@@ -219,8 +219,6 @@
     "tagPlaceholder": "Typen en Enter drukken",
     "tagRemoveAria": "{{tag}} verwijderen",
       "addImage": "Afbeelding toevoegen",
-      "coverTag": "Cover",
-      "firstImageHint": "De eerste afbeelding wordt als cover gebruikt (kaarten en detailweergave).",
       "moveLeft": "Naar links",
       "moveRight": "Naar rechts",
     "impedance": "Impedantie (Ω)",

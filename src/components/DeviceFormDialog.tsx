@@ -122,7 +122,7 @@ interface FormState {
   webshop_url: string;
   image_path: string | null;
   mood_image_path: string | null;
-  /** Devices category: product image gallery (first = cover). */
+  /** Devices category: product image gallery (mood image is the cover). */
   images: string[];
   price: string;
   purchase_date: string;
@@ -1842,9 +1842,6 @@ export function DeviceFormDialog({
                   </div>
                 </div>
               </Field>
-              <p className="text-xs text-tm-gray">
-                {t("form.firstImageHint")}
-              </p>
               {form.images.length > 0 && (
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
                   {form.images.map((rel, i) => (
@@ -1857,11 +1854,6 @@ export function DeviceFormDialog({
                         className="aspect-video w-full"
                         placeholderIcon={24}
                       />
-                      {i === 0 && (
-                        <span className="absolute left-1.5 top-1.5 rounded bg-black/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-white">
-                          {t("form.coverTag")}
-                        </span>
-                      )}
                       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-black/50 p-1 opacity-0 transition group-hover:opacity-100">
                         <div className="flex gap-1">
                           <button
