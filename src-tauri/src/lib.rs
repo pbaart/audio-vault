@@ -521,6 +521,12 @@ pub fn run() {
         ELSE connector_type
     END;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 8,
+    description: "add_mood_image_path_column",
+    sql: "ALTER TABLE devices ADD COLUMN mood_image_path TEXT;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

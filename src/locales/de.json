@@ -132,6 +132,7 @@
   },
   "detail": {
     "zoom": "Klicken zum Vergrößern",
+    "productImage": "Produktbild",
     "device": "Gerät",
     "connectorLabel": "Anschluss:",
     "specs": "Technische Daten",
@@ -178,6 +179,8 @@
     "applied": "Angewendet — leere Felder gefüllt",
     "apply": "Auf Formular anwenden (nur leere Felder)",
     "image": "Bild",
+    "productImage": "Produktbild",
+    "moodImage": "Stimmungsbild",
     "replaceImage": "Bild ersetzen",
     "pickImage": "Bild auswählen",
     "removeImage": "Bild entfernen",

@@ -85,6 +85,7 @@ export default function App() {
       await deleteDevice(d.id);
       // Clean up media files owned by this device (best effort).
       void removeMediaFile(d.image_path);
+      void removeMediaFile(d.mood_image_path);
       void removeMediaFile(d.fr_graph_path);
       setDeleteTarget(null);
       if (view.name === "device" && view.id === d.id) {
@@ -232,7 +233,7 @@ export default function App() {
             {t("delete.confirm", {
               name: `${deleteTarget.brand} ${deleteTarget.model}`,
             })}
-            {(deleteTarget.image_path || deleteTarget.fr_graph_path) && (
+            {(deleteTarget.image_path || deleteTarget.mood_image_path || deleteTarget.fr_graph_path) && (
               <> {t("delete.mediaNote")}</>
             )}{" "}
             {t("delete.unundoable")}

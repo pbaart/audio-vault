@@ -5,7 +5,7 @@ import { getAppPaths } from "./paths";
 /** Static SQL — all values are bound via `?` placeholders; no string interpolation. */
 const UPDATE_SQL =
   "UPDATE devices SET brand = ?, model = ?, type = ?, color = ?, " +
-  "manufacturer_url = ?, webshop_url = ?, image_path = ?, " +
+  "manufacturer_url = ?, webshop_url = ?, image_path = ?, mood_image_path = ?, " +
   "price = ?, purchase_date = ?, driver_type = ?, impedance_ohms = ?, " +
   "sensitivity_db = ?, connector_type = ?, tube_amp_suitable = ?, " +
   "drive_difficulty = ?, sound_signature = ?, soundstage_rating = ?, " +
@@ -15,11 +15,11 @@ const UPDATE_SQL =
 
 const INSERT_SQL =
   "INSERT INTO devices (id, brand, model, type, color, manufacturer_url, " +
-  "webshop_url, image_path, price, " +
+  "webshop_url, image_path, mood_image_path, price, " +
   "purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, " +
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
   "listening_notes, fr_graph_path, peq_settings, peq_source, custom_fields) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -120,6 +120,7 @@ function rowToDevice(row: Row): Device {
     manufacturer_url: asString(row.manufacturer_url),
     webshop_url: asString(row.webshop_url),
     image_path: asString(row.image_path),
+    mood_image_path: asString(row.mood_image_path),
     price: asNum(row.price),
     purchase_date: asString(row.purchase_date),
     driver_type: asString(row.driver_type) as Device["driver_type"],
@@ -223,6 +224,7 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.manufacturer_url,
     device.webshop_url,
     device.image_path,
+    device.mood_image_path,
     device.price,
     device.purchase_date,
     device.driver_type,

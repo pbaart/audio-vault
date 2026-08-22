@@ -52,6 +52,7 @@ export interface Device {
  manufacturer_url: string | null;
  webshop_url: string | null;
  image_path: string | null;
+ mood_image_path: string | null;
  price: number | null;
  purchase_date: string | null;
  driver_type: DriverType | null;

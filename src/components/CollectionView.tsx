@@ -295,7 +295,7 @@ export function CollectionView({
               >
                 <div className="relative aspect-video">
                   <MediaImage
-                    relPath={d.image_path}
+                    relPath={d.mood_image_path ?? d.image_path}
                     className="h-full w-full"
                   />
                   {badge && (

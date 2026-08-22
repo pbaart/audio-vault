@@ -37,7 +37,10 @@ export function DeviceDetailView({
   onDelete,
 }: DeviceDetailViewProps) {
   const { t } = useTranslation();
-  const [lightbox, setLightbox] = useState<null | "image" | "fr">(null);
+  const [lightbox, setLightbox] = useState<null | "image" | "mood" | "fr">(null);
+  const mainImage = device.mood_image_path ?? device.image_path;
+  const mainLightbox: "image" | "mood" = device.mood_image_path ? "mood" : "image";
+  const showProductThumb = !!device.image_path && !!device.mood_image_path;
   const badge = deriveTubeBadge(device.impedance_ohms, device.driver_type);
 
   return (
@@ -70,14 +73,14 @@ export function DeviceDetailView({
         {/* Left column: image + identity */}
         <div className="space-y-4">
           <div className="relative overflow-hidden rounded-lg border border-tm-dark">
-            {device.image_path ? (
+            {mainImage ? (
               <button
                 className="group block w-full"
-                onClick={() => setLightbox("image")}
+                onClick={() => setLightbox(mainLightbox)}
                 title={t("detail.zoom")}
               >
                 <MediaImage
-                  relPath={device.image_path}
+                  relPath={mainImage}
                   className="aspect-video w-full"
                   placeholderIcon={56}
                 />
@@ -93,6 +96,23 @@ export function DeviceDetailView({
               />
             )}
           </div>
+          {showProductThumb && (
+            <button
+              className="group flex w-full items-center gap-2 rounded-lg border border-tm-dark bg-tm-bg p-2 text-left transition hover:border-tm-accent/60"
+              onClick={() => setLightbox("image")}
+              title={t("detail.zoom")}
+            >
+              <div className="h-12 w-12 shrink-0 overflow-hidden rounded border border-tm-dark bg-tm-darker">
+                <MediaImage
+                  relPath={device.image_path}
+                  className="h-full w-full"
+                />
+              </div>
+              <span className="text-xs text-tm-gray">
+                {t("detail.productImage")}
+              </span>
+            </button>
+          )}
 
           <div className="rounded-lg border border-tm-dark bg-tm-bg p-4">
             <p className="text-xs uppercase tracking-wide text-tm-gray">
@@ -266,6 +286,13 @@ export function DeviceDetailView({
       {lightbox === "image" && (
         <Lightbox
           relPath={device.image_path}
+          title={`${device.brand} ${device.model}`}
+          onClose={() => setLightbox(null)}
+        />
+      )}
+      {lightbox === "mood" && (
+        <Lightbox
+          relPath={device.mood_image_path}
           title={`${device.brand} ${device.model}`}
           onClose={() => setLightbox(null)}
         />
