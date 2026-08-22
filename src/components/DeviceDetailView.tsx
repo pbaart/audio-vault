@@ -123,12 +123,14 @@ export function DeviceDetailView({
               </div>
             )}
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <Tip label={t("fields.type")}>
-                <Chip
-                  label={enumLabel(device.type, t)}
-                  icon={<Headphones size={12} />}
-                />
-              </Tip>
+              {device.type && (
+                <Tip label={t("fields.type")}>
+                  <Chip
+                    label={enumLabel(device.type, t)}
+                    icon={<Headphones size={12} />}
+                  />
+                </Tip>
+              )}
               {device.driver_type && (
                 <Tip label={t("fields.driver")}>
                   <Chip

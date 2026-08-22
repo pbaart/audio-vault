@@ -1,4 +1,16 @@
-export type DeviceType = "Over-Ear" | "On-Ear" | "IEM";
+export type HeadphoneType = "Over-Ear" | "On-Ear" | "IEM";
+
+/** Top-level collection categories, shown as nav entries. */
+export type DeviceCategory = "headphones" | "devices";
+
+/** Types within the "devices" category (source components, AVRs, ...). */
+export type DeviceType =
+ | "DAC"
+ | "AMP"
+ | "Dongle DAC"
+ | "DAC+AMP"
+ | "BT Amp"
+ | "AVR";
 
 export type DriverType =
  | "Dynamic"
@@ -47,7 +59,7 @@ export interface Device {
  id: string;
  brand: string;
  model: string;
- type: DeviceType;
+ type: HeadphoneType | null;
  color: string | null;
  manufacturer_url: string | null;
  webshop_url: string | null;
@@ -87,12 +99,38 @@ export interface Device {
   */
  peq_source: string | null;
  custom_fields: CustomField[];
+ /** Top-level category ("headphones" | "devices"). */
+ category: DeviceCategory;
+ /** Type within the devices category; null for headphones. */
+ device_type: DeviceType | null;
+ dac_chip: string | null;
+ supported_formats: string | null;
+ bluetooth_codecs: string[];
+ inputs: string[];
+ outputs: string[];
+ output_power: string | null;
+ snr_db: number | null;
+ thd_n: string | null;
+ load_min_ohms: number | null;
+ load_max_ohms: number | null;
+ channels: string | null;
+ hdmi: string | null;
+ room_correction: string | null;
  created_at: string;
  /** Last save timestamp; equals created_at for never-edited devices. */
  updated_at: string;
 }
 
-export const DEVICE_TYPES: DeviceType[] = ["Over-Ear", "On-Ear", "IEM"];
+export const HEADPHONE_TYPES: HeadphoneType[] = ["Over-Ear", "On-Ear", "IEM"];
+
+export const DEVICE_TYPES: DeviceType[] = [
+ "DAC",
+ "AMP",
+ "Dongle DAC",
+ "DAC+AMP",
+ "BT Amp",
+ "AVR",
+];
 
 export const DRIVER_TYPES: DriverType[] = [
  "Dynamic",

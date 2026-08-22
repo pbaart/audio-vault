@@ -12,6 +12,10 @@ const UPDATE_SQL =
   "imaging_rating = ?, detail_retrieval_rating = ?, timbre_rating = ?, " +
   "tonal_balance_rating = ?, overall_rating = ?, listening_notes = ?, " +
   "fr_graph_path = ?, peq_settings = ?, peq_source = ?, custom_fields = ?, " +
+  "category = ?, device_type = ?, dac_chip = ?, supported_formats = ?, " +
+  "bluetooth_codecs = ?, inputs = ?, outputs = ?, output_power = ?, " +
+  "snr_db = ?, thd_n = ?, load_min_ohms = ?, load_max_ohms = ?, " +
+  "channels = ?, hdmi = ?, room_correction = ?, " +
   "updated_at = ? " +
   "WHERE id = ?";
 
@@ -22,8 +26,11 @@ const INSERT_SQL =
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
   "imaging_rating, detail_retrieval_rating, timbre_rating, " +
   "tonal_balance_rating, overall_rating, listening_notes, fr_graph_path, " +
-  "peq_settings, peq_source, custom_fields, updated_at) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "peq_settings, peq_source, custom_fields, category, device_type, dac_chip, " +
+  "supported_formats, bluetooth_codecs, inputs, outputs, output_power, " +
+  "snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, " +
+  "room_correction, updated_at) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -129,6 +136,11 @@ function parseCustomFields(raw: unknown): CustomField[] {
   );
 }
 
+/** Parse a stored JSON string array (inputs, outputs, codecs). */
+function parseStringArray(raw: unknown): string[] {
+  return parseJsonArray(raw).filter((x): x is string => typeof x === "string");
+}
+
 type Row = Record<string, unknown>;
 
 function rowToDevice(row: Row): Device {
@@ -136,7 +148,7 @@ function rowToDevice(row: Row): Device {
     id: asString(row.id) ?? "",
     brand: asString(row.brand) ?? "",
     model: asString(row.model) ?? "",
-    type: (asString(row.type) ?? "Over-Ear") as Device["type"],
+    type: asString(row.type) as Device["type"],
     color: asString(row.color),
     manufacturer_url: asString(row.manufacturer_url),
     webshop_url: asString(row.webshop_url),
@@ -166,6 +178,21 @@ function rowToDevice(row: Row): Device {
     peq_settings: parsePeqSettings(row.peq_settings),
     peq_source: asString(row.peq_source),
     custom_fields: parseCustomFields(row.custom_fields),
+    category: (asString(row.category) ?? "headphones") as Device["category"],
+    device_type: asString(row.device_type) as Device["device_type"],
+    dac_chip: asString(row.dac_chip),
+    supported_formats: asString(row.supported_formats),
+    bluetooth_codecs: parseStringArray(row.bluetooth_codecs),
+    inputs: parseStringArray(row.inputs),
+    outputs: parseStringArray(row.outputs),
+    output_power: asString(row.output_power),
+    snr_db: asNum(row.snr_db),
+    thd_n: asString(row.thd_n),
+    load_min_ohms: asInt(row.load_min_ohms),
+    load_max_ohms: asInt(row.load_max_ohms),
+    channels: asString(row.channels),
+    hdmi: asString(row.hdmi),
+    room_correction: asString(row.room_correction),
     created_at: asString(row.created_at) ?? "",
     // Pre-v15 rows have no updated_at — treat them as modified at creation.
     updated_at: asString(row.updated_at) ?? asString(row.created_at) ?? "",
@@ -314,6 +341,21 @@ export async function saveDevice(device: Device): Promise<Device> {
     JSON.stringify(device.peq_settings),
     device.peq_source,
     JSON.stringify(device.custom_fields),
+    device.category,
+    device.device_type,
+    device.dac_chip,
+    device.supported_formats,
+    JSON.stringify(device.bluetooth_codecs),
+    JSON.stringify(device.inputs),
+    JSON.stringify(device.outputs),
+    device.output_power,
+    device.snr_db,
+    device.thd_n,
+    device.load_min_ohms,
+    device.load_max_ohms,
+    device.channels,
+    device.hdmi,
+    device.room_correction,
   ];
 
   const now = sqlNow();

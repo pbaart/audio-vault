@@ -590,6 +590,33 @@ pub fn run() {
     // update from then on.
     sql: "ALTER TABLE devices ADD COLUMN updated_at TEXT;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 16,
+    description: "add_devices_category_columns",
+    // Second top-level category ("devices": DAC, AMP, dongle, AVR, ...).
+    // `category` gets a constant default so pre-existing rows become
+    // 'headphones' automatically; the rest are device-category-only
+    // specs (NULL for headphones). inputs/outputs/bluetooth_codecs are
+    // JSON string arrays, same convention as custom_fields.
+    // Multi-statement migrations are fine: the plugin runs them through
+    // sqlx's migrator, which executes the whole script in one transaction.
+    sql: "ALTER TABLE devices ADD COLUMN category TEXT NOT NULL DEFAULT 'headphones';
+          ALTER TABLE devices ADD COLUMN device_type TEXT;
+          ALTER TABLE devices ADD COLUMN dac_chip TEXT;
+          ALTER TABLE devices ADD COLUMN supported_formats TEXT;
+          ALTER TABLE devices ADD COLUMN bluetooth_codecs TEXT;
+          ALTER TABLE devices ADD COLUMN inputs TEXT;
+          ALTER TABLE devices ADD COLUMN outputs TEXT;
+          ALTER TABLE devices ADD COLUMN output_power TEXT;
+          ALTER TABLE devices ADD COLUMN snr_db REAL;
+          ALTER TABLE devices ADD COLUMN thd_n TEXT;
+          ALTER TABLE devices ADD COLUMN load_min_ohms INTEGER;
+          ALTER TABLE devices ADD COLUMN load_max_ohms INTEGER;
+          ALTER TABLE devices ADD COLUMN channels TEXT;
+          ALTER TABLE devices ADD COLUMN hdmi TEXT;
+          ALTER TABLE devices ADD COLUMN room_correction TEXT;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

@@ -12,9 +12,11 @@ import type {
   ConnectorType,
   CustomField,
   Device,
+  DeviceCategory,
   DeviceType,
   DriverType,
   DriveDifficulty,
+  HeadphoneType,
   PeqBand,
   PeqType,
   SoundSignature,
@@ -25,6 +27,7 @@ import {
   DEVICE_TYPES,
   DRIVER_TYPES,
   DRIVE_DIFFICULTIES,
+  HEADPHONE_TYPES,
   SOUND_SIGNATURES,
   TUBE_BADGES,
 } from "../types";
@@ -70,6 +73,7 @@ import { StarRating } from "./StarRating";
 import { DotRating } from "./DotRating";
 import { TubeBadge } from "./TubeBadge";
 import { Tip } from "./Tip";
+import { TagInput } from "./TagInput";
 import {
   btnDanger,
   btnPrimary,
@@ -108,7 +112,9 @@ interface CustomDraft {
 interface FormState {
   brand: string;
   model: string;
-  type: DeviceType | "";
+  type: HeadphoneType | "";
+  /** Devices category: type within the devices category. */
+  device_type: DeviceType | "";
   color: string;
   manufacturer_url: string;
   webshop_url: string;
@@ -129,6 +135,20 @@ interface FormState {
   timbre_rating: string;
   tonal_balance_rating: string;
   overall_rating: string;
+  /** Devices-category specs ("" = unset; empty arrays = none). */
+  dac_chip: string;
+  supported_formats: string;
+  bluetooth_codecs: string[];
+  inputs: string[];
+  outputs: string[];
+  output_power: string;
+  snr_db: string;
+  thd_n: string;
+  load_min_ohms: string;
+  load_max_ohms: string;
+  channels: string;
+  hdmi: string;
+  room_correction: string;
   listening_notes: string;
   fr_graph_path: string | null;
   peq: PeqDraft[];
@@ -137,11 +157,54 @@ interface FormState {
   custom: CustomDraft[];
 }
 
+/** Port suggestions for the devices-category tag inputs. */
+const INPUT_SUGGESTIONS = [
+  "USB-C",
+  "USB-A",
+  "Optical (TOSLINK)",
+  "Coaxial",
+  "RCA",
+  "3.5mm",
+  "XLR",
+  "Bluetooth",
+  "HDMI",
+];
+const OUTPUT_SUGGESTIONS = [
+  "3.5mm",
+  "4.4mm Pentaconn",
+  "RCA",
+  "XLR",
+  "Sub out",
+  "Speaker L/R",
+  "HDMI eARC",
+  "Pre-out",
+];
+const CODEC_SUGGESTIONS = [
+  "SBC",
+  "AAC",
+  "aptX",
+  "aptX HD",
+  "aptX Adaptive",
+  "aptX Lossless",
+  "LC3",
+  "LDAC",
+];
+
+/** Which spec groups apply to a device type ("" = not chosen yet). */
+function showDac(dt: string): boolean {
+  return dt === "" || (dt !== "AMP" && dt !== "BT Amp");
+}
+
+function showAmp(dt: string): boolean {
+  return dt === "" || (dt !== "DAC" && dt !== "Dongle DAC");
+}
+
 function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
   return {
     brand: device?.brand ?? "",
     model: device?.model ?? "",
     type: device?.type ?? "",
+    device_type: device?.device_type ?? "",
     color: device?.color ?? "",
     manufacturer_url: device?.manufacturer_url ?? "",
     webshop_url: device?.webshop_url ?? "",
@@ -187,6 +250,21 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
       key: c.key,
       value: c.value,
     })),
+    dac_chip: device?.dac_chip ?? "",
+    supported_formats: device?.supported_formats ?? "",
+    bluetooth_codecs: device?.bluetooth_codecs ?? [],
+    inputs: device?.inputs ?? [],
+    outputs: device?.outputs ?? [],
+    output_power: device?.output_power ?? "",
+    snr_db: device?.snr_db == null ? "" : String(device.snr_db),
+    thd_n: device?.thd_n ?? "",
+    load_min_ohms:
+      device?.load_min_ohms == null ? "" : String(device.load_min_ohms),
+    load_max_ohms:
+      device?.load_max_ohms == null ? "" : String(device.load_max_ohms),
+    channels: device?.channels ?? "",
+    hdmi: device?.hdmi ?? "",
+    room_correction: device?.room_correction ?? "",
   };
 }
 
@@ -218,11 +296,19 @@ function normalizeUrl(raw: string): string | null {
   }
 }
 
-function validate(f: FormState, t: TranslateFn): Record<string, string> {
+function validate(
+  f: FormState,
+  t: TranslateFn,
+  category: DeviceCategory,
+): Record<string, string> {
   const e: Record<string, string> = {};
   if (!f.brand.trim()) e.brand = t("form.validation.brandRequired");
   if (!f.model.trim()) e.model = t("form.validation.modelRequired");
-  if (!f.type) e.type = t("form.validation.typeRequired");
+  if (category === "headphones") {
+    if (!f.type) e.type = t("form.validation.typeRequired");
+  } else if (!f.device_type) {
+    e.device_type = t("form.validation.typeRequired");
+  }
   if (f.price !== "" && !Number.isFinite(Number(f.price)))
     e.price = t("form.validation.priceNumber");
   if (
@@ -235,6 +321,15 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
     e.impedance_ohms = t("form.validation.impedanceInt");
   if (f.sensitivity_db !== "" && !Number.isFinite(Number(f.sensitivity_db)))
     e.sensitivity_db = t("form.validation.sensitivityNumber");
+  if (f.snr_db !== "" && !Number.isFinite(Number(f.snr_db)))
+    e.snr_db = t("form.validation.snrNumber");
+  for (const key of ["load_min_ohms", "load_max_ohms"] as const) {
+    if (
+      f[key] !== "" &&
+      !(Number.isInteger(Number(f[key])) && Number(f[key]) >= 0)
+    )
+      e[key] = t("form.validation.wholeNumber");
+  }
   const checkHalfRating = (v: string, key: string) => {
     if (
       v !== "" &&
@@ -299,6 +394,8 @@ function validate(f: FormState, t: TranslateFn): Record<string, string> {
 
 interface DeviceFormDialogProps {
   device: Device | null;
+  /** Category for new devices; editing uses the device's own category. */
+  category: DeviceCategory;
   settings: AppSettings;
   onClose: () => void;
   onSaved: (device: Device) => void;
@@ -318,11 +415,14 @@ interface PendingFr {
 /** Add/Edit modal. Numeric inputs are kept as strings and parsed on save. */
 export function DeviceFormDialog({
   device,
+  category,
   settings,
   onClose,
   onSaved,
 }: DeviceFormDialogProps) {
   const { t } = useTranslation();
+  /** Effective category: the device's own when editing, else the page's. */
+  const cat: DeviceCategory = device?.category ?? category;
   const [form, setForm] = useState<FormState>(() =>
     fromDevice(device, settings.dateFormat),
   );
@@ -373,6 +473,11 @@ export function DeviceFormDialog({
   // in Rust — the first lookup may download the ~13 MB database, afterwards
   // it is a local lookup. Failures land in `note`, never as a blocker.
   useEffect(() => {
+    // OPRA profiles only exist for headphones.
+    if (cat !== "headphones") {
+      setOpraCheck({ status: "idle" });
+      return;
+    }
     const brand = form.brand.trim();
     const model = form.model.trim();
     if (!brand || !model) {
@@ -400,7 +505,7 @@ export function DeviceFormDialog({
       cancelled = true;
       clearTimeout(t);
     };
-  }, [form.brand, form.model]);
+  }, [form.brand, form.model, cat]);
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -648,7 +753,7 @@ export function DeviceFormDialog({
   }
 
   async function handleSave() {
-    const errs = validate(form, t);
+    const errs = validate(form, t, cat);
     if (
       form.purchase_date.trim() !== "" &&
       parseDateToISO(form.purchase_date, settings.dateFormat) == null
@@ -678,7 +783,10 @@ export function DeviceFormDialog({
         id: device?.id ?? "",
         brand: form.brand.trim(),
         model: form.model.trim(),
-        type: form.type as DeviceType,
+        category: cat,
+        type: cat === "headphones" ? (form.type as HeadphoneType) : null,
+        device_type:
+          cat === "devices" ? (form.device_type as DeviceType) : null,
         color: form.color.trim() || null,
         manufacturer_url: normalizeUrl(form.manufacturer_url),
         webshop_url: normalizeUrl(form.webshop_url),
@@ -724,6 +832,33 @@ export function DeviceFormDialog({
         peq_settings: peq,
         peq_source: form.peq_source.trim() || null,
         custom_fields: custom,
+        dac_chip: showDac(form.device_type)
+          ? form.dac_chip.trim() || null
+          : null,
+        supported_formats: showDac(form.device_type)
+          ? form.supported_formats.trim() || null
+          : null,
+        bluetooth_codecs: form.bluetooth_codecs,
+        inputs: form.inputs,
+        outputs: form.outputs,
+        output_power: showAmp(form.device_type)
+          ? form.output_power.trim() || null
+          : null,
+        snr_db: parseOptFloat(form.snr_db),
+        thd_n: form.thd_n.trim() || null,
+        load_min_ohms: showAmp(form.device_type)
+          ? parseOptInt(form.load_min_ohms)
+          : null,
+        load_max_ohms: showAmp(form.device_type)
+          ? parseOptInt(form.load_max_ohms)
+          : null,
+        channels:
+          form.device_type === "AVR" ? form.channels.trim() || null : null,
+        hdmi: form.device_type === "AVR" ? form.hdmi.trim() || null : null,
+        room_correction:
+          form.device_type === "AVR"
+            ? form.room_correction.trim() || null
+            : null,
         created_at: device?.created_at ?? new Date().toISOString(),
               updated_at: device?.updated_at ?? "",
       };
@@ -739,6 +874,47 @@ export function DeviceFormDialog({
       setSaving(false);
     }
   }
+
+  /** Shared by both spec grids (headphones and devices). */
+  const purchaseDateField = (
+    <Field
+      label={t("form.purchaseDate", { format: settings.dateFormat })}
+      error={errors.purchase_date}
+    >
+      <div className="flex items-center gap-1.5">
+        <input
+          className={cls(inputCls, "min-w-0 flex-1")}
+          value={form.purchase_date}
+          onChange={(e) => set("purchase_date", e.target.value)}
+          placeholder={settings.dateFormat}
+          autoComplete="off"
+        />
+        <DateCalendar
+          value={parseDateToISO(form.purchase_date, settings.dateFormat)}
+          locale={localeFor(settings.language)}
+          onSelect={(iso) =>
+            set("purchase_date", formatDate(iso, settings.dateFormat) ?? iso)
+          }
+        />
+      </div>
+    </Field>
+  );
+  const priceField = (
+    <Field
+      label={t("form.price", { currency: currencySymbol(settings.currency) })}
+      error={errors.price}
+    >
+      <input
+        className={inputCls}
+        type="number"
+        min="0"
+        step="0.01"
+        value={form.price}
+        onChange={(e) => set("price", e.target.value)}
+        placeholder="349"
+      />
+    </Field>
+  );
 
   return (
     <Modal
@@ -797,18 +973,28 @@ export function DeviceFormDialog({
                 placeholder={t("form.phModel")}
               />
             </Field>
-            <Field label={`${t("form.type")} *`} error={errors.type}>
+            <Field
+              label={`${t("form.type")} *`}
+              error={cat === "headphones" ? errors.type : errors.device_type}
+            >
               <select
                 className={cls(selectCls, "w-full")}
-                value={form.type}
-                onChange={(e) => set("type", e.target.value as DeviceType | "")}
+                value={cat === "headphones" ? form.type : form.device_type}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (cat === "headphones")
+                    set("type", v as HeadphoneType | "");
+                  else set("device_type", v as DeviceType | "");
+                }}
               >
                 <option value="">{t("form.select")}</option>
-                {DEVICE_TYPES.map((v) => (
-                  <option key={v} value={v}>
-                    {enumLabel(v, t)}
-                  </option>
-                ))}
+                {(cat === "headphones" ? HEADPHONE_TYPES : DEVICE_TYPES).map(
+                  (v) => (
+                    <option key={v} value={v}>
+                      {enumLabel(v, t)}
+                    </option>
+                  ),
+                )}
               </select>
             </Field>
             <Field label={t("form.color")}>
@@ -841,8 +1027,9 @@ export function DeviceFormDialog({
           </div>
         </FormSection>
 
-        {/* Web fetch */}
-        <FormSection title={t("form.webFetch")}>
+        {/* Web fetch (headphones only — squig.link indexes measurements) */}
+        {cat === "headphones" && (
+          <FormSection title={t("form.webFetch")}>
           <div className="flex flex-wrap items-center gap-3">
             <button
               className={btnSecondary}
@@ -964,11 +1151,13 @@ export function DeviceFormDialog({
               </button>
             </div>
           )}
-        </FormSection>
+          </FormSection>
+        )}
 
         {/* Technical specs */}
         <FormSection title={t("detail.specs")}>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {cat === "headphones" ? (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field label={t("form.impedance")} error={errors.impedance_ohms}>
               <input
                 className={inputCls}
@@ -1041,49 +1230,8 @@ export function DeviceFormDialog({
                 ))}
               </select>
             </Field>
-            <Field
-              label={t("form.purchaseDate", { format: settings.dateFormat })}
-              error={errors.purchase_date}
-            >
-              <div className="flex items-center gap-1.5">
-                <input
-                  className={cls(inputCls, "min-w-0 flex-1")}
-                  value={form.purchase_date}
-                  onChange={(e) => set("purchase_date", e.target.value)}
-                  placeholder={settings.dateFormat}
-                  autoComplete="off"
-                />
-                <DateCalendar
-                  value={parseDateToISO(
-                    form.purchase_date,
-                    settings.dateFormat,
-                  )}
-                  locale={localeFor(settings.language)}
-                  onSelect={(iso) =>
-                    set(
-                      "purchase_date",
-                      formatDate(iso, settings.dateFormat) ?? iso,
-                    )
-                  }
-                />
-              </div>
-            </Field>
-            <Field
-              label={t("form.price", {
-                currency: currencySymbol(settings.currency),
-              })}
-              error={errors.price}
-            >
-              <input
-                className={inputCls}
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.price}
-                onChange={(e) => set("price", e.target.value)}
-                placeholder="349"
-              />
-            </Field>
+            {purchaseDateField}
+            {priceField}
             <Field
               label={t("fields.tubeAmp")}
               className="col-span-2 sm:col-span-3"
@@ -1123,7 +1271,162 @@ export function DeviceFormDialog({
                 {describeTubeRule((k) => t(k))}
               </p>
             </Field>
-          </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {showDac(form.device_type) && (
+                <>
+                  <Field label={t("fields.dacChip")}>
+                    <input
+                      className={inputCls}
+                      value={form.dac_chip}
+                      onChange={(e) => set("dac_chip", e.target.value)}
+                      placeholder="ES9219QN"
+                      autoComplete="off"
+                    />
+                  </Field>
+                  <Field label={t("fields.supportedFormats")}>
+                    <input
+                      className={inputCls}
+                      value={form.supported_formats}
+                      onChange={(e) => set("supported_formats", e.target.value)}
+                      placeholder="PCM 24/192 · DSD256"
+                      autoComplete="off"
+                    />
+                  </Field>
+                </>
+              )}
+              <Field label={t("fields.snr")} error={errors.snr_db}>
+                <input
+                  className={inputCls}
+                  type="number"
+                  step="0.1"
+                  value={form.snr_db}
+                  onChange={(e) => set("snr_db", e.target.value)}
+                  placeholder="118"
+                />
+              </Field>
+              <Field label={t("fields.thdN")}>
+                <input
+                  className={inputCls}
+                  value={form.thd_n}
+                  onChange={(e) => set("thd_n", e.target.value)}
+                  placeholder="0.001 %"
+                  autoComplete="off"
+                />
+              </Field>
+              {showAmp(form.device_type) && (
+                <>
+                  <Field label={t("fields.outputPower")}>
+                    <input
+                      className={inputCls}
+                      value={form.output_power}
+                      onChange={(e) => set("output_power", e.target.value)}
+                      placeholder="5 W @ 32 Ω"
+                      autoComplete="off"
+                    />
+                  </Field>
+                  <Field
+                    label={t("fields.loadImpedance")}
+                    className="col-span-2"
+                    error={errors.load_min_ohms || errors.load_max_ohms}
+                  >
+                    <div className="flex items-center gap-2">
+                      <input
+                        className={inputCls}
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={form.load_min_ohms}
+                        onChange={(e) => set("load_min_ohms", e.target.value)}
+                        placeholder="16"
+                      />
+                      <span className="text-tm-gray">–</span>
+                      <input
+                        className={inputCls}
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={form.load_max_ohms}
+                        onChange={(e) => set("load_max_ohms", e.target.value)}
+                        placeholder="600"
+                      />
+                      <span className="text-xs text-tm-gray">Ω</span>
+                    </div>
+                  </Field>
+                </>
+              )}
+              <Field
+                label={t("fields.inputs")}
+                className="col-span-2 sm:col-span-3"
+              >
+                <TagInput
+                  id="inputs"
+                  value={form.inputs}
+                  onChange={(v) => set("inputs", v)}
+                  suggestions={INPUT_SUGGESTIONS}
+                  placeholder={t("form.tagPlaceholder")}
+                />
+              </Field>
+              <Field
+                label={t("fields.outputs")}
+                className="col-span-2 sm:col-span-3"
+              >
+                <TagInput
+                  id="outputs"
+                  value={form.outputs}
+                  onChange={(v) => set("outputs", v)}
+                  suggestions={OUTPUT_SUGGESTIONS}
+                  placeholder={t("form.tagPlaceholder")}
+                />
+              </Field>
+              <Field
+                label={t("fields.bluetoothCodecs")}
+                className="col-span-2 sm:col-span-3"
+              >
+                <TagInput
+                  id="codecs"
+                  value={form.bluetooth_codecs}
+                  onChange={(v) => set("bluetooth_codecs", v)}
+                  suggestions={CODEC_SUGGESTIONS}
+                  placeholder={t("form.tagPlaceholder")}
+                />
+              </Field>
+              {form.device_type === "AVR" && (
+                <>
+                  <Field label={t("fields.channels")}>
+                    <input
+                      className={inputCls}
+                      value={form.channels}
+                      onChange={(e) => set("channels", e.target.value)}
+                      placeholder="7.1(4)"
+                      autoComplete="off"
+                    />
+                  </Field>
+                  <Field label={t("fields.hdmi")}>
+                    <input
+                      className={inputCls}
+                      value={form.hdmi}
+                      onChange={(e) => set("hdmi", e.target.value)}
+                      placeholder="4 in / 1 out (eARC)"
+                      autoComplete="off"
+                    />
+                  </Field>
+                  <Field label={t("fields.roomCorrection")}>
+                    <input
+                      className={inputCls}
+                      value={form.room_correction}
+                      onChange={(e) => set("room_correction", e.target.value)}
+                      placeholder="Audyssey MultEQ"
+                      autoComplete="off"
+                    />
+                  </Field>
+                </>
+              )}
+              {purchaseDateField}
+              {priceField}
+            </div>
+          )}
         </FormSection>
 
         {/* Extra */}
@@ -1196,8 +1499,9 @@ export function DeviceFormDialog({
           </div>
         </FormSection>
 
-        {/* Sound */}
-        <FormSection title={t("detail.theSound")}>
+        {/* Sound (headphones only) */}
+        {cat === "headphones" && (
+          <FormSection title={t("detail.theSound")}>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Field label={t("fields.soundSignature")}>
               <select
@@ -1288,7 +1592,8 @@ export function DeviceFormDialog({
               />
             </Field>
           </div>
-        </FormSection>
+          </FormSection>
+        )}
 
         {/* Listening notes */}
         <FormSection title={t("detail.notes")}>
@@ -1431,8 +1736,9 @@ export function DeviceFormDialog({
           </div>
         </FormSection>
 
-        {/* Frequency response */}
-        <FormSection title={t("detail.fr")}>
+        {/* Frequency response (headphones only) */}
+        {cat === "headphones" && (
+          <FormSection title={t("detail.fr")}>
           <Field label={t("form.frGraph")}>
             <div className="flex items-start gap-3">
               <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
@@ -1474,10 +1780,12 @@ export function DeviceFormDialog({
               </div>
             </div>
           </Field>
-        </FormSection>
+          </FormSection>
+        )}
 
-        {/* PEQ */}
-        <FormSection title={t("detail.peq")}>
+        {/* PEQ (headphones only) */}
+        {cat === "headphones" && (
+          <FormSection title={t("detail.peq")}>
           <div className="space-y-3">
             {form.peq.length > 0 ? (
               <div className="flex flex-wrap items-center gap-3 rounded border border-tm-dark bg-tm-darker p-3">
@@ -1624,7 +1932,8 @@ export function DeviceFormDialog({
               </div>
             )}
           </div>
-        </FormSection>
+          </FormSection>
+        )}
 
         {pickError && (
           <p className={cls(btnDanger, "w-fit py-1 text-xs")}>

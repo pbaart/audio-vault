@@ -10,7 +10,7 @@ import {
   Trash2,
 } from "lucide-react";
 import type { Device } from "../types";
-import { DEVICE_TYPES, DRIVER_TYPES } from "../types";
+import { DRIVER_TYPES, HEADPHONE_TYPES } from "../types";
 import { formatPrice } from "../lib/format";
 import { enumLabel, localeFor } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
@@ -30,7 +30,7 @@ interface CollectionViewProps {
   onDeleteDevice: (device: Device) => void;
 }
 
-type TypeFilter = "all" | (typeof DEVICE_TYPES)[number];
+type TypeFilter = "all" | (typeof HEADPHONE_TYPES)[number];
 type DriverFilter = "all" | (typeof DRIVER_TYPES)[number];
 type TubeFilter = "all" | "yes" | "partial" | "no";
 type SortKey = "name" | "added" | "modified" | "impedance" | "price";
@@ -178,7 +178,7 @@ export function CollectionView({
         <FilterSelect
           value={typeFilter}
           onChange={(v) => setTypeFilter(v as TypeFilter)}
-          options={["all", ...DEVICE_TYPES]}
+          options={["all", ...HEADPHONE_TYPES]}
           label={(v) =>
             v === "all" ? t("collection.filter.typeAll") : enumLabel(v, t)
           }
@@ -313,7 +313,7 @@ export function CollectionView({
                       {d.brand} {d.model}
                     </h3>
                     <p className="text-xs text-tm-gray">
-                      {enumLabel(d.type, t)}
+                      {d.type ? enumLabel(d.type, t) : ""}
                       {d.driver_type ? ` · ${enumLabel(d.driver_type, t)}` : ""}
                     </p>
                   </div>
@@ -425,7 +425,7 @@ export function CollectionView({
                     </td>
                     <td className="px-3 py-2 text-tm-fg">{d.model}</td>
                     <td className="px-3 py-2 text-tm-gray">
-                      {enumLabel(d.type, t)}
+                      {d.type ? enumLabel(d.type, t) : "—"}
                     </td>
                     <td className="px-3 py-2 text-tm-gray">
                       {d.driver_type ? enumLabel(d.driver_type, t) : "—"}

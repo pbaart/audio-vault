@@ -258,6 +258,7 @@ export default function App() {
       {formState.open && (
         <DeviceFormDialog
           device={formState.device}
+          category="headphones"
           settings={settings}
           onClose={() => setFormState({ open: false, device: null })}
           onSaved={handleSaved}
