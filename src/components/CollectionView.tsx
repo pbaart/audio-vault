@@ -18,6 +18,7 @@ import { deriveTubeBadge } from "../lib/tube";
 import { MediaImage } from "./MediaImage";
 import { StarRating } from "./StarRating";
 import { TubeBadge } from "./TubeBadge";
+import { Tip } from "./Tip";
 import { cls, btnPrimary, btnSecondary } from "../ui";
 
 interface CollectionViewProps {
@@ -301,7 +302,9 @@ export function CollectionView({
                   />
                   {badge && (
                     <div className="absolute right-2 top-2">
-                      <TubeBadge badge={badge} size="sm" dot />
+                      <Tip label={t(`tube.dot.${badge}`)} side="bottom">
+                        <TubeBadge badge={badge} size="sm" dot tooltip={null} />
+                      </Tip>
                     </div>
                   )}
                 </div>
@@ -458,7 +461,9 @@ export function CollectionView({
                     </td>
                     <td className="px-3 py-2">
                       {badge ? (
-                        <TubeBadge badge={badge} size="sm" />
+                        <Tip label={t("fields.tubeAmp")}>
+                          <TubeBadge badge={badge} size="sm" tooltip={null} />
+                        </Tip>
                       ) : (
                         <span className="text-tm-gray">—</span>
                       )}

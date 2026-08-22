@@ -24,6 +24,7 @@ import { MediaImage } from "./MediaImage";
 import { TubeBadge } from "./TubeBadge";
 import { StarRating } from "./StarRating";
 import { InfoTip } from "./InfoTip";
+import { Tip } from "./Tip";
 import { Lightbox } from "./Lightbox";
 import { btnPrimary, cls } from "../ui";
 
@@ -395,28 +396,6 @@ function UrlButton({ url, icon }: { url: string; icon: ReactNode }) {
       {icon}
       {hostOf(url)}
     </button>
-  );
-}
-
-/** Hover tooltip showing the field name above the wrapped pill. */
-function Tip({ label, children }: { label: string; children: ReactNode }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <span
-      className="relative inline-flex"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      {children}
-      {open && (
-        <span
-          role="tooltip"
-          className="absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded border border-tm-dark bg-tm-bg px-2 py-0.5 text-xs text-tm-fg shadow-lg"
-        >
-          {label}
-        </span>
-      )}
-    </span>
   );
 }
 

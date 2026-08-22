@@ -62,6 +62,7 @@ import { MediaImage } from "./MediaImage";
 import { Modal } from "./Modal";
 import { StarRating } from "./StarRating";
 import { TubeBadge } from "./TubeBadge";
+import { Tip } from "./Tip";
 import {
   btnDanger,
   btnPrimary,
@@ -1187,7 +1188,9 @@ export function DeviceFormDialog({
             {previewBadge && form.tube_amp_suitable === "" && (
               <div className="flex items-center gap-2 text-xs text-tm-gray">
                 <span>{t("form.ruleResult")}</span>
-                <TubeBadge badge={previewBadge} size="sm" />
+                <Tip label={t("fields.tubeAmp")}>
+                  <TubeBadge badge={previewBadge} size="sm" tooltip={null} />
+                </Tip>
               </div>
             )}
           </div>

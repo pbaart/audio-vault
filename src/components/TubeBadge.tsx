@@ -10,8 +10,9 @@ interface TubeBadgeProps {
     /** Solid colored dot (no icon/text) for use on top of images (grid view). */
     dot?: boolean;
     /**
-     * Native hover tooltip. Defaults to the tube.tooltip text; pass null to
-     * disable it (e.g. when the badge is wrapped in its own styled tooltip).
+     * Native hover tooltip. Defaults to the tube.tooltip text (or the
+     * tube.dot.* text for the dot variant); pass null to disable it (e.g.
+     * when the badge is wrapped in its own styled tooltip).
      */
     tooltip?: string | null;
 }
@@ -39,10 +40,14 @@ export function TubeBadge({
     tooltip,
 }: TubeBadgeProps) {
     const { t } = useTranslation();
+    const tip =
+        tooltip === undefined
+            ? t(dot ? `tube.dot.${badge}` : "tube.tooltip")
+            : tooltip || undefined;
     if (dot) {
         return (
             <span
-                title={t(`tube.dot.${badge}`)}
+                title={tip}
                 className={cls(
                     "inline-block rounded-full ring-2 ring-black/30",
                     size === "sm" ? "h-4 w-4" : "h-5 w-5",
@@ -53,9 +58,7 @@ export function TubeBadge({
     }
     return (
         <span
-            title={
-                tooltip === undefined ? t("tube.tooltip") : tooltip || undefined
-            }
+            title={tip}
             className={cls(
                 "inline-flex items-center gap-1 rounded-full border font-medium",
                 size === "sm"
