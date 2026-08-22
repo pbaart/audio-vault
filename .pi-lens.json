@@ -1,4 +1,7 @@
 {
+  "ignore": [
+    "src-tauri/target"
+  ],
   "rules": {
     "false-positives": {
       "disable": [
@@ -12,7 +15,9 @@
         "no-runtime-typeof",
         "no-unknown-parameters",
         "no-unsafe-dictionary-unknown",
-        "no-known-value-widening"
+        "no-known-value-widening",
+        "no-non-null-assertion",
+        "inline-styles"
       ]
     }
   }
