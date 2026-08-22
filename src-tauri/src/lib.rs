@@ -617,6 +617,67 @@ pub fn run() {
           ALTER TABLE devices ADD COLUMN hdmi TEXT;
           ALTER TABLE devices ADD COLUMN room_correction TEXT;",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 17,
+    description: "make_type_nullable_for_devices_category",
+    // Devices-category rows have no headphone type, so `type` must be
+    // nullable. SQLite cannot relax a column constraint in place, so the
+    // table is rebuilt (create / copy / drop / rename) inside the
+    // migration's transaction. Column list generated from the live
+    // schema after v16 — all 46 columns carry over unchanged.
+    sql: "CREATE TABLE devices_v17 (
+  id TEXT PRIMARY KEY,
+  brand TEXT NOT NULL,
+  model TEXT NOT NULL,
+  type TEXT,
+  image_path TEXT,
+  price REAL,
+  purchase_date TEXT,
+  driver_type TEXT,
+  impedance_ohms INTEGER,
+  sensitivity_db REAL,
+  connector_type TEXT,
+  tube_amp_suitable TEXT,
+  drive_difficulty TEXT,
+  sound_signature TEXT,
+  soundstage_rating INTEGER,
+  listening_notes TEXT,
+  fr_graph_path TEXT,
+  peq_settings TEXT,
+  custom_fields TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  color TEXT,
+  manufacturer_url TEXT,
+  webshop_url TEXT,
+  peq_source TEXT,
+  mood_image_path TEXT,
+  overall_rating INTEGER,
+  imaging_rating INTEGER,
+  detail_retrieval_rating INTEGER,
+  timbre_rating INTEGER,
+  tonal_balance_rating INTEGER,
+  updated_at TEXT,
+  category TEXT NOT NULL DEFAULT 'headphones',
+  device_type TEXT,
+  dac_chip TEXT,
+  supported_formats TEXT,
+  bluetooth_codecs TEXT,
+  inputs TEXT,
+  outputs TEXT,
+  output_power TEXT,
+  snr_db REAL,
+  thd_n TEXT,
+  load_min_ohms INTEGER,
+  load_max_ohms INTEGER,
+  channels TEXT,
+  hdmi TEXT,
+  room_correction TEXT
+);
+INSERT INTO devices_v17 SELECT id, brand, model, type, image_path, price, purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, listening_notes, fr_graph_path, peq_settings, custom_fields, created_at, color, manufacturer_url, webshop_url, peq_source, mood_image_path, overall_rating, imaging_rating, detail_retrieval_rating, timbre_rating, tonal_balance_rating, updated_at, category, device_type, dac_chip, supported_formats, bluetooth_codecs, inputs, outputs, output_power, snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, room_correction FROM devices;
+DROP TABLE devices;
+ALTER TABLE devices_v17 RENAME TO devices;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

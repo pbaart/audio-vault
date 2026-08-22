@@ -6,7 +6,7 @@
 ![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB) ![React](https://img.shields.io/badge/React-19-61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6) ![Vite](https://img.shields.io/badge/Vite-7-646CFF) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8) ![Rust](https://img.shields.io/badge/Rust-stable-DEA584)
 
 A local-first desktop application for audiophiles to manage a collection of
-headphones and IEMs. Built with [Tauri v2](https://tauri.app) (Rust) and
+headphones, IEMs and source components (DACs, amps, AVRs). Built with [Tauri v2](https://tauri.app) (Rust) and
 React + TypeScript, styled with Tailwind CSS in one of five dark color
 schemes (Tokyo Night default, Gruvbox Dark, Dracula, Catppuccin Mocha,
 Monokai — switchable in Settings). The interface is available in English,
@@ -33,8 +33,12 @@ Device detail view:
 
 ## Features (Phase 1 / MVP)
 
+- **Two categories:** Headphones (incl. IEMs) and Devices (DAC, AMP,
+  Dongle DAC, DAC+AMP, BT Amp, AVR), each with its own collection page,
+  filters and spec fields (DAC chip, supported formats, Bluetooth
+  codecs, inputs/outputs, amplifier specs, AVR extras)
 - Collection overview with grid, search, filters (type / driver / tube-amp
-  compatibility) and sorting (name, added, impedance, price)
+  compatibility) and sorting (name, added, modified, impedance, price)
 - **Overall star rating** with half-star support (0.5–5), shown in the
   form, the detail view and both collection views
 - **"The Sound"** section in the detail view: five rated attributes
@@ -168,6 +172,7 @@ app/
 │       ├── PeqGraph.tsx          # PEQ response graph (JSX, themed)
 │       ├── SettingsView.tsx      # incl. the "Web fetch" info section
 │       ├── StarRating.tsx        # half-star rating input (overall rating)
+│       ├── TagInput.tsx          # chip multi-value input (inputs/outputs/codecs)
 │       ├── Tip.tsx               # styled hover tooltip for badges/pills
 │       ├── Lightbox.tsx
 │       ├── MediaImage.tsx
@@ -180,7 +185,7 @@ app/
     │   │                   #   media_save_bytes, media_download_image,
     │   │                   #   open_media_folder, read_config, save_config,
     │   │                   #   fetch_specs, fetch_opra_presets
-    │   │                   #   + DB migrations (v1–v14; v9+ ratings, v14 doubles sound ratings)
+    │   │                   #   + DB migrations (v1–v17; v9+ ratings, v14 doubles sound ratings, v16+v17 devices category)
     │   ├── fetch_specs.rs  # Phase 2: squig.link index matching, REW
     │   │                   #   parsing, web search, spec scraping
     │   └── fetch_opra.rs   # Phase 3: OPRA database download/cache, parse,

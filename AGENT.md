@@ -69,14 +69,14 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v15 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v17 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
   id TEXT PRIMARY KEY,
   brand TEXT NOT NULL,                    -- Brand / Manufacturer
   model TEXT NOT NULL,                    -- Model Name
-  type TEXT NOT NULL,                     -- 'Over-Ear' | 'On-Ear' | 'IEM'
+  type TEXT,                              -- 'Over-Ear' | 'On-Ear' | 'IEM' (headphones; NULL for devices)
   color TEXT,                             -- v2: free-text color (autocomplete)
   manufacturer_url TEXT,                  -- v3: manufacturer website (http/https)
   webshop_url TEXT,                       -- v4: webshop where bought (http/https)
@@ -102,8 +102,25 @@ CREATE TABLE IF NOT EXISTS devices (
   detail_retrieval_rating INTEGER,        -- v11: The Sound attribute, stored 2x
   timbre_rating INTEGER,                  -- v12: The Sound attribute, stored 2x
   tonal_balance_rating INTEGER,           -- v13: The Sound attribute, stored 2x
-  updated_at TEXT                         -- v15: last save; NULL pre-v15 (UI falls back to created_at)
+  updated_at TEXT,                        -- v15: last save; NULL pre-v15 (UI falls back to created_at)
+  category TEXT NOT NULL DEFAULT 'headphones', -- v16: 'headphones' | 'devices'
+  device_type TEXT,                       -- v16: 'DAC' | 'AMP' | 'Dongle DAC' | 'DAC+AMP' | 'BT Amp' | 'AVR'
+  dac_chip TEXT,                          -- v16: e.g. ES9219QN
+  supported_formats TEXT,                 -- v16: e.g. "PCM 24/192 · DSD256"
+  bluetooth_codecs TEXT,                  -- v16: JSON string array (SBC/AAC/aptX/LDAC/...)
+  inputs TEXT,                            -- v16: JSON string array (USB-C/Optical/RCA/...)
+  outputs TEXT,                           -- v16: JSON string array (3.5mm/XLR/Speakers/...)
+  output_power TEXT,                      -- v16: e.g. "5 W @ 32 Ω"
+  snr_db REAL,                            -- v16: signal-to-noise ratio (dB)
+  thd_n TEXT,                             -- v16: e.g. "0.001 %"
+  load_min_ohms INTEGER,                  -- v16: drivable load range (Ω), min/max
+  load_max_ohms INTEGER,
+  channels TEXT,                          -- v16: AVR, e.g. "7.1(4)"
+  hdmi TEXT,                              -- v16: AVR, e.g. "4 in / 1 out (eARC)"
+  room_correction TEXT                    -- v16: AVR, e.g. "Audyssey MultEQ"
 );
+-- v17 rebuilds the table identically except `type` becomes nullable
+-- (devices-category rows have no headphone type).
 ```
 
 ---
@@ -128,17 +145,24 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
 
 ## ⚙️ Core UI & Data Management
 
-1. **Screens:** Collection Overview (default), Device Detail, Add/Edit dialog
-   (modal), Settings. No router — state-based navigation in `App.tsx`,
-   synced with webview history (`pushState`/`popstate`) so the mouse
-   back/forward buttons (and Alt+Left/Right) move between collection,
-   detail and settings.
+1. **Screens:** Headphones collection (default) and Devices collection
+   (DAC / AMP / Dongle DAC / DAC+AMP / BT Amp / AVR), Device Detail,
+   Add/Edit dialog (modal), Settings. No router — state-based
+   navigation in `App.tsx`, synced with webview history
+   (`pushState`/`popstate`) so the mouse back/forward buttons (and
+   Alt+Left/Right) move between pages; collection history entries carry
+   their category so back lands on the page a device was opened from.
 2. **Collection Overview:** grid of cards (image, name, type, key specs,
    tube badge, hover edit/delete) or list/table view (toggle persisted in
    localStorage; table rows carry edit + delete icon buttons in a right
    Actions column, stop-propagation so row click still opens the detail),
    search box, filters (type / driver / tube-amp suitability),
-   sort (name / added / modified / impedance / price) with direction toggle.
+   sort (name / added / modified / impedance / price) with direction
+   toggle. The view is category-aware (`category` prop): each nav page
+   lists its own category, the Type filter offers headphone or device
+   types, driver/tube-amp filters and impedance sort are
+   headphone-only, and cards/table swap their spec columns per category
+   (devices show DAC chip, output power, SNR, codecs / Outputs).
 3. **Add/Edit dialog:** all device fields with validation (required brand,
    model, type; numeric ranges), image + FR-graph picking via the native
    file dialog (files are copied into `media/`), dynamic custom key/value
@@ -155,7 +179,13 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    `YYYY-MM-DD` after `parseDateToISO()` converts it
    (`src/lib/format.ts`). Brand, color and custom-field-key inputs have `<datalist>`
    autocomplete fed by `getDistinctBrands()` / `getDistinctColors()` /
-   `getDistinctCustomKeys()`.
+   `getDistinctCustomKeys()`. For devices, Technical Specs instead shows
+   DAC chip, supported formats, SNR, THD+N, output power, loadable
+   impedance (min–max), inputs/outputs/Bluetooth-codecs via the
+   `TagInput` chip component (type + Enter adds, datalist suggestions,
+   × removes) and AVR extras (channels, HDMI, room correction); spec
+   groups hide per device type, and Web fetch, The Sound, FR and PEQ
+   sections are headphones-only (OPRA auto-check gated too).
    The FiiO DSP XML encoding used by the import parser: type
    0=PK/1=LSC/2=HSC, freq raw Hz, gain `(raw - 120) / 10` dB, Q
    `raw / 10`, `s` (shelf slope) ignored. Gain offset 120 is **confirmed**
@@ -336,7 +366,11 @@ NO_STRIP=1 npm run tauri build
   `media_read_base64` command.
 - **Migrations:** the SQL plugin keys migrations by the exact DB URL string,
   so Rust registers migrations for `sqlite:<absolute path>` and the frontend
-  loads the same URL (both derived from `init_app_data`).
+  loads the same URL (both derived from `init_app_data`). Multi-statement
+  migrations are supported (the plugin runs them through sqlx's migrator,
+  one transaction per migration) — v16 adds all 15 devices-category
+  columns in one migration, and v17 uses the same mechanism for a full
+  table rebuild (create / copy / drop / rename) to make `type` nullable.
 - **Known tooling quirk:** pi-lens' embedded rust-analyzer reports a false
   E0308 on the `tauri::generate_context!()` call (its proc-macro host
   degrades the expansion to `{unknown}`/`()`). The real compiler
