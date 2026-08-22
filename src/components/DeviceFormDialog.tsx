@@ -191,12 +191,31 @@ const CODEC_SUGGESTIONS = [
 ];
 
 /** Which spec groups apply to a device type ("" = not chosen yet). */
+const NO_DAC: ReadonlySet<string> = new Set([
+  "AMP",
+  "BT Amp",
+  "Tube Amp",
+  "Power Amp",
+  "Preamp",
+  "Phono Stage",
+  "Turntable",
+]);
+
+const NO_AMP: ReadonlySet<string> = new Set([
+  "DAC",
+  "Dongle DAC",
+  "Preamp",
+  "Streamer",
+  "Phono Stage",
+  "Turntable",
+]);
+
 function showDac(dt: string): boolean {
-  return dt === "" || (dt !== "AMP" && dt !== "BT Amp");
+  return dt === "" || !NO_DAC.has(dt);
 }
 
 function showAmp(dt: string): boolean {
-  return dt === "" || (dt !== "DAC" && dt !== "Dongle DAC");
+  return dt === "" || !NO_AMP.has(dt);
 }
 
 function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {

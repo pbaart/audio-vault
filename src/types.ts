@@ -6,10 +6,16 @@ export type DeviceCategory = "headphones" | "devices";
 /** Types within the "devices" category (source components, AVRs, ...). */
 export type DeviceType =
  | "DAC"
- | "AMP"
  | "Dongle DAC"
  | "DAC+AMP"
+ | "AMP"
  | "BT Amp"
+ | "Tube Amp"
+ | "Power Amp"
+ | "Preamp"
+ | "Streamer"
+ | "Phono Stage"
+ | "Turntable"
  | "AVR";
 
 export type DriverType =
@@ -125,10 +131,16 @@ export const HEADPHONE_TYPES: HeadphoneType[] = ["Over-Ear", "On-Ear", "IEM"];
 
 export const DEVICE_TYPES: DeviceType[] = [
  "DAC",
- "AMP",
  "Dongle DAC",
  "DAC+AMP",
+ "AMP",
  "BT Amp",
+ "Tube Amp",
+ "Power Amp",
+ "Preamp",
+ "Streamer",
+ "Phono Stage",
+ "Turntable",
  "AVR",
 ];
 
