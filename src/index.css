@@ -148,3 +148,70 @@ html[data-theme="monokai"] {
 html[data-theme="monokai"] select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2375715e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
+
+/* ── Light themes ──────────────────────────────────────────────────────── */
+html[data-theme="catppuccin-latte"] {
+  color-scheme: light;
+  --color-tm-darker: #dce0e8;
+  --color-tm-dark: #ccd0da;
+  --color-tm-bg: #eff1f5;
+  --color-tm-fg: #4c4f69;
+  --color-tm-accent: #1e66f5;
+  --color-tm-purple: #8839ef;
+  --color-tm-blue: #1e66f5;
+  --color-tm-cyan: #209fb5;
+  --color-tm-magenta: #ea76cb;
+  --color-tm-red: #d20f39;
+  --color-tm-gray: #6c6f85;
+  --color-tm-green: #40a02b;
+  --color-tm-yellow: #df8e1d;
+  --color-tm-orange: #fe640b;
+  --color-tm-teal: #179299;
+}
+html[data-theme="catppuccin-latte"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c6f85' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme="gruvbox-light"] {
+  color-scheme: light;
+  --color-tm-darker: #f9f5d7;
+  --color-tm-dark: #ebdbb2;
+  --color-tm-bg: #f2eecd;
+  --color-tm-fg: #282828;
+  --color-tm-accent: #b57614;
+  --color-tm-purple: #8f3f71;
+  --color-tm-blue: #076678;
+  --color-tm-cyan: #427b58;
+  --color-tm-magenta: #8f3f71;
+  --color-tm-red: #9d0006;
+  --color-tm-gray: #928374;
+  --color-tm-green: #79740e;
+  --color-tm-yellow: #b57614;
+  --color-tm-orange: #af3a03;
+  --color-tm-teal: #427b58;
+}
+html[data-theme="gruvbox-light"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23928374' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html[data-theme="tokyo-day"] {
+  color-scheme: light;
+  --color-tm-darker: #f6f7fb;
+  --color-tm-dark: #c9cbdd;
+  --color-tm-bg: #e6e8ef;
+  --color-tm-fg: #545c7e;
+  --color-tm-accent: #3454d1;
+  --color-tm-purple: #7f5af0;
+  --color-tm-blue: #3454d1;
+  --color-tm-cyan: #0ea2b4;
+  --color-tm-magenta: #d940a8;
+  --color-tm-red: #f25747;
+  --color-tm-gray: #545c7e;
+  --color-tm-green: #52a03e;
+  --color-tm-yellow: #b48606;
+  --color-tm-orange: #d75f00;
+  --color-tm-teal: #1d928c;
+}
+html[data-theme="tokyo-day"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545c7e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}

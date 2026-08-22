@@ -21,7 +21,10 @@ export type ThemeId =
   | "gruvbox"
   | "dracula"
   | "catppuccin"
-  | "monokai";
+  | "monokai"
+  | "catppuccin-latte"
+  | "gruvbox-light"
+  | "tokyo-day";
 
 export const THEMES: { id: ThemeId; label: string }[] = [
   { id: "tokyonight", label: "Tokyo Night" },
@@ -29,6 +32,9 @@ export const THEMES: { id: ThemeId; label: string }[] = [
   { id: "dracula", label: "Dracula" },
   { id: "catppuccin", label: "Catppuccin Mocha" },
   { id: "monokai", label: "Monokai" },
+  { id: "catppuccin-latte", label: "Catppuccin Latte" },
+  { id: "gruvbox-light", label: "Gruvbox Light" },
+  { id: "tokyo-day", label: "Tokyo Day" },
 ];
 
 const THEME_IDS: ThemeId[] = THEMES.map((t) => t.id);
@@ -90,6 +96,27 @@ const TOKENS = {
     gray: "#75715e",
     accent: "#66d9ef",
   },
+  "catppuccin-latte": {
+    darker: "#dce0e8",
+    dark: "#ccd0da",
+    fg: "#4c4f69",
+    gray: "#6c6f85",
+    accent: "#1e66f5",
+  },
+  "gruvbox-light": {
+    darker: "#f9f5d7",
+    dark: "#ebdbb2",
+    fg: "#282828",
+    gray: "#928374",
+    accent: "#b57614",
+  },
+  "tokyo-day": {
+    darker: "#f6f7fb",
+    dark: "#c9cbdd",
+    fg: "#545c7e",
+    gray: "#545c7e",
+    accent: "#3454d1",
+  },
 };
 
 /** `#rrggbb` + alpha (0..1) → `rgba(r, g, b, a)` string. */
@@ -137,6 +164,9 @@ const CHART_PALETTES = {
   dracula: chartFrom(TOKENS.dracula),
   catppuccin: chartFrom(TOKENS.catppuccin),
   monokai: chartFrom(TOKENS.monokai),
+  "catppuccin-latte": chartFrom(TOKENS["catppuccin-latte"]),
+  "gruvbox-light": chartFrom(TOKENS["gruvbox-light"]),
+  "tokyo-day": chartFrom(TOKENS["tokyo-day"]),
 } satisfies Record<ThemeId, ChartPalette>;
 
 const LS_KEY = "audio-vault.theme";
