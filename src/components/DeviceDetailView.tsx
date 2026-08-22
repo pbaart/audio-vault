@@ -203,6 +203,27 @@ export function DeviceDetailView({
             )}
           </Section>
 
+          <Section title={t("detail.fr")}>
+            {device.fr_graph_path ? (
+              <button
+                className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark"
+                onClick={() => setLightbox("fr")}
+                title={t("detail.zoom")}
+              >
+                <MediaImage
+                  relPath={device.fr_graph_path}
+                  className="max-h-96 w-full object-contain bg-tm-darker"
+                  placeholderIcon={56}
+                />
+                <div className="absolute right-2 top-2 rounded bg-black/50 p-1.5 opacity-0 transition group-hover:opacity-100">
+                  <ZoomIn size={16} className="text-white" />
+                </div>
+              </button>
+            ) : (
+              <EmptyHint text={t("detail.noFr")} />
+            )}
+          </Section>
+
           <Section title={t("detail.peq")}>
             {device.peq_settings.length > 0 ? (
               <div className="space-y-2">
@@ -222,27 +243,6 @@ export function DeviceDetailView({
               </div>
             ) : (
               <EmptyHint text={t("detail.noPeq")} />
-            )}
-          </Section>
-
-          <Section title={t("detail.fr")}>
-            {device.fr_graph_path ? (
-              <button
-                className="group relative block w-full overflow-hidden rounded-lg border border-tm-dark"
-                onClick={() => setLightbox("fr")}
-                title={t("detail.zoom")}
-              >
-                <MediaImage
-                  relPath={device.fr_graph_path}
-                  className="max-h-96 w-full object-contain bg-tm-darker"
-                  placeholderIcon={56}
-                />
-                <div className="absolute right-2 top-2 rounded bg-black/50 p-1.5 opacity-0 transition group-hover:opacity-100">
-                  <ZoomIn size={16} className="text-white" />
-                </div>
-              </button>
-            ) : (
-              <EmptyHint text={t("detail.noFr")} />
             )}
           </Section>
 
