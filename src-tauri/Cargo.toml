@@ -1,6 +1,6 @@
 [package]
 name = "audio-vault"
-version = "0.2.0"
+version = "0.3.0"
 description = "Audio Vault — local-first collection manager for audio gear"
 authors = ["pbaart"]
 license = "MIT"
