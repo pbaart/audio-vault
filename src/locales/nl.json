@@ -37,6 +37,12 @@
       "OTL Only": "Beperkte compatibiliteit",
       "Transformer Only": "Alleen met transformator",
       "No": "Niet ondersteund"
+    },
+    "dot": {
+      "Yes": "Perfecte match voor buizenversterkers",
+      "OTL Only": "Beperkte compatibiliteit met buizenversterkers (alleen OTL)",
+      "Transformer Only": "Niet aanbevolen voor buizenversterkers (alleen met transformator)",
+      "No": "Niet geschikt voor buizenversterkers"
     }
   },
   "tubeRule": {

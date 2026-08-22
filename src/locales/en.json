@@ -37,6 +37,12 @@
       "OTL Only": "Limited Compatibility",
       "Transformer Only": "Not Recommended",
       "No": "Not Supported"
+    },
+    "dot": {
+      "Yes": "Perfect match for tube amps",
+      "OTL Only": "Limited compatibility with tube amps (OTL only)",
+      "Transformer Only": "Not recommended for tube amps (transformer-coupled only)",
+      "No": "Not suitable for tube amps"
     }
   },
   "tubeRule": {

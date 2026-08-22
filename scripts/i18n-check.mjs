@@ -82,7 +82,7 @@ for (const file of walk(srcDir, [".ts", ".tsx"])) {
 }
 
 // Dynamic families: keys built at runtime, verified structurally instead.
-const dynamicPrefixes = ["values.", "tube.badges.", "notes."];
+const dynamicPrefixes = ["values.", "tube.badges.", "tube.dot.", "notes."];
 const isDynamic = (k) => dynamicPrefixes.some((p) => k.startsWith(p));
 
 for (const key of [...usedKeys].sort()) {

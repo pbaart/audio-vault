@@ -37,6 +37,12 @@
       "OTL Only": "Nur OTL",
       "Transformer Only": "Nur mit Transformator",
       "No": "Nicht unterstützt"
+    },
+    "dot": {
+      "Yes": "Perfektes Match für Röhrenverstärker",
+      "OTL Only": "Begrenzte Kompatibilität mit Röhrenverstärkern (nur OTL)",
+      "Transformer Only": "Nicht empfohlen für Röhrenverstärker (nur mit Transformator)",
+      "No": "Nicht geeignet für Röhrenverstärker"
     }
   },
   "tubeRule": {

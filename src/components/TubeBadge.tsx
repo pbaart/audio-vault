@@ -27,16 +27,12 @@ const SOLID_STYLES: Record<TubeBadgeValue, string> = {
 };
 
 /** Colored tube-amp compatibility badge (computed by the rule in lib/tube). */
-export function TubeBadge({
-  badge,
-  size = "md",
-  dot = false,
-}: TubeBadgeProps) {
+export function TubeBadge({ badge, size = "md", dot = false }: TubeBadgeProps) {
   const { t } = useTranslation();
   if (dot) {
     return (
       <span
-        title={tubeBadgeLabel(badge, (k) => t(k))}
+        title={t(`tube.dot.${badge}`)}
         className={cls(
           "inline-block rounded-full ring-2 ring-black/30",
           size === "sm" ? "h-4 w-4" : "h-5 w-5",
