@@ -155,7 +155,7 @@
     "source": "Source : {{source}}",
     "fr": "Réponse en fréquence",
     "frTitle": "Réponse en fréquence — {{name}}",
-    "custom": "Champs personnalisés"
+    "custom": "Extra"
   },
   "form": {
     "titleEdit": "Modifier {{name}}",
@@ -238,7 +238,7 @@
     "peqFileFilter": "Preset PEQ",
     "importReady": "{{count}} bandes prêtes depuis {{file}}",
     "replaceBands": "Remplacer les bandes",
-    "custom": "Champs personnalisés",
+    "custom": "Extra",
     "noCustom": "Aucun champ personnalisé pour l'instant.",
     "phCustomKey": "Clé (ex. Poids)",
     "phCustomValue": "Valeur (ex. 260 g)",

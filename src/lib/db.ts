@@ -217,6 +217,37 @@ export async function getDistinctColors(): Promise<string[]> {
   return out;
 }
 
+/**
+ * Distinct non-empty custom-field keys currently in the database, for the
+ * custom key input's autocomplete list. Custom fields are stored as a JSON
+ * array per device, so keys are expanded with json_each. Case-insensitive
+ * duplicates are collapsed (first occurrence wins, keeping its original
+ * casing).
+ */
+export async function getDistinctCustomKeys(): Promise<string[]> {
+  const db = await getDb();
+  const rows =
+    (await db.select<Row[]>(
+      "SELECT DISTINCT json_extract(je.value, '$.key') AS key " +
+        "FROM devices d, json_each(d.custom_fields) je " +
+        "WHERE d.custom_fields IS NOT NULL AND d.custom_fields != '' " +
+        "AND d.custom_fields != '[]' " +
+        "AND TRIM(COALESCE(json_extract(je.value, '$.key'), '')) != '' " +
+        "ORDER BY key COLLATE NOCASE",
+    )) ?? [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const row of rows) {
+    const key = asString(row.key)?.trim();
+    if (!key) continue;
+    const k = key.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(key);
+  }
+  return out;
+}
+
 export async function getDevice(id: string): Promise<Device | null> {
   const db = await getDb();
   const rows =

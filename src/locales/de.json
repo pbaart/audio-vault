@@ -155,7 +155,7 @@
     "source": "Quelle: {{source}}",
     "fr": "Frequenzgang",
     "frTitle": "Frequenzgang — {{name}}",
-    "custom": "Eigene Felder"
+    "custom": "Extra"
   },
   "form": {
     "titleEdit": "{{name}} bearbeiten",
@@ -238,7 +238,7 @@
     "peqFileFilter": "PEQ-Präset",
     "importReady": "{{count}} Bänder bereit aus {{file}}",
     "replaceBands": "Bänder ersetzen",
-    "custom": "Eigene Felder",
+    "custom": "Extra",
     "noCustom": "Noch keine eigenen Felder.",
     "phCustomKey": "Schlüssel (z. B. Gewicht)",
     "phCustomValue": "Wert (z. B. 260 g)",

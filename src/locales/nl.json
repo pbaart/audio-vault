@@ -155,7 +155,7 @@
     "source": "Bron: {{source}}",
     "fr": "Frequentierespons",
     "frTitle": "Frequentierespons — {{name}}",
-    "custom": "Aangepaste velden"
+    "custom": "Extra"
   },
   "form": {
     "titleEdit": "{{name}} bewerken",
@@ -238,7 +238,7 @@
     "peqFileFilter": "PEQ-preset",
     "importReady": "{{count}} banden klaar uit {{file}}",
     "replaceBands": "Banden vervangen",
-    "custom": "Aangepaste velden",
+    "custom": "Extra",
     "noCustom": "Nog geen aangepaste velden.",
     "phCustomKey": "Sleutel (bijv. Gewicht)",
     "phCustomValue": "Waarde (bijv. 260 g)",

@@ -155,7 +155,7 @@
     "source": "Source: {{source}}",
     "fr": "Frequency Response",
     "frTitle": "Frequency Response — {{name}}",
-    "custom": "Custom Fields"
+    "custom": "Extra"
   },
   "form": {
     "titleEdit": "Edit {{name}}",
@@ -238,7 +238,7 @@
     "peqFileFilter": "PEQ preset",
     "importReady": "{{count}} bands ready from {{file}}",
     "replaceBands": "Replace bands",
-    "custom": "Custom fields",
+    "custom": "Extra",
     "noCustom": "No custom fields yet.",
     "phCustomKey": "Key (e.g. Weight)",
     "phCustomValue": "Value (e.g. 260 g)",

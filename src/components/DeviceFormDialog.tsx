@@ -30,7 +30,12 @@ import {
 } from "../types";
 import { deriveTubeBadge, describeTubeRule, tubeBadgeLabel } from "../lib/tube";
 import { enumLabel, localizeNote, type TranslateFn } from "../lib/i18n";
-import { getDistinctBrands, getDistinctColors, saveDevice } from "../lib/db";
+import {
+  getDistinctBrands,
+  getDistinctColors,
+  getDistinctCustomKeys,
+  saveDevice,
+} from "../lib/db";
 import { pickImageFile, removeMediaFile } from "../lib/media";
 import { toPeqDraft } from "../lib/parseFiioEq";
 import { parsePeqFile } from "../lib/peqImport";
@@ -331,6 +336,8 @@ export function DeviceFormDialog({
   const [brands, setBrands] = useState<string[]>([]);
   /** Distinct colors from the database — suggestions for the color input. */
   const [colors, setColors] = useState<string[]>([]);
+  /** Distinct custom-field keys from the database — suggestions for the custom key input. */
+  const [customKeys, setCustomKeys] = useState<string[]>([]);
   /** OPRA lookup state for the current brand/model. */
   const [opraCheck, setOpraCheck] = useState<OpraCheck>({ status: "idle" });
   /** OPRA profile id currently applied to the form (shown as applied). */
@@ -351,6 +358,9 @@ export function DeviceFormDialog({
       .catch(() => undefined);
     getDistinctColors()
       .then(setColors)
+      .catch(() => undefined);
+    getDistinctCustomKeys()
+      .then(setCustomKeys)
       .catch(() => undefined);
   }, []);
 
@@ -1529,6 +1539,11 @@ export function DeviceFormDialog({
             {t("form.custom")}
           </legend>
           <div className="space-y-2">
+            <datalist id="custom-key-suggestions">
+              {customKeys.map((k) => (
+                <option key={k} value={k} />
+              ))}
+            </datalist>
             {form.custom.length === 0 && (
               <p className="text-sm text-tm-gray">{t("form.noCustom")}</p>
             )}
@@ -1546,6 +1561,8 @@ export function DeviceFormDialog({
                     }))
                   }
                   placeholder={t("form.phCustomKey")}
+                  list="custom-key-suggestions"
+                  autoComplete="off"
                 />
                 <input
                   className={inputCls}
