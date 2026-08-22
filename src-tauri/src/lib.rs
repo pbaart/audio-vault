@@ -443,6 +443,17 @@ async fn fetch_opra_presets(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+  // WebKitGTK's dmabuf GPU renderer triggers a Wayland protocol error on
+  // KWin — the compositor kills the client ~500ms after window creation,
+  // which looks like the app window closing instantly. Disabling the
+  // renderer falls back to the classic GL/shm path. An explicit user value
+  // is respected; this only provides a default.
+  // Safety: called once at the very start of startup, before any other
+  // thread exists, so no concurrent env access can race with this write.
+  if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
+    unsafe { std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1") };
+  }
+
   // First-launch behavior: create the XDG layout + DB parent dir before the
   // frontend loads the database.
   let paths =
