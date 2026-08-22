@@ -22,6 +22,7 @@ import { deriveTubeBadge } from "../lib/tube";
 import { summarizePeq } from "../lib/peqCurve";
 import { PeqGraph } from "./PeqGraph";
 import { MediaImage } from "./MediaImage";
+import { IMG_SIZE_CARD, IMG_SIZE_HERO } from "../lib/media";
 import { TubeBadge } from "./TubeBadge";
 import { StarRating } from "./StarRating";
 import { DotRating } from "./DotRating";
@@ -104,6 +105,7 @@ export function DeviceDetailView({
                   relPath={mainImage}
                   className="aspect-video w-full"
                   placeholderIcon={56}
+                  maxDim={IMG_SIZE_HERO}
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
                   <ZoomIn size={28} className="text-white" />
@@ -209,7 +211,11 @@ export function DeviceDetailView({
                   onClick={() => setLightbox({ kind: "gallery", index: i })}
                   title={t("detail.zoom")}
                 >
-                  <MediaImage relPath={rel} className="aspect-video w-full" />
+                  <MediaImage
+                    relPath={rel}
+                    className="aspect-video w-full"
+                    maxDim={IMG_SIZE_CARD}
+                  />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition group-hover:opacity-100">
                     <ZoomIn size={18} className="text-white" />
                   </div>

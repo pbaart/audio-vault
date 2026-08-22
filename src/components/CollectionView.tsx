@@ -17,6 +17,7 @@ import { enumLabel, localeFor } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
 import { deriveTubeBadge } from "../lib/tube";
 import { MediaImage } from "./MediaImage";
+import { IMG_SIZE_CARD, IMG_SIZE_TABLE } from "../lib/media";
 import { StarRating } from "./StarRating";
 import { TubeBadge } from "./TubeBadge";
 import { Tip } from "./Tip";
@@ -334,6 +335,7 @@ export function CollectionView({
                   <MediaImage
                     relPath={d.mood_image_path ?? d.images[0]}
                     className="h-full w-full"
+                    maxDim={IMG_SIZE_CARD}
                   />
                   {isHp && badge && (
                     <div className="absolute right-2 top-2">
@@ -490,6 +492,7 @@ export function CollectionView({
                           <MediaImage
                             relPath={d.images[0]}
                             className="h-full w-full"
+                            maxDim={IMG_SIZE_TABLE}
                           />
                         </div>
                         <span className="font-medium text-tm-fg">

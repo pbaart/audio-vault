@@ -195,7 +195,119 @@ fn remove_media_file(rel_path: &str) {
   };
   if canon.starts_with(&canon_dir) {
     let _ = fs::remove_file(&canon);
+    // Best-effort: drop any cached scaled copies of this file too.
+    let name = canon.file_name().and_then(|n| n.to_str()).unwrap_or("");
+    if !name.is_empty() {
+      let suffix = format!("x_{name}");
+      if let Ok(entries) = fs::read_dir(canon_dir.join(".cache")) {
+        for entry in entries.flatten() {
+          let n = entry.file_name();
+          if n.to_string_lossy().ends_with(&suffix) {
+            let _ = fs::remove_file(entry.path());
+          }
+        }
+      }
+    }
   }
+}
+
+/**
+ * Generate (or reuse from cache) a downscaled copy of a media image so
+ * grids and cards don't load multi-MB originals. Cache entries live in
+ * media/.cache as "{max_dim}x_{original_name}" and are reused while they
+ * are at least as new as the original. Formats that don't benefit
+ * (svg/gif/...) or images already small enough come back unchanged.
+ */
+#[tauri::command]
+fn media_scaled(rel_path: String, max_dim: u32) -> Result<String, String> {
+  if max_dim < 16 {
+    return Err("max_dim must be >= 16".into());
+  }
+  let paths = resolve_paths();
+  let media_dir = PathBuf::from(&paths.media);
+  let full = media_dir.join(&rel_path);
+
+  // Only ever touch files inside the media directory.
+  let Ok(canon) = full.canonicalize() else {
+    return Err(format!("media file not found: {rel_path}"));
+  };
+  let Ok(canon_dir) = media_dir.canonicalize() else {
+    return Err("media dir not found".into());
+  };
+  if !canon.starts_with(&canon_dir) {
+    return Err("path escapes the media dir".into());
+  }
+
+  let ext = canon
+    .extension()
+    .and_then(|e| e.to_str())
+    .unwrap_or("")
+    .to_lowercase();
+  // WebP and friends are left alone: they are already efficient (or
+  // animated) and the encoder here only covers JPEG/PNG well.
+  if !matches!(ext.as_str(), "jpg" | "jpeg" | "png") {
+    return Ok(rel_path);
+  }
+
+  let cache_dir = media_dir.join(".cache");
+  fs::create_dir_all(&cache_dir).map_err(|e| e.to_string())?;
+  let file_name = canon.file_name().and_then(|n| n.to_str()).unwrap_or("img");
+  let cache_rel = format!(".cache/{max_dim}x_{file_name}");
+  let cache_full = media_dir.join(&cache_rel);
+
+  // Reuse a cache entry that is at least as new as the original.
+  let fresh = matches!(
+    (cache_full.metadata(), canon.metadata()),
+    (Ok(c), Ok(o)) if c.modified().ok() >= o.modified().ok()
+  );
+  if fresh {
+    return Ok(cache_rel);
+  }
+
+  use image::ImageEncoder as _;
+
+  let img = image::open(&canon).map_err(|e| e.to_string())?;
+  if img.width() <= max_dim && img.height() <= max_dim {
+    return Ok(rel_path); // nothing to gain from downscaling
+  }
+  let scaled =
+    img.resize(max_dim, max_dim, image::imageops::FilterType::Lanczos3);
+
+  let bytes: Vec<u8> = match ext.as_str() {
+    "png" => {
+      let rgba = scaled.to_rgba8();
+      let mut v = Vec::new();
+      image::codecs::png::PngEncoder::new(&mut v)
+        .write_image(
+          rgba.as_raw(),
+          rgba.width(),
+          rgba.height(),
+          image::ExtendedColorType::from(image::ColorType::Rgba8),
+        )
+        .map_err(|e| e.to_string())?;
+      v
+    }
+    _ => {
+      // JPEG has no alpha channel — drop it before encoding.
+      let rgb = scaled.to_rgb8();
+      let mut v = Vec::new();
+      image::codecs::jpeg::JpegEncoder::new_with_quality(&mut v, 82)
+        .write_image(
+          rgb.as_raw(),
+          rgb.width(),
+          rgb.height(),
+          image::ExtendedColorType::from(image::ColorType::Rgb8),
+        )
+        .map_err(|e| e.to_string())?;
+      v
+    }
+  };
+
+  // Write atomically so a failed encode never leaves a truncated entry.
+  let tmp = cache_dir.join(format!("{max_dim}x_{file_name}.part"));
+  fs::write(&tmp, &bytes).map_err(|e| e.to_string())?;
+  fs::rename(&tmp, &cache_full).map_err(|e| e.to_string())?;
+  Ok(cache_rel)
 }
 
 /// Read a media file and return it as a base64 data URL. Used by the UI as
@@ -728,6 +840,7 @@ ALTER TABLE devices_v17 RENAME TO devices;",
       media_copy_file,
       media_delete,
       media_read_base64,
+      media_scaled,
       media_save_bytes,
       media_download_image,
       open_media_folder,

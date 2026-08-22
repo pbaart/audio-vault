@@ -26,6 +26,36 @@ function mediaSrc(relPath: string | null): string | null {
   return convertFileSrc(`${mediaDir}/${safe}`);
 }
 
+/** Common display sizes for cached downscaled copies (see media_scaled). */
+export const IMG_SIZE_TABLE = 96;
+export const IMG_SIZE_CARD = 480;
+export const IMG_SIZE_HERO = 1200;
+
+/** Memoized scaled-path results so each (relPath, size) resolves once. */
+const scaledRelCache = new Map<string, string>();
+
+/**
+ * Ask the backend for a downscaled copy of a media image. The copy is
+ * generated once and cached on disk under media/.cache; resolves to the
+ * original path when scaling is unavailable or unneeded.
+ */
+export function getScaledRelPath(
+  relPath: string,
+  maxDim: number,
+): Promise<string> {
+  const key = `${maxDim}:${relPath}`;
+  const hit = scaledRelCache.get(key);
+  if (hit) {
+    return Promise.resolve(hit);
+  }
+  return invoke<string>("media_scaled", { relPath, maxDim })
+    .then((rel) => {
+      scaledRelCache.set(key, rel);
+      return rel;
+    })
+    .catch(() => relPath);
+}
+
 /** Open the native image picker and copy the file into the media dir. */
 export async function pickImageFile(): Promise<string | null> {
   const selected = await open({
@@ -102,4 +132,47 @@ export function useMediaUrl(relPath: string | null): {
     url: state.broken ? state.fallback : assetUrl,
     onAssetError,
   };
+}
+
+/**
+ * Like useMediaUrl, but optionally resolves a downscaled copy first. While
+ * the first-ever scaled copy is being generated the hook reports no URL
+ * (callers show their placeholder) so the full-size original is never
+ * fetched for small displays. Without maxDim this behaves exactly like
+ * useMediaUrl.
+ */
+export function useScaledMediaUrl(
+  relPath: string | null,
+  maxDim?: number,
+): { url: string | null; onAssetError: () => void } {
+  const [resolved, setResolved] = useState<string | null>(() => {
+    if (!relPath) return null;
+    if (!maxDim || !isTauri()) return relPath;
+    return scaledRelCache.get(`${maxDim}:${relPath}`) ?? null;
+  });
+
+  useEffect(() => {
+    if (!relPath) {
+      setResolved(null);
+      return;
+    }
+    if (!maxDim || !isTauri()) {
+      setResolved(relPath);
+      return;
+    }
+    let alive = true;
+    const hit = scaledRelCache.get(`${maxDim}:${relPath}`);
+    if (hit) {
+      setResolved(hit);
+    } else {
+      void getScaledRelPath(relPath, maxDim).then((rel) => {
+        if (alive) setResolved(rel);
+      });
+    }
+    return () => {
+      alive = false;
+    };
+  }, [relPath, maxDim]);
+
+  return useMediaUrl(resolved);
 }

@@ -119,6 +119,16 @@ CREATE TABLE IF NOT EXISTS devices (
   hdmi TEXT,                              -- v16: AVR, e.g. "4 in / 1 out (eARC)"
   room_correction TEXT,                  -- v16: AVR, e.g. "Audyssey MultEQ"
   images TEXT                             -- v18: devices gallery, JSON string array (first = cover)
+
+Image scaling: `media_scaled(rel_path, max_dim)` generates downscaled
+copies on demand, cached in `media/.cache/{max_dim}x_{name}` (reused
+while at least as new as the original; atomic write via `.part` rename;
+JPEG q82 / PNG; svg/gif/webp and already-small images are returned
+unchanged). The frontend `useScaledMediaUrl`/`MediaImage maxDim` never
+points an `<img>` at the original while a scaled copy is pending, so
+grids load ~100 KB copies instead of multi-MB originals. Sizes:
+IMG_SIZE_TABLE=96, IMG_SIZE_CARD=480, IMG_SIZE_HERO=1200; lightbox uses
+the original. Deleting a media file also drops its cached copies.
 );
 -- v17 rebuilds the table identically except `type` becomes nullable
 -- (devices-category rows have no headphone type).

@@ -1,11 +1,13 @@
 import { Headphones } from "lucide-react";
-import { useMediaUrl } from "../lib/media";
+import { useScaledMediaUrl } from "../lib/media";
 import { cls } from "../ui";
 
 interface MediaImageProps {
     relPath: string | null;
     className?: string;
     placeholderIcon?: number;
+    /** Max dimension of a cached downscaled copy (see IMG_SIZE_*). */
+    maxDim?: number;
 }
 
 /**
@@ -16,8 +18,9 @@ export function MediaImage({
     relPath,
     className = "",
     placeholderIcon = 40,
+    maxDim,
 }: MediaImageProps) {
-    const { url, onAssetError } = useMediaUrl(relPath);
+    const { url, onAssetError } = useScaledMediaUrl(relPath, maxDim);
 
     if (!url) {
         return (
