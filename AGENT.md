@@ -16,9 +16,10 @@ The authoritative feature/spec document is `docs/audio-vault-spec.md`.
 
 - **Desktop Shell:** Tauri v2 (Rust backend, WebKitGTK on Linux)
 - **Frontend UI:** React 19 + TypeScript + Vite + Tailwind CSS v4
-  (dark theme token system in `src/index.css` + `src/lib/themes.ts`;
-  5 selectable color schemes: Tokyo Night default, Gruvbox Dark, Dracula,
-  Catppuccin Mocha, Monokai)
+  (theme token system in `src/index.css` + `src/lib/themes.ts`;
+  8 selectable color schemes — 5 dark: Tokyo Night default, Gruvbox
+  Dark, Dracula, Catppuccin Mocha, Monokai; 3 light: Tokyo Day, Gruvbox
+  Light, Catppuccin Latte)
 - **Database:** `tauri-plugin-sql` with SQLite
 - **File System:** `tauri-plugin-fs` & `tauri-plugin-dialog`
 - **Image display:** Tauri asset protocol (`protocol-asset` feature,
@@ -121,7 +122,7 @@ CREATE TABLE IF NOT EXISTS devices (
   tonal_balance_rating INTEGER,           -- v13: The Sound attribute, stored 2x
   updated_at TEXT,                        -- v15: last save; NULL pre-v15 (UI falls back to created_at)
   category TEXT NOT NULL DEFAULT 'headphones', -- v16: 'headphones' | 'devices'
-  device_type TEXT,                       -- v16: 'DAC' | 'AMP' | 'Dongle DAC' | 'DAC+AMP' | 'BT Amp' | 'AVR'
+  device_type TEXT,                       -- v16: 12 types: DAC, Dongle DAC, DAC+AMP, AMP, BT Amp, Tube Amp, Power Amp, Preamp, Streamer, Phono Stage, Turntable, AVR
   dac_chip TEXT,                          -- v16: e.g. ES9219QN
   supported_formats TEXT,                 -- v16: e.g. "PCM 24/192 · DSD256"
   bluetooth_codecs TEXT,                  -- v16: JSON string array (SBC/AAC/aptX/LDAC/...)
@@ -135,21 +136,23 @@ CREATE TABLE IF NOT EXISTS devices (
   channels TEXT,                          -- v16: AVR, e.g. "7.1(4)"
   hdmi TEXT,                              -- v16: AVR, e.g. "4 in / 1 out (eARC)"
   room_correction TEXT,                  -- v16: AVR, e.g. "Audyssey MultEQ"
-  images TEXT                             -- v18: devices gallery, JSON string array (first = cover)
-
-Image scaling: `media_scaled(rel_path, max_dim)` generates downscaled
-copies on demand, cached in `media/.cache/{max_dim}x_{name}` (reused
-while at least as new as the original; atomic write via `.part` rename;
-JPEG q82 / PNG; svg/gif/webp and already-small images are returned
-unchanged). The frontend `useScaledMediaUrl`/`MediaImage maxDim` never
-points an `<img>` at the original while a scaled copy is pending, so
-grids load ~100 KB copies instead of multi-MB originals. Sizes:
-IMG_SIZE_TABLE=96, IMG_SIZE_CARD=480, IMG_SIZE_HERO=1200; lightbox uses
-the original. Deleting a media file also drops its cached copies.
+  images TEXT                            -- v18: product image gallery (both categories), JSON string array
 );
 -- v17 rebuilds the table identically except `type` becomes nullable
 -- (devices-category rows have no headphone type).
 ```
+
+**Image scaling:** `media_scaled(rel_path, max_dim)` generates
+downscaled copies on demand, cached in `media/.cache/{max_dim}x_{name}`
+(reused while at least as new as the original; atomic write via `.part`
+rename; JPEG q82 with alpha dropped / PNG; svg/gif/webp and
+already-small images are returned unchanged). The frontend
+`useScaledMediaUrl`/`MediaImage maxDim` never points an `<img>` at the
+original while a scaled copy is pending, so grids load ~100 KB copies
+instead of multi-MB originals. Sizes: IMG_SIZE_TABLE=96,
+IMG_SIZE_CARD=480, IMG_SIZE_HERO=1200; the lightbox uses the original.
+Deleting a media file also drops its cached copies.
+
 
 ---
 
@@ -174,7 +177,8 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
 ## ⚙️ Core UI & Data Management
 
 1. **Screens:** Headphones collection (default) and Devices collection
-   (DAC / AMP / Dongle DAC / DAC+AMP / BT Amp / AVR), Device Detail,
+   (12 device types: DAC, Dongle DAC, DAC+AMP, AMP, BT Amp, Tube Amp,
+   Power Amp, Preamp, Streamer, Phono Stage, Turntable, AVR), Device Detail,
    Add/Edit dialog (modal), Settings. No router — state-based
    navigation in `App.tsx`, synced with webview history
    (`pushState`/`popstate`) so the mouse back/forward buttons (and
@@ -245,7 +249,8 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    graph) are removed from `media/` on delete. Replacing an image in the
    form deletes the superseded file on successful save.
 6. **Settings:** preferences (language EN/DE/NL/FR, currency, date format,
-   color scheme — 5 selectable dark color schemes, default Tokyo Night),
+   color scheme — 8 selectable color schemes, 5 dark + 3 light,
+   default Tokyo Night),
    XDG path display, "open media folder" (system file manager), web-fetch
    info, tube-rule reference, and an About section showing the running app
    version (Tauri `getVersion()`, embedded from tauri.conf.json).
@@ -408,6 +413,15 @@ NO_STRIP=1 npm run tauri build
   one transaction per migration) — v16 adds all 15 devices-category
   columns in one migration, and v17 uses the same mechanism for a full
   table rebuild (create / copy / drop / rename) to make `type` nullable.
+  v19/v20 are idempotent data migrations (legacy `image_path` values moved
+  into the `images` array via SQLite JSON functions); failed attempts roll
+  back and are retried on next launch.
+- **Tauri v2 permissions:** every `plugin:*` invocation from the frontend
+  needs an explicit grant in `src-tauri/capabilities/default.json`
+  (`core:default` only covers the safe read-only subset). The CSD title
+  bar needed seven `core:window:allow-*` permissions (close/minimize/
+  maximize/unmaximize/is-maximized/start-dragging/toggle-maximize) —
+  without them the calls fail as silent promise rejections.
 - **Known tooling quirk:** pi-lens' embedded rust-analyzer reports a false
   E0308 on the `tauri::generate_context!()` call (its proc-macro host
   degrades the expansion to `{unknown}`/`()`). The real compiler

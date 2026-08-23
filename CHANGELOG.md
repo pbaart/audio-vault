@@ -2,7 +2,61 @@
 
 All notable changes to Audio Vault are documented in this file.
 
-## [0.3.0] - 2026-08-22
+## [Unreleased]
+
+### Added
+
+- **Devices category** alongside headphones: 12 device types (DAC,
+  Dongle DAC, DAC+AMP, AMP, BT Amp, Tube Amp, Power Amp, Preamp,
+  Streamer, Phono Stage, Turntable, AVR), each with its own collection
+  page, filters and spec fields (DAC chip, supported formats, Bluetooth
+  codecs, inputs/outputs via a chip input, amplifier specs, AVR extras).
+  Web fetch, The Sound, FR and PEQ stay headphones-only.
+- **Multi-image product gallery** for both categories: add images via
+  file picker or URL download, remove, and reorder; the mood image is
+  the cover shown in cards and the detail hero. Legacy single product
+  images were moved into the gallery automatically (migrations v19/v20).
+- **Image scaler:** multi-MB originals are downscaled on first use and
+  cached on disk (`media/.cache/`, Lanczos3, JPEG q82/PNG), so grids and
+  cards load ~100 KB copies while the lightbox keeps full resolution.
+- **Themed window chrome on Linux:** the native title bar is replaced by
+  an in-app bar matching the active color scheme — app identity + nav
+  + minimize/maximize/close, drag to move, double-click to maximize,
+  icon-color hover states and the app's standard tooltips.
+- **"Recently modified" sort** backed by a new `updated_at` column
+  (migration v15).
+- **Calendar popup** for the purchase date: themed month-grid popover
+  instead of the unreliable WebKitGTK native date input.
+
+### Changed
+
+- Filter option labels now show plain values with an "All {field}"
+  default per category.
+- Color scheme moved from a standalone section into Settings
+  → Preferences.
+- Mouse back/forward buttons (and Alt+Left/Right) navigate between
+  views; history entries carry their category so back lands on the page
+  a device was opened from.
+- The "Collection" nav button is now "Headphones".
+- The edit dialog's Images section is identical for both categories
+  (mood image + product-image gallery); web-fetched product images are
+  added to the gallery.
+- Window control buttons: hover changes the icon color (no background),
+  tooltips use the app's styled Tip component.
+
+### Fixed
+
+- A save-path bug bound every value from `price` onward to the wrong
+  database column whenever the new `images` field was present; the
+  affected rows were repaired and the statement order is now verified
+  by a scripted cross-check of columns vs. placeholders vs. values.
+- Migration v19 originally shipped with double-escaped line
+  continuations that put literal backslashes into the SQL; rewritten as
+  a single-line statement.
+- Sound-rating clamping rounded 0.5 up to 1 in five places of the save
+  path.
+- The devices-category INSERT statement had 45 columns but 38
+  placeholders; rebuilt and cross-checked.
 
 ### Added
 

@@ -7,9 +7,10 @@
 
 A local-first desktop application for audiophiles to manage a collection of
 headphones, IEMs and source components (DACs, amps, AVRs). Built with [Tauri v2](https://tauri.app) (Rust) and
-React + TypeScript, styled with Tailwind CSS in one of five dark color
-schemes (Tokyo Night default, Gruvbox Dark, Dracula, Catppuccin Mocha,
-Monokai — switchable in Settings). The interface is available in English,
+React + TypeScript, styled with Tailwind CSS in one of eight color
+schemes (five dark — Tokyo Night default, Gruvbox Dark, Dracula,
+Catppuccin Mocha, Monokai — and three light — Tokyo Day, Gruvbox Light,
+Catppuccin Latte — switchable in Settings). The interface is available in English,
 German, Dutch and French.
 
 All data lives on this machine in XDG directories — nothing leaves it:
@@ -17,7 +18,7 @@ All data lives on this machine in XDG directories — nothing leaves it:
 | What | Where |
 | --- | --- |
 | Database | `~/.local/share/audio-vault/collection.db` |
-| Media (images, FR graphs) | `~/.local/share/audio-vault/media/` |
+| Media (images, FR graphs; `.cache/` holds scaled copies) | `~/.local/share/audio-vault/media/` |
 | Web-fetch caches (squig.link index) | `~/.local/share/audio-vault/cache/` |
 | Config | `~/.config/audio-vault/config.json` |
 
@@ -64,7 +65,14 @@ Device detail view:
     OPRA-style entries)
 - Tube-amp compatibility badge computed from impedance + driver type
   (override-able per device)
-- Lightbox image viewer
+- Lightbox image viewer (full resolution; everything else uses cached
+  downscaled copies — see below)
+- **Fast image loading:** multi-MB originals are downscaled on first use
+  and cached on disk (`media/.cache/`, Lanczos3, JPEG q82/PNG), so grids
+  and cards load ~100 KB copies while the lightbox keeps full quality
+- **Themed window chrome (Linux):** the native title bar is replaced by
+  an in-app bar that matches the active color scheme exactly — drag to
+  move, double-click to maximize, minimize/maximize/close controls
 - Settings screen: language (EN/DE/NL/FR), currency, date format, color
   scheme, XDG paths, an "open media folder" action, and an About section
   showing the running app version
@@ -93,7 +101,7 @@ empty fields are ever filled, user-entered values are never overwritten**.
 | Frequency-response graph | squig.link measurement index (main + federated headphone databases). The raw REW measurement data is rendered in-app to a PNG (log-frequency axis, active theme colors) and stored in the media folder like any other image. |
 | Price | squig.link phone-book entry |
 | Driver type, impedance, sensitivity | Keyless DuckDuckGo web search → manufacturer/retailer pages parsed with lenient heuristics. |
-| Product image | `og:image` from the first result page that provides one, downloaded into the media folder. |
+| Product image | `og:image` from the first result page that provides one, downloaded into the media folder and added to the product-image gallery. |
 
 Behaviour notes:
 
@@ -153,7 +161,7 @@ app/
 │   ├── lib/
 │   │   ├── paths.ts        # XDG path bootstrap (init_app_data)
 │   │   ├── db.ts           # SQLite CRUD (tauri-plugin-sql)
-│   │   ├── media.ts        # Image picking, asset URLs, cleanup
+│   │   ├── media.ts        # Image picking, asset URLs, scaled-copy resolution, cleanup
 │   │   ├── tube.ts         # Tube-amp compatibility rule
 │   │   ├── settings.ts     # Config access (theme, currency, dates)
 │   │   ├── themes.ts       # Color schemes: tokens, chart palettes, applyTheme
@@ -167,6 +175,7 @@ app/
 │   │   └── peqCurve.ts     # PEQ bands → combined magnitude curve + SVG model
 │   └── components/
 │       ├── CollectionView.tsx
+│       ├── DateCalendar.tsx        # themed month-grid popover (purchase date)
 │       ├── DeviceDetailView.tsx
 │       ├── DeviceFormDialog.tsx  # incl. the "Web fetch" panel + OPRA PEQ section
 │       ├── DotRating.tsx         # half-dot rating input (sound attributes)
@@ -178,22 +187,29 @@ app/
 │       ├── TagInput.tsx          # chip multi-value input (inputs/outputs/codecs)
 │       ├── Tip.tsx               # styled hover tooltip for badges/pills
 │       ├── Lightbox.tsx
-│       ├── MediaImage.tsx
+│       ├── MediaImage.tsx          # theme-aware <img> (asset URL, base64 fallback, maxDim scaling)
 │       ├── Modal.tsx
+│       ├── TitleBar.tsx          # Linux CSD: unified title/nav/window-controls bar
 │       └── TubeBadge.tsx
 └── src-tauri/              # Rust backend
     ├── src/
     │   ├── lib.rs          # Commands: init_app_data, media_copy_file,
     │   │                   #   media_delete, media_read_base64,
     │   │                   #   media_save_bytes, media_download_image,
-    │   │                   #   open_media_folder, read_config, save_config,
-    │   │                   #   fetch_specs, fetch_opra_presets
-    │   │                   #   + DB migrations (v1–v17; v9+ ratings, v14 doubles sound ratings, v16+v17 devices category)
+    │   │                   #   media_scaled, open_media_folder,
+    │   │                   #   read_config, save_config, fetch_specs,
+    │   │                   #   fetch_opra_presets
+    │   │                   #   + DB migrations (v1–v20; v9+ ratings, v14 doubles
+    │   │                   #   sound ratings, v15 updated_at, v16+v17 devices
+    │   │                   #   category, v18 images column, v19/v20 legacy
+    │   │                   #   product images moved into the gallery)
     │   ├── fetch_specs.rs  # Phase 2: squig.link index matching, REW
     │   │                   #   parsing, web search, spec scraping
     │   └── fetch_opra.rs   # Phase 3: OPRA database download/cache, parse,
     │                       #   brand+model matching
-    └── tauri.conf.json     # Asset protocol scope, CSP, bundle targets
+    ├── tauri.conf.json     # Asset protocol scope, CSP, bundle targets
+    ├── tauri.linux.conf.json  # Linux-only: decorations off (custom title bar)
+    └── capabilities/default.json  # Tauri v2 plugin permissions (incl. window controls)
 ```
 
 ## License
