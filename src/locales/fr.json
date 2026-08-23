@@ -157,6 +157,7 @@
     },
     "compare": "Comparer",
     "compareCount": "Comparer ({{count}})",
+    "compareClear": "Tout désélectionner",
     "compareSelect": "Sélectionner {{name}} pour la comparaison",
     "clearFilters": "Effacer les filtres",
     "count_one": "{{shown}} sur {{total}} appareil",

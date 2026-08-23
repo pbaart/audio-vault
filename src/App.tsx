@@ -100,6 +100,11 @@ export default function App() {
     });
   }
 
+  /** Deselect everything in the comparison selection of one category. */
+  function clearCompare(cat: DeviceCategory) {
+    setCompareSel((sel) => ({ ...sel, [cat]: [] }));
+  }
+
   function toggleEditMode() {
     const next = !editMode;
     setEditMode(next);
@@ -435,6 +440,7 @@ export default function App() {
             onCompare={openCompare}
             compareSel={compareIds}
             onToggleCompare={(id) => toggleCompare(view.category, id)}
+            onClearCompare={() => clearCompare(view.category)}
             onAddDevice={() =>
               setFormState({
                 open: true,

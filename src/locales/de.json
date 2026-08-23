@@ -157,6 +157,7 @@
     },
     "compare": "Vergleichen",
     "compareCount": "Vergleichen ({{count}})",
+    "compareClear": "Alle abwählen",
     "compareSelect": "{{name}} zum Vergleich auswählen",
     "clearFilters": "Filter zurücksetzen",
     "count_one": "{{shown}} von {{total}} Gerät",

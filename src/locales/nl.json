@@ -157,6 +157,7 @@
     },
     "compare": "Vergelijken",
     "compareCount": "Vergelijken ({{count}})",
+    "compareClear": "Alles deselecteren",
     "compareSelect": "{{name}} voor vergelijking selecteren",
     "clearFilters": "Filters wissen",
     "count_one": "{{shown}} van {{total}} apparaat",

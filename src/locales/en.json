@@ -157,6 +157,7 @@
     },
     "compare": "Compare",
     "compareCount": "Compare ({{count}})",
+    "compareClear": "Deselect all",
     "compareSelect": "Select {{name}} for comparison",
     "clearFilters": "Clear filters",
     "count_one": "{{shown}} of {{total}} device",

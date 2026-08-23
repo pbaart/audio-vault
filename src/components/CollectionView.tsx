@@ -16,6 +16,7 @@ import {
   Search,
   Tag,
   Trash2,
+  X,
   Zap,
 } from "lucide-react";
 import type { Device, DeviceCategory } from "../types";
@@ -46,6 +47,8 @@ interface CollectionViewProps {
   compareSel: string[];
   /** Toggle a row in the comparison selection (max 4). */
   onToggleCompare: (id: string) => void;
+  /** Deselect all comparison selections for this category. */
+  onClearCompare: () => void;
   onAddDevice: () => void;
   onEditDevice: (device: Device) => void;
   onDeleteDevice: (device: Device) => void;
@@ -81,6 +84,7 @@ export function CollectionView({
   onCompare,
   compareSel,
   onToggleCompare,
+  onClearCompare,
   onAddDevice,
   onEditDevice,
   onDeleteDevice,
@@ -347,6 +351,15 @@ export function CollectionView({
             ? t("collection.compareCount", { count: compareSel.length })
             : t("collection.compare")}
         </button>
+        {compareSel.length > 0 && (
+          <button
+            className="flex items-center gap-1 text-xs text-tm-gray transition hover:text-tm-fg"
+            onClick={onClearCompare}
+          >
+            <X size={12} />
+            {t("collection.compareClear")}
+          </button>
+        )}
         <p className="ml-auto text-xs text-tm-gray">
           {t("collection.count", {
             shown: sorted.length,
