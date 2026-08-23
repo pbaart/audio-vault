@@ -43,6 +43,8 @@ jobs:
       # vector.
       - name: Setup Node
         # actions/setup-node@v4
+        # zizmor: ignore[cache-poisoning] — false positive (zizmor#1485):
+        # the rule doesn't recognize the explicit cache: '' opt-out on tags.
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 24
