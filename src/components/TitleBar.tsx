@@ -27,7 +27,14 @@ export function isCsd(): boolean {
  * children (nav + window buttons) still work normally, and double-click
  * toggles maximize via Tauri's injected drag script.
  */
-export function TitleBar({ children }: { children?: ReactNode }) {
+export function TitleBar({
+  children,
+  actions,
+}: {
+  children?: ReactNode;
+  /** Optional action buttons between the nav and the window controls. */
+  actions?: ReactNode;
+}) {
   const { t } = useTranslation();
   const win = getCurrentWindow();
   const [maximized, setMaximized] = useState(false);
@@ -71,6 +78,7 @@ export function TitleBar({ children }: { children?: ReactNode }) {
       </div>
       {children}
       <div className="ml-auto flex items-center">
+        {actions && <div className="mr-2 flex items-center">{actions}</div>}
         <Tip label={t("app.minimize")} side="bottom">
           <button
             className={btn}

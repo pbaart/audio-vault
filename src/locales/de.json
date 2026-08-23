@@ -6,7 +6,9 @@
       "minimize": "Minimieren",
       "maximize": "Maximieren",
       "restore": "Herstellen",
-      "close": "Schließen"
+      "close": "Schließen",
+      "modeEdit": "Bearbeitungsmodus",
+      "modeView": "Anzeige-Modus"
   },
   "nav": {
     "collection": "Kopfhörer",
@@ -59,6 +61,7 @@
     "Over-Ear": "Over-Ear",
     "On-Ear": "On-Ear",
     "IEM": "IEM",
+    "Bone Conduction": "Knochenleitung",
     "Dynamic": "Dynamisch",
     "Planar": "Planar",
     "Balanced Armature": "BA",
@@ -80,6 +83,7 @@
     "6_35mm_jack": "6,35-mm-Klinke",
     "XLR": "XLR",
     "Mini-XLR": "Mini-XLR",
+    "Wireless": "Drahtlos",
     "owned": "Im Besitz",
     "sold": "Verkauft",
     "not_in_use": "Nicht in Gebrauch",
@@ -142,6 +146,7 @@
       "added": "Sortierung: Neueste zuerst",
       "modified": "Sortierung: Zuletzt geÃ¤ndert",
       "impedance": "Sortierung: Impedanz",
+      "rating": "Sortierung: Bewertung",
       "price": "Sortierung: Preis",
       "asc": "Aufsteigend — klicken für absteigend",
       "desc": "Absteigend — klicken für aufsteigend"

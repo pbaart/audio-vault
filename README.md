@@ -95,7 +95,9 @@ Add/edit dialog:
 - **Themed window chrome (Linux):** the native title bar is replaced by
   an in-app bar that matches the active color scheme exactly — drag to
   move, double-click to maximize, minimize/maximize/close controls, and
-  edge resize handles for the undecorated window
+  edge resize handles for the undecorated window; a view/edit mode
+  toggle in the bar switches the whole app to read-only (all add, edit
+  and delete buttons hidden)
 - Settings screen: language (EN/DE/NL/FR), currency, date format, color
   scheme, XDG paths, an "open media folder" action, and an About section
   with the running app version, GitHub project/releases links and a

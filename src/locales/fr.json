@@ -6,7 +6,9 @@
       "minimize": "Étroquer",
       "maximize": "Agrandir",
       "restore": "Restaurer",
-      "close": "Fermer"
+      "close": "Fermer",
+      "modeEdit": "Mode édition",
+      "modeView": "Mode lecture"
   },
   "nav": {
     "collection": "Casques",
@@ -59,6 +61,7 @@
     "Over-Ear": "Over-Ear",
     "On-Ear": "On-Ear",
     "IEM": "IEM",
+    "Bone Conduction": "Conduction osseuse",
     "Dynamic": "Dynamique",
     "Planar": "Planaire",
     "Balanced Armature": "BA",
@@ -80,6 +83,7 @@
     "6_35mm_jack": "Jack 6,35 mm",
     "XLR": "XLR",
     "Mini-XLR": "Mini-XLR",
+    "Wireless": "Sans fil",
     "owned": "Possédé",
     "sold": "Vendu",
     "not_in_use": "Non utilisé",
@@ -142,6 +146,7 @@
       "added": "Tri : Ajouts récents",
       "modified": "Tri : Modifié récemment",
       "impedance": "Tri : Impédance",
+      "rating": "Tri : Note",
       "price": "Tri : Prix",
       "asc": "Croissant — cliquer pour décroissant",
       "desc": "Décroissant — cliquer pour croissant"

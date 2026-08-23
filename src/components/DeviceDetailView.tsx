@@ -38,6 +38,8 @@ import { btnPrimary } from "../ui";
 interface DeviceDetailViewProps {
   device: Device;
   settings: AppSettings;
+  /** False in view mode: the edit/delete buttons are hidden. */
+  canEdit: boolean;
   onBack: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -46,6 +48,7 @@ interface DeviceDetailViewProps {
 export function DeviceDetailView({
   device,
   settings,
+  canEdit,
   onBack,
   onEdit,
   onDelete,
@@ -74,19 +77,21 @@ export function DeviceDetailView({
             device.category === "headphones" ? "nav.collection" : "nav.devices",
           )}
         </button>
-        <div className="flex gap-2">
-          <button className={btnPrimary} onClick={onEdit}>
-            <Pencil size={14} />
-            {t("common.edit")}
-          </button>
-          <button
-            className="flex items-center gap-2 rounded bg-tm-red px-3 py-1.5 text-sm font-medium text-tm-darker transition hover:opacity-90"
-            onClick={onDelete}
-          >
-            <Trash2 size={14} />
-            {t("common.delete")}
-          </button>
-        </div>
+        {canEdit && (
+          <div className="flex gap-2">
+            <button className={btnPrimary} onClick={onEdit}>
+              <Pencil size={14} />
+              {t("common.edit")}
+            </button>
+            <button
+              className="flex items-center gap-2 rounded bg-tm-red px-3 py-1.5 text-sm font-medium text-tm-darker transition hover:opacity-90"
+              onClick={onDelete}
+            >
+              <Trash2 size={14} />
+              {t("common.delete")}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px_1fr]">

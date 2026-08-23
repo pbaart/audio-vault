@@ -598,12 +598,14 @@ pub fn run() {
   // Safety: called once at the very start of startup, before any other
   // thread exists, so no concurrent env access can race with this write.
   if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
+    // pi-lens-ignore: rust-unsafe-block
     unsafe { std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1") };
   }
 
   // First-launch behavior: create the XDG layout + DB parent dir before the
   // frontend loads the database.
   let paths =
+    // pi-lens-ignore: rust-expect
     ensure_app_data().expect("failed to initialize audio-vault data directories");
   // The SQL plugin keys its migrations by the exact URL string the frontend
   // passes to `Database.load`, so both sides must use the same absolute path.
@@ -902,5 +904,6 @@ ALTER TABLE devices_v17 RENAME TO devices;",
     // below keeps pi-lens quiet about this analyzer limitation.
     // pi-lens-ignore: rust-analyzer:E0308
     .run(tauri::generate_context!())
+    // pi-lens-ignore: rust-expect
     .expect("error while running tauri application");
 }

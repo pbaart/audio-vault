@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS devices (
   id TEXT PRIMARY KEY,
   brand TEXT NOT NULL,                    -- Brand / Manufacturer
   model TEXT NOT NULL,                    -- Model Name
-  type TEXT,                              -- 'Over-Ear' | 'On-Ear' | 'IEM' (headphones; NULL for devices)
+  type TEXT,                              -- 'Over-Ear' | 'On-Ear' | 'IEM' | 'Bone Conduction' (headphones; NULL for devices)
   color TEXT,                             -- v2: free-text color (autocomplete)
   manufacturer_url TEXT,                  -- v3: manufacturer website (http/https)
   webshop_url TEXT,                       -- v4: webshop where bought (http/https)

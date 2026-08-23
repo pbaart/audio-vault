@@ -21,6 +21,24 @@ All notable changes to Audio Vault are documented in this file.
   resized from any edge or corner via edge strips calling Tauri's
   `start_resize_dragging`; scrollbars are themed to match the active
   color scheme.
+- **View/edit mode toggle** in the title bar: switch the app to a
+  read-only view mode that hides every add, edit and delete button in
+  the collection views (toolbar, cards, table) and the detail view;
+  the choice persists across restarts.
+- **New enum values:** *Bone Conduction* headphone type and *Wireless*
+  connector type (form selects, filters and labels in all four
+  languages).
+- **Sort by rating** in the collection views (unrated items sort last,
+  like the other numeric sorts).
+
+### Fixed
+
+- Saving a headphone wiped its product-image gallery: the form's submit
+  handler only persisted the gallery for the devices category, so every
+  save of a headphone reset `images` to an empty array (the mood image
+  was unaffected). The gallery now saves for both categories. Media
+  files of previously wiped entries were never deleted and remain in
+  the media folder — re-add them via the gallery picker if needed.
 
 ## [0.4.0] - 2026-08-23
 

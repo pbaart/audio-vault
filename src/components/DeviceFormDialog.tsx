@@ -125,7 +125,7 @@ interface FormState {
   manufacturer_url: string;
   webshop_url: string;
   mood_image_path: string | null;
-  /** Devices category: product image gallery (mood image is the cover). */
+  /** Product image gallery for both categories (mood image is the cover). */
   images: string[];
   price: string;
   purchase_date: string;
@@ -845,7 +845,7 @@ export function DeviceFormDialog({
         manufacturer_url: normalizeUrl(form.manufacturer_url),
         webshop_url: normalizeUrl(form.webshop_url),
         mood_image_path: form.mood_image_path,
-        images: cat === "devices" ? form.images : [],
+        images: form.images,
         price: parseOptFloat(form.price),
         purchase_date: parseDateToISO(form.purchase_date, settings.dateFormat),
         driver_type: (form.driver_type || null) as DriverType | null,

@@ -39,21 +39,22 @@ const scaledRelCache = new Map<string, string>();
  * generated once and cached on disk under media/.cache; resolves to the
  * original path when scaling is unavailable or unneeded.
  */
-export function getScaledRelPath(
+export async function getScaledRelPath(
   relPath: string,
   maxDim: number,
 ): Promise<string> {
   const key = `${maxDim}:${relPath}`;
   const hit = scaledRelCache.get(key);
   if (hit) {
-    return Promise.resolve(hit);
+    return hit;
   }
-  return invoke<string>("media_scaled", { relPath, maxDim })
-    .then((rel) => {
-      scaledRelCache.set(key, rel);
-      return rel;
-    })
-    .catch(() => relPath);
+  try {
+    const rel = await invoke<string>("media_scaled", { relPath, maxDim });
+    scaledRelCache.set(key, rel);
+    return rel;
+  } catch {
+    return relPath;
+  }
 }
 
 /** Open the native image picker and copy the file into the media dir. */

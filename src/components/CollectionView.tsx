@@ -34,6 +34,8 @@ interface CollectionViewProps {
   /** Which top-level category this page lists. */
   category: DeviceCategory;
   settings: AppSettings;
+  /** False in view mode: all add/edit/delete controls are hidden. */
+  canEdit: boolean;
   onOpenDevice: (id: string) => void;
   onAddDevice: () => void;
   onEditDevice: (device: Device) => void;
@@ -46,7 +48,7 @@ type TypeFilter =
   | (typeof DEVICE_TYPES)[number];
 type DriverFilter = "all" | (typeof DRIVER_TYPES)[number];
 type TubeFilter = "all" | "yes" | "partial" | "no";
-type SortKey = "name" | "added" | "modified" | "impedance" | "price";
+type SortKey = "name" | "added" | "modified" | "impedance" | "rating" | "price";
 type ViewMode = "grid" | "list";
 
 const VIEW_MODE_KEY = "audio-vault.viewMode";
@@ -65,6 +67,7 @@ export function CollectionView({
   devices,
   category,
   settings,
+  canEdit,
   onOpenDevice,
   onAddDevice,
   onEditDevice,
@@ -143,6 +146,8 @@ export function CollectionView({
           return dir * a.updated_at.localeCompare(b.updated_at);
         case "impedance":
           return dir * ((a.impedance_ohms ?? -1) - (b.impedance_ohms ?? -1));
+        case "rating":
+          return dir * ((a.overall_rating ?? -1) - (b.overall_rating ?? -1));
         case "price":
           return dir * ((a.price ?? -1) - (b.price ?? -1));
         default:
@@ -182,10 +187,12 @@ export function CollectionView({
             {t(isHp ? "collection.empty.hint" : "collection.empty.hintDevices")}
           </p>
         </div>
-        <button className={btnPrimary} onClick={onAddDevice}>
-          <Plus size={16} />
-          {t("collection.empty.add")}
-        </button>
+        {canEdit && (
+          <button className={btnPrimary} onClick={onAddDevice}>
+            <Plus size={16} />
+            {t("collection.empty.add")}
+          </button>
+        )}
       </div>
     );
   }
@@ -255,6 +262,7 @@ export function CollectionView({
                 {t("collection.sort.impedance")}
               </option>
             )}
+            <option value="rating">{t("collection.sort.rating")}</option>
             <option value="price">{t("collection.sort.price")}</option>
           </select>
           <button
@@ -297,10 +305,12 @@ export function CollectionView({
             <Rows3 size={15} />
           </button>
         </div>
-        <button className={btnPrimary} onClick={onAddDevice}>
-          <Plus size={16} />
-          {t("actions.addDevice")}
-        </button>
+        {canEdit && (
+          <button className={btnPrimary} onClick={onAddDevice}>
+            <Plus size={16} />
+            {t("actions.addDevice")}
+          </button>
+        )}
         {hasActiveFilters && (
           <button
             className="text-xs text-tm-accent hover:underline"
@@ -457,25 +467,27 @@ export function CollectionView({
                       </>
                     )}
                   </div>
-                  <div
-                    className="flex items-center gap-2 pt-1 opacity-0 transition group-hover:opacity-100"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      className="flex items-center gap-1 rounded border border-tm-dark px-2 py-1 text-xs text-tm-fg transition hover:bg-tm-dark"
-                      onClick={() => onEditDevice(d)}
+                  {canEdit && (
+                    <div
+                      className="flex items-center gap-2 pt-1 opacity-0 transition group-hover:opacity-100"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <Pencil size={12} />
-                      {t("common.edit")}
-                    </button>
-                    <button
-                      className="flex items-center gap-1 rounded border border-tm-red/40 px-2 py-1 text-xs text-tm-red transition hover:bg-tm-red/10"
-                      onClick={() => onDeleteDevice(d)}
-                    >
-                      <Trash2 size={12} />
-                      {t("common.delete")}
-                    </button>
-                  </div>
+                      <button
+                        className="flex items-center gap-1 rounded border border-tm-dark px-2 py-1 text-xs text-tm-fg transition hover:bg-tm-dark"
+                        onClick={() => onEditDevice(d)}
+                      >
+                        <Pencil size={12} />
+                        {t("common.edit")}
+                      </button>
+                      <button
+                        className="flex items-center gap-1 rounded border border-tm-red/40 px-2 py-1 text-xs text-tm-red transition hover:bg-tm-red/10"
+                        onClick={() => onDeleteDevice(d)}
+                      >
+                        <Trash2 size={12} />
+                        {t("common.delete")}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </article>
             );
@@ -525,9 +537,11 @@ export function CollectionView({
                     {t("fields.tubeAmp")}
                   </th>
                 )}
-                <th className="px-3 py-2 text-right font-semibold">
-                  {t("fields.actions")}
-                </th>
+                {canEdit && (
+                  <th className="px-3 py-2 text-right font-semibold">
+                    {t("fields.actions")}
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -625,33 +639,35 @@ export function CollectionView({
                         )}
                       </td>
                     )}
-                    <td className="px-3 py-2">
-                      <div
-                        className="flex items-center justify-end gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          className="rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-fg"
-                          title={t("common.edit")}
-                          aria-label={t("collection.aria.edit", {
-                            name: `${d.brand} ${d.model}`,
-                          })}
-                          onClick={() => onEditDevice(d)}
+                    {canEdit && (
+                      <td className="px-3 py-2">
+                        <div
+                          className="flex items-center justify-end gap-1"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          className="rounded p-1.5 text-tm-gray transition hover:bg-tm-red/10 hover:text-tm-red"
-                          title={t("common.delete")}
-                          aria-label={t("collection.aria.delete", {
-                            name: `${d.brand} ${d.model}`,
-                          })}
-                          onClick={() => onDeleteDevice(d)}
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
+                          <button
+                            className="rounded p-1.5 text-tm-gray transition hover:bg-tm-dark hover:text-tm-fg"
+                            title={t("common.edit")}
+                            aria-label={t("collection.aria.edit", {
+                              name: `${d.brand} ${d.model}`,
+                            })}
+                            onClick={() => onEditDevice(d)}
+                          >
+                            <Pencil size={14} />
+                          </button>
+                          <button
+                            className="rounded p-1.5 text-tm-gray transition hover:bg-tm-red/10 hover:text-tm-red"
+                            title={t("common.delete")}
+                            aria-label={t("collection.aria.delete", {
+                              name: `${d.brand} ${d.model}`,
+                            })}
+                            onClick={() => onDeleteDevice(d)}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 );
               })}

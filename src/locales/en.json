@@ -6,7 +6,9 @@
       "minimize": "Minimize",
       "maximize": "Maximize",
       "restore": "Restore",
-      "close": "Close"
+      "close": "Close",
+      "modeEdit": "Edit mode",
+      "modeView": "View mode"
   },
   "nav": {
     "collection": "Headphones",
@@ -59,6 +61,7 @@
     "Over-Ear": "Over-Ear",
     "On-Ear": "On-Ear",
     "IEM": "IEM",
+    "Bone Conduction": "Bone Conduction",
     "Dynamic": "Dynamic",
     "Planar": "Planar",
     "Balanced Armature": "Balanced Armature",
@@ -80,6 +83,7 @@
     "6_35mm_jack": "6.35mm jack",
     "XLR": "XLR",
     "Mini-XLR": "Mini-XLR",
+    "Wireless": "Wireless",
     "owned": "Owned",
     "sold": "Sold",
     "not_in_use": "Not in use",
@@ -142,6 +146,7 @@
       "added": "Sort: Recently added",
       "modified": "Sort: Recently modified",
       "impedance": "Sort: Impedance",
+      "rating": "Sort: Rating",
       "price": "Sort: Price",
       "asc": "Ascending — click for descending",
       "desc": "Descending — click for ascending"

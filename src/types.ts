@@ -1,4 +1,4 @@
-export type HeadphoneType = "Over-Ear" | "On-Ear" | "IEM";
+export type HeadphoneType = "Over-Ear" | "On-Ear" | "IEM" | "Bone Conduction";
 
 /** Top-level collection categories, shown as nav entries. */
 export type DeviceCategory = "headphones" | "devices";
@@ -44,7 +44,8 @@ export type ConnectorType =
  | "4.4mm Pentaconn"
  | "6.35mm jack"
  | "XLR"
- | "Mini-XLR";
+ | "Mini-XLR"
+ | "Wireless";
 
 /**
  * Ownership/usage status of an item (both categories). Short stored
@@ -136,7 +137,12 @@ export interface Device {
  updated_at: string;
 }
 
-export const HEADPHONE_TYPES: HeadphoneType[] = ["Over-Ear", "On-Ear", "IEM"];
+export const HEADPHONE_TYPES: HeadphoneType[] = [
+ "Over-Ear",
+ "On-Ear",
+ "IEM",
+ "Bone Conduction",
+];
 
 export const DEVICE_TYPES: DeviceType[] = [
  "DAC",
@@ -196,6 +202,7 @@ export const CONNECTOR_TYPES: ConnectorType[] = [
  "6.35mm jack",
  "XLR",
  "Mini-XLR",
+ "Wireless",
 ];
 
 export const OWNERSHIP_STATUSES: OwnershipStatus[] = [

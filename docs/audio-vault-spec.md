@@ -110,7 +110,7 @@ The app has four primary screens/views:
 
 1. **Collection Overview (default screen on launch)**
    - Grid or list of all devices, showing image thumbnail, brand, model, type, and tube-compatibility badge.
-   - Filter controls: by `type` (Over-Ear / On-Ear / IEM), by `driver_type`, by `tube_amp_suitable`.
+   - Filter controls: by `type` (Over-Ear / On-Ear / IEM / Bone Conduction), by `driver_type`, by `tube_amp_suitable`.
    - Sort controls: by brand, model, price, purchase date, soundstage rating.
    - Search bar: free-text match on brand + model.
    - Empty state: if the database has zero devices, show a "Add your first device" call-to-action instead of an empty grid.
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS devices (
   id TEXT PRIMARY KEY,
   brand TEXT NOT NULL,                    -- Brand / Manufacturer (e.g., "Sennheiser", "Moondrop")
   model TEXT NOT NULL,                    -- Model Name (e.g., "HD600", "Blessing 3")
-  type TEXT NOT NULL,                     -- 'Over-Ear' | 'On-Ear' | 'IEM'
+  type TEXT NOT NULL,                     -- 'Over-Ear' | 'On-Ear' | 'IEM' | 'Bone Conduction'
   color TEXT,                             -- Free text, e.g. 'Midnight Blue' (autocomplete from existing values)
   ownership_status TEXT,                  -- 'owned' | 'sold' | 'not_in_use' | 'loaned'; NULL = not marked (both categories)
   manufacturer_url TEXT,                  -- Optional http(s) link to the manufacturer's website

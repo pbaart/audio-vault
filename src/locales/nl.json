@@ -6,7 +6,9 @@
       "minimize": "Minimaliseren",
       "maximize": "Maximaliseren",
       "restore": "Herstellen",
-      "close": "Sluiten"
+      "close": "Sluiten",
+      "modeEdit": "Bewerkingsmodus",
+      "modeView": "Weergavemodus"
   },
   "nav": {
     "collection": "Headphones",
@@ -59,6 +61,7 @@
     "Over-Ear": "Over-Ear",
     "On-Ear": "On-Ear",
     "IEM": "IEM",
+    "Bone Conduction": "Botanleiding",
     "Dynamic": "Dynamisch",
     "Planar": "Planair",
     "Balanced Armature": "BA",
@@ -80,6 +83,7 @@
     "6_35mm_jack": "6,35 mm jack",
     "XLR": "XLR",
     "Mini-XLR": "Mini-XLR",
+    "Wireless": "Draadloos",
     "owned": "In bezit",
     "sold": "Verkocht",
     "not_in_use": "Niet in gebruik",
@@ -142,6 +146,7 @@
       "added": "Sorteer: Recent toegevoegd",
       "modified": "Sorteer: Laatst gewijzigd",
       "impedance": "Sorteer: Impedantie",
+      "rating": "Sorteer: Beoordeling",
       "price": "Sorteer: Prijs",
       "asc": "Oplopend — klik voor aflopend",
       "desc": "Aflopend — klik voor oplopend"

@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AudioLines, Cpu, Headphones, Settings } from "lucide-react";
+import {
+  AudioLines,
+  Cpu,
+  Eye,
+  Headphones,
+  Pencil,
+  Settings,
+} from "lucide-react";
 import type { Device, DeviceCategory } from "./types";
 import { deleteDevice, getDevice, listDevices } from "./lib/db";
 import { getAppPaths } from "./lib/paths";
@@ -15,6 +22,7 @@ import { DeviceDetailView } from "./components/DeviceDetailView";
 import { DeviceFormDialog } from "./components/DeviceFormDialog";
 import { SettingsView } from "./components/SettingsView";
 import { Modal } from "./components/Modal";
+import { Tip } from "./components/Tip";
 import { btnDanger, btnSecondary, cls } from "./ui";
 
 type View =
@@ -39,6 +47,17 @@ function histState(): HistState {
   );
 }
 
+const EDIT_MODE_KEY = "audio-vault.editMode";
+
+/** Edit mode is the default; only an explicit "off" switches to view mode. */
+function loadEditMode(): boolean {
+  try {
+    return window.localStorage.getItem(EDIT_MODE_KEY) !== "off";
+  } catch {
+    return true;
+  }
+}
+
 export default function App() {
   const { t } = useTranslation();
   const csd = isCsd();
@@ -57,6 +76,17 @@ export default function App() {
   }>({ open: false, device: null, category: "headphones" });
   const [deleteTarget, setDeleteTarget] = useState<Device | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [editMode, setEditMode] = useState(loadEditMode);
+
+  function toggleEditMode() {
+    const next = !editMode;
+    setEditMode(next);
+    try {
+      window.localStorage.setItem(EDIT_MODE_KEY, next ? "on" : "off");
+    } catch {
+      // Non-fatal: the choice just won't persist.
+    }
+  }
 
   const refresh = useCallback(async () => {
     setDevices(await listDevices());
@@ -260,10 +290,28 @@ export default function App() {
     </nav>
   );
 
+  // View/edit mode toggle for the title bar: the icon shows the current
+  // mode (pencil = editing allowed, eye = read-only); clicking flips it.
+  const modeToggle = (
+    <Tip label={t(editMode ? "app.modeEdit" : "app.modeView")} side="bottom">
+      <button
+        className={cls(
+          "flex h-7 w-7 items-center justify-center transition",
+          editMode ? "text-tm-accent" : "text-tm-gray hover:text-tm-fg",
+        )}
+        onClick={toggleEditMode}
+        aria-pressed={editMode}
+        aria-label={t(editMode ? "app.modeEdit" : "app.modeView")}
+      >
+        {editMode ? <Pencil size={14} /> : <Eye size={14} />}
+      </button>
+    </Tip>
+  );
+
   return (
     <div className="flex h-screen flex-col bg-tm-bg text-tm-fg">
       {csd ? (
-        <TitleBar>{nav}</TitleBar>
+        <TitleBar actions={modeToggle}>{nav}</TitleBar>
       ) : (
         <header className="flex items-center gap-4 border-b border-tm-dark bg-tm-darker px-4 py-2">
           <div className="flex items-center gap-2">
@@ -271,6 +319,7 @@ export default function App() {
             <span className="text-lg font-semibold">{t("app.title")}</span>
           </div>
           {nav}
+          <div className="ml-auto flex items-center">{modeToggle}</div>
         </header>
       )}
 
@@ -286,6 +335,7 @@ export default function App() {
           <DeviceDetailView
             device={selected}
             settings={settings}
+            canEdit={editMode}
             onBack={goBack}
             onEdit={() =>
               setFormState({
@@ -301,6 +351,7 @@ export default function App() {
             devices={devices}
             category={view.category}
             settings={settings}
+            canEdit={editMode}
             onOpenDevice={openDevice}
             onAddDevice={() =>
               setFormState({
