@@ -49,7 +49,13 @@ Add/edit dialog:
   loaned out — shown as a chip on collection cards (non-owned statuses
   only), a column in the table view and in the detail view
 - Collection overview with grid, search, filters (type / driver / tube-amp
-  compatibility) and sorting (name, added, modified, impedance, price)
+  compatibility) and sorting (name, added, modified, impedance, rating,
+  price)
+- **Comparison view:** check up to four items (headphones or devices)
+  in the table or grid view and open them side by side — product
+  images, identity, technical specs, ratings, The Sound (headphones),
+  notes and custom fields (PEQ and frequency response excluded); missing
+  values show as N/A
 - **Overall star rating** with half-star support (0.5–5), shown in the
   form, the detail view and both collection views
 - **"The Sound"** section in the detail view: five rated attributes

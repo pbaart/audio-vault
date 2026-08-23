@@ -155,6 +155,9 @@
       "grid": "Rasterweergave",
       "list": "Lijstweergave"
     },
+    "compare": "Vergelijken",
+    "compareCount": "Vergelijken ({{count}})",
+    "compareSelect": "{{name}} voor vergelijking selecteren",
     "clearFilters": "Filters wissen",
     "count_one": "{{shown}} van {{total}} apparaat",
     "count_other": "{{shown}} van {{total}} apparaten",
@@ -163,6 +166,10 @@
       "edit": "{{name}} bewerken",
       "delete": "{{name}} verwijderen"
     }
+  },
+  "compare": {
+    "titleHeadphones": "Koptelefoons vergelijken",
+    "titleDevices": "Apparaten vergelijken"
   },
   "detail": {
     "zoom": "Klik om te vergroten",

@@ -155,6 +155,9 @@
       "grid": "Rasteransicht",
       "list": "Listenansicht"
     },
+    "compare": "Vergleichen",
+    "compareCount": "Vergleichen ({{count}})",
+    "compareSelect": "{{name}} zum Vergleich auswählen",
     "clearFilters": "Filter zurücksetzen",
     "count_one": "{{shown}} von {{total}} Gerät",
     "count_other": "{{shown}} von {{total}} Geräten",
@@ -163,6 +166,10 @@
       "edit": "{{name}} bearbeiten",
       "delete": "{{name}} löschen"
     }
+  },
+  "compare": {
+    "titleHeadphones": "Kopfhörer vergleichen",
+    "titleDevices": "Geräte vergleichen"
   },
   "detail": {
     "zoom": "Klicken zum Vergrößern",

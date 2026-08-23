@@ -155,6 +155,9 @@
       "grid": "Grid view",
       "list": "List view"
     },
+    "compare": "Compare",
+    "compareCount": "Compare ({{count}})",
+    "compareSelect": "Select {{name}} for comparison",
     "clearFilters": "Clear filters",
     "count_one": "{{shown}} of {{total}} device",
     "count_other": "{{shown}} of {{total}} devices",
@@ -163,6 +166,10 @@
       "edit": "Edit {{name}}",
       "delete": "Delete {{name}}"
     }
+  },
+  "compare": {
+    "titleHeadphones": "Compare headphones",
+    "titleDevices": "Compare devices"
   },
   "detail": {
     "zoom": "Click to zoom",

@@ -4,8 +4,10 @@ import {
   Activity,
   AudioWaveform,
   Bluetooth,
+  Check,
   Cpu,
   Gauge,
+  GitCompare,
   Headphones,
   LayoutGrid,
   Pencil,
@@ -37,6 +39,13 @@ interface CollectionViewProps {
   /** False in view mode: all add/edit/delete controls are hidden. */
   canEdit: boolean;
   onOpenDevice: (id: string) => void;
+  /** Open the comparison view with the given device ids (2–4). */
+  onCompare: (category: DeviceCategory, ids: string[]) => void;
+  /** Checked comparison ids (max 4); owned by App so the selection
+   * survives navigation to the compare view. */
+  compareSel: string[];
+  /** Toggle a row in the comparison selection (max 4). */
+  onToggleCompare: (id: string) => void;
   onAddDevice: () => void;
   onEditDevice: (device: Device) => void;
   onDeleteDevice: (device: Device) => void;
@@ -69,6 +78,9 @@ export function CollectionView({
   settings,
   canEdit,
   onOpenDevice,
+  onCompare,
+  compareSel,
+  onToggleCompare,
   onAddDevice,
   onEditDevice,
   onDeleteDevice,
@@ -321,13 +333,28 @@ export function CollectionView({
         )}
       </div>
 
-      <p className="text-xs text-tm-gray">
-        {t("collection.count", {
-          shown: sorted.length,
-          total: inCategory.length,
-          count: inCategory.length,
-        })}
-      </p>
+      <div className="flex items-center gap-3">
+        <button
+          className={cls(
+            btnSecondary,
+            "disabled:cursor-not-allowed disabled:opacity-40",
+          )}
+          disabled={compareSel.length < 2}
+          onClick={() => onCompare(category, compareSel)}
+        >
+          <GitCompare size={14} />
+          {compareSel.length > 0
+            ? t("collection.compareCount", { count: compareSel.length })
+            : t("collection.compare")}
+        </button>
+        <p className="ml-auto text-xs text-tm-gray">
+          {t("collection.count", {
+            shown: sorted.length,
+            total: inCategory.length,
+            count: inCategory.length,
+          })}
+        </p>
+      </div>
 
       {/* Grid */}
       {sorted.length === 0 ? (
@@ -383,6 +410,31 @@ export function CollectionView({
                       </span>
                     </div>
                   )}
+                  <div
+                    className={cls(
+                      "absolute right-2 top-2 transition",
+                      compareSel.includes(d.id)
+                        ? "opacity-100"
+                        : "opacity-30 group-hover:opacity-100",
+                    )}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Tip
+                      label={t("collection.compare")}
+                      side="bottom"
+                      align="end"
+                    >
+                      <CompareCheckbox
+                        id={d.id}
+                        name={`${d.brand} ${d.model}`}
+                        checked={compareSel.includes(d.id)}
+                        disabled={
+                          !compareSel.includes(d.id) && compareSel.length >= 4
+                        }
+                        onToggle={onToggleCompare}
+                      />
+                    </Tip>
+                  </div>
                 </div>
                 <div className="space-y-2 p-3">
                   <div>
@@ -498,6 +550,7 @@ export function CollectionView({
           <table className="w-full min-w-[840px] border-collapse text-sm">
             <thead>
               <tr className="bg-tm-darker text-left text-xs uppercase tracking-wide text-tm-gray">
+                <th className="w-8 px-2 py-2" />
                 <th className="px-3 py-2 font-semibold">{t("fields.brand")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.model")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.type")}</th>
@@ -553,6 +606,20 @@ export function CollectionView({
                     className="cursor-pointer border-t border-tm-dark transition hover:bg-tm-darker/60"
                     onClick={() => onOpenDevice(d.id)}
                   >
+                    <td
+                      className="px-2 py-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <CompareCheckbox
+                        id={d.id}
+                        name={`${d.brand} ${d.model}`}
+                        checked={compareSel.includes(d.id)}
+                        disabled={
+                          !compareSel.includes(d.id) && compareSel.length >= 4
+                        }
+                        onToggle={onToggleCompare}
+                      />
+                    </td>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2.5">
                         <div className="h-8 w-8 shrink-0 overflow-hidden rounded border border-tm-dark bg-tm-darker">
@@ -699,5 +766,37 @@ function FilterSelect({ value, onChange, options, label }: FilterSelectProps) {
         </option>
       ))}
     </select>
+  );
+}
+
+/** Themed checkbox for comparison selection (table rows + grid cards). */
+function CompareCheckbox({
+  id,
+  name,
+  checked,
+  disabled,
+  onToggle,
+}: {
+  id: string;
+  name: string;
+  checked: boolean;
+  disabled: boolean;
+  onToggle: (id: string) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <label className="relative flex h-4 w-4 cursor-pointer items-center justify-center">
+      <input
+        type="checkbox"
+        className="peer absolute inset-0 h-full w-full cursor-pointer opacity-0"
+        checked={checked}
+        disabled={disabled}
+        onChange={() => onToggle(id)}
+        aria-label={t("collection.compareSelect", { name })}
+      />
+      <span className="flex h-4 w-4 items-center justify-center rounded border border-tm-fg bg-tm-dark text-transparent transition peer-checked:border-tm-accent peer-checked:bg-tm-accent/20 peer-checked:text-tm-accent peer-focus-visible:ring-1 peer-focus-visible:ring-tm-accent peer-disabled:cursor-not-allowed peer-disabled:opacity-40">
+        <Check size={12} strokeWidth={3} />
+      </span>
+    </label>
   );
 }

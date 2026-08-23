@@ -16,6 +16,7 @@ import { getSettings, updateSettings, type AppSettings } from "./lib/settings";
 import { setTheme } from "./lib/themes";
 import { removeMediaFile, setMediaDir } from "./lib/media";
 import { CollectionView } from "./components/CollectionView";
+import { CompareView } from "./components/CompareView";
 import { TitleBar, isCsd } from "./components/TitleBar";
 import { ResizeHandles } from "./components/ResizeHandles";
 import { DeviceDetailView } from "./components/DeviceDetailView";
@@ -28,6 +29,7 @@ import { btnDanger, btnSecondary, cls } from "./ui";
 type View =
   | { name: "collection"; category: DeviceCategory }
   | { name: "device"; id: string }
+  | { name: "compare"; category: DeviceCategory; ids: string[] }
   | { name: "settings" };
 
 /**
@@ -77,6 +79,26 @@ export default function App() {
   const [deleteTarget, setDeleteTarget] = useState<Device | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(loadEditMode);
+  /** Headphones checked for comparison (max 4). Lives here — not in
+   * CollectionView — so the selection survives navigation to the
+   * compare view and back. Kept per category so each page remembers its
+   * own picks. */
+  const [compareSel, setCompareSel] = useState<
+    Record<DeviceCategory, string[]>
+  >({ headphones: [], devices: [] });
+
+  /** Toggle a row in the comparison selection of one category (max 4). */
+  function toggleCompare(cat: DeviceCategory, id: string) {
+    setCompareSel((sel) => {
+      const ids = sel[cat];
+      const next = ids.includes(id)
+        ? ids.filter((x) => x !== id)
+        : ids.length >= 4
+          ? ids
+          : [...ids, id];
+      return { ...sel, [cat]: next };
+    });
+  }
 
   function toggleEditMode() {
     const next = !editMode;
@@ -137,6 +159,26 @@ export default function App() {
       } else if (st.name === "settings") {
         setView({ name: "settings" });
         setSelected(null);
+      } else if (st.name === "compare") {
+        void Promise.all(st.ids.map((id) => getDevice(id))).then((found) => {
+          const ds = found.filter((d): d is Device => !!d);
+          if (ds.length >= 2) {
+            setView({
+              name: "compare",
+              category: st.category,
+              ids: ds.map((d) => d.id),
+            });
+            setSelected(null);
+          } else {
+            // Stale entry (items deleted) — drop it.
+            setView({ name: "collection", category: st.category });
+            setSelected(null);
+            window.history.replaceState(
+              { name: "collection", category: st.category, idx: 0 },
+              "",
+            );
+          }
+        });
       } else {
         void getDevice(st.id).then((d) => {
           if (d) {
@@ -192,6 +234,17 @@ export default function App() {
     setView({ name: "collection", category: cat });
     window.history.pushState(
       { name: "collection", category: cat, idx: cur.idx + 1 },
+      "",
+    );
+  }
+
+  /** Open the comparison view, pushing a history entry. */
+  function openCompare(category: DeviceCategory, ids: string[]) {
+    setSelected(null);
+    setView({ name: "compare", category, ids });
+    const cur = histState();
+    window.history.pushState(
+      { name: "compare", category, ids, idx: cur.idx + 1 },
       "",
     );
   }
@@ -308,6 +361,23 @@ export default function App() {
     </Tip>
   );
 
+  // Prune deleted items from the comparison selection so counts and
+  // checkboxes never reference rows that no longer exist.
+  const collectionCat: DeviceCategory =
+    view.name === "collection" ? view.category : "headphones";
+  const compareIds = compareSel[collectionCat].filter((id) =>
+    devices.some((d) => d.id === id),
+  );
+
+  // Resolve the compare view's ids against the current device list
+  // (guards against stale entries after a delete).
+  const compareDevices =
+    view.name === "compare"
+      ? view.ids
+          .map((id) => devices.find((d) => d.id === id))
+          .filter((d): d is Device => !!d)
+      : [];
+
   return (
     <div className="flex h-screen flex-col bg-tm-bg text-tm-fg">
       {csd ? (
@@ -346,6 +416,15 @@ export default function App() {
             }
             onDelete={() => setDeleteTarget(selected)}
           />
+        ) : view.name === "compare" ? (
+          compareDevices.length >= 2 ? (
+            <CompareView
+              category={view.category}
+              devices={compareDevices}
+              settings={settings}
+              onBack={goBack}
+            />
+          ) : null
         ) : view.name === "collection" ? (
           <CollectionView
             devices={devices}
@@ -353,6 +432,9 @@ export default function App() {
             settings={settings}
             canEdit={editMode}
             onOpenDevice={openDevice}
+            onCompare={openCompare}
+            compareSel={compareIds}
+            onToggleCompare={(id) => toggleCompare(view.category, id)}
             onAddDevice={() =>
               setFormState({
                 open: true,

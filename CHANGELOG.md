@@ -30,6 +30,12 @@ All notable changes to Audio Vault are documented in this file.
   languages).
 - **Sort by rating** in the collection views (unrated items sort last,
   like the other numeric sorts).
+- **Comparison view:** select up to four items via checkboxes (table
+  row or card corner) in either category and open them side by side —
+  product images, identity, technical specs, ratings, The Sound
+  (headphones), notes and custom fields (PEQ and frequency response
+  excluded); missing values show as N/A. Selections are remembered per
+  category while navigating.
 
 ### Fixed
 
