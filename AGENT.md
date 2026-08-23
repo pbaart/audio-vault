@@ -65,7 +65,9 @@ Bundle config lives in `src-tauri/tauri.conf.json`:
 blue cups with fading wave arcs). All sizes in `src-tauri/icons/`
 (png/ico/icns) are generated from it via
 `npm run tauri icon icons/icon-1024.png` — never hand-edit the
-individual icon files.
+individual icon files. `public/icon-1024.png` is a deliberate copy of
+the master used as the webview favicon (`index.html`) — keep it in
+sync if the master changes.
 
 ---
 
@@ -152,7 +154,6 @@ original while a scaled copy is pending, so grids load ~100 KB copies
 instead of multi-MB originals. Sizes: IMG_SIZE_TABLE=96,
 IMG_SIZE_CARD=480, IMG_SIZE_HERO=1200; the lightbox uses the original.
 Deleting a media file also drops its cached copies.
-
 
 ---
 
