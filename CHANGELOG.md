@@ -2,7 +2,7 @@
 
 All notable changes to Audio Vault are documented in this file.
 
-## [Unreleased]
+## [0.5.0] - 2026-08-23
 
 ### Added
 
@@ -35,7 +35,8 @@ All notable changes to Audio Vault are documented in this file.
   product images, identity, technical specs, ratings, The Sound
   (headphones), notes and custom fields (PEQ and frequency response
   excluded); missing values show as N/A. Selections are remembered per
-  category while navigating.
+  category while navigating; a *Deselect all* button next to the
+  Compare button clears them.
 
 ### Fixed
 

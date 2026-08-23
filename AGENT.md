@@ -93,7 +93,7 @@ so Tauri's `$APPDATA` base resolves to the same location for the asset scope.
 
 ## 🗄️ Database Schema (`devices` table)
 
-Created by SQL migration v1, extended by v2–v20 (see `src-tauri/src/lib.rs`):
+Created by SQL migration v1, extended by v2–v21 (see `src-tauri/src/lib.rs`):
 
 ```sql
 CREATE TABLE IF NOT EXISTS devices (
@@ -185,7 +185,7 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
 1. **Screens:** Headphones collection (default) and Devices collection
    (12 device types: DAC, Dongle DAC, DAC+AMP, AMP, BT Amp, Tube Amp,
    Power Amp, Preamp, Streamer, Phono Stage, Turntable, AVR), Device Detail,
-   Add/Edit dialog (modal), Settings. No router — state-based
+   Compare view, Add/Edit dialog (modal), Settings. No router — state-based
    navigation in `App.tsx`, synced with webview history
    (`pushState`/`popstate`) so the mouse back/forward buttons (and
    Alt+Left/Right) move between pages; collection history entries carry
@@ -195,8 +195,13 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    localStorage; table rows carry edit + delete icon buttons in a right
    Actions column, stop-propagation so row click still opens the detail),
    search box, filters (type / driver / tube-amp suitability),
-   sort (name / added / modified / impedance / price) with direction
-   toggle. The view is category-aware (`category` prop): each nav page
+   sort (name / added / modified / impedance / rating / price) with
+   direction toggle. Compare checkboxes (first table column / card
+   corner) select up to four items per category for the side-by-side
+   Compare view (`CompareView.tsx`); the selection is owned by App state
+   so it survives navigation to the compare view and back, a *Deselect
+   all* button next to the Compare button clears it, and PEQ / FR are
+   not compared. The view is category-aware (`category` prop): each nav page
    lists its own category, the Type filter offers headphone or device
    types, driver/tube-amp filters and impedance sort are
    headphone-only, and cards/table swap their spec columns per category

@@ -130,8 +130,6 @@ Not implemented yet — ideas for future versions:
   downloading and installing it (Tauri updater plugin) is not wired up
 - **Backup & restore:** export/import the whole collection (database +
   media folder) as a single archive, plus CSV export of the table views
-- **Side-by-side comparison:** pick two headphones or devices and compare
-  specs, sound ratings and FR/PEQ curves on one screen
 - **Windows support:** CI intentionally builds Linux and macOS only;
   Windows packaging (MSI/NSIS) is untested
 
@@ -188,6 +186,7 @@ app/
 │   │   └── versionCheck.ts # latest-release check (GitHub API)
 │   └── components/
 │       ├── CollectionView.tsx
+│       ├── CompareView.tsx         # side-by-side comparison (up to 4 items)
 │       ├── DateCalendar.tsx        # themed month-grid popover (purchase date)
 │       ├── DeviceDetailView.tsx
 │       ├── DeviceFormDialog.tsx  # incl. the "Web fetch" panel + OPRA PEQ section
