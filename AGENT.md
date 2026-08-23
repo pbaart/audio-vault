@@ -138,7 +138,8 @@ CREATE TABLE IF NOT EXISTS devices (
   channels TEXT,                          -- v16: AVR, e.g. "7.1(4)"
   hdmi TEXT,                              -- v16: AVR, e.g. "4 in / 1 out (eARC)"
   room_correction TEXT,                  -- v16: AVR, e.g. "Audyssey MultEQ"
-  images TEXT                            -- v18: product image gallery (both categories), JSON string array
+  images TEXT,                           -- v18: product image gallery (both categories), JSON string array
+  ownership_status TEXT                  -- v21: 'owned' | 'sold' | 'not_in_use' | 'loaned'; NULL = not marked (both categories)
 );
 -- v17 rebuilds the table identically except `type` becomes nullable
 -- (devices-category rows have no headphone type).

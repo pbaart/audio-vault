@@ -19,6 +19,7 @@ import type {
   DriverType,
   DriveDifficulty,
   HeadphoneType,
+  OwnershipStatus,
   PeqBand,
   PeqType,
   SoundSignature,
@@ -30,6 +31,7 @@ import {
   DRIVER_TYPES,
   DRIVE_DIFFICULTIES,
   HEADPHONE_TYPES,
+  OWNERSHIP_STATUSES,
   SOUND_SIGNATURES,
   TUBE_BADGES,
 } from "../types";
@@ -118,6 +120,8 @@ interface FormState {
   /** Devices category: type within the devices category. */
   device_type: DeviceType | "";
   color: string;
+  /** Ownership/usage status ("" = not marked). */
+  ownership_status: OwnershipStatus | "";
   manufacturer_url: string;
   webshop_url: string;
   mood_image_path: string | null;
@@ -228,6 +232,7 @@ function fromDevice(device: Device | null, dateFormat: DateFormat): FormState {
     type: device?.type ?? "",
     device_type: device?.device_type ?? "",
     color: device?.color ?? "",
+    ownership_status: device?.ownership_status ?? "",
     manufacturer_url: device?.manufacturer_url ?? "",
     webshop_url: device?.webshop_url ?? "",
     mood_image_path: device?.mood_image_path ?? null,
@@ -836,6 +841,7 @@ export function DeviceFormDialog({
         device_type:
           cat === "devices" ? (form.device_type as DeviceType) : null,
         color: form.color.trim() || null,
+        ownership_status: form.ownership_status || null,
         manufacturer_url: normalizeUrl(form.manufacturer_url),
         webshop_url: normalizeUrl(form.webshop_url),
         mood_image_path: form.mood_image_path,
@@ -1059,6 +1065,25 @@ export function DeviceFormDialog({
                   <option key={c} value={c} />
                 ))}
               </datalist>
+            </Field>
+            <Field label={t("form.status")}>
+              <select
+                className={cls(selectCls, "w-full")}
+                value={form.ownership_status}
+                onChange={(e) =>
+                  set(
+                    "ownership_status",
+                    e.target.value as OwnershipStatus | "",
+                  )
+                }
+              >
+                <option value="">{t("form.select")}</option>
+                {OWNERSHIP_STATUSES.map((v) => (
+                  <option key={v} value={v}>
+                    {enumLabel(v, t)}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field label={t("form.rating")} error={errors.overall_rating}>
               <StarRating
@@ -1663,58 +1688,58 @@ export function DeviceFormDialog({
 
         {/* Images */}
         <FormSection title={t("form.images")}>
-                        <Field label={t("form.moodImage")}>
-                <div className="flex items-start gap-3">
-                  <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
-                    <MediaImage
-                      relPath={form.mood_image_path}
-                      className="aspect-video w-full"
-                      placeholderIcon={28}
-                    />
-                  </div>
-                  <div className="flex flex-col items-start gap-2 pt-1">
-                    <button
-                      className={btnSecondary}
-                      onClick={() => void handlePickImage("mood")}
-                    >
-                      <FolderOpen size={14} />
-                      {form.mood_image_path
-                        ? t("form.replaceImage")
-                        : t("form.pickImage")}
-                    </button>
-                    {form.mood_image_path && (
-                      <button
-                        className="text-xs text-tm-red hover:underline"
-                        onClick={() => handleRemoveImage("mood")}
-                      >
-                        {t("form.removeImage")}
-                      </button>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="url"
-                        value={moodImageUrl}
-                        onChange={(e) => setMoodImageUrl(e.target.value)}
-                        placeholder={t("form.imageUrlPlaceholder")}
-                        className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
-                      />
-                      <button
-                        className={btnSecondary}
-                        onClick={() => void handleDownloadImage()}
-                        disabled={moodImageDownloading || !moodImageUrl.trim()}
-                      >
-                        <CloudDownload size={14} />
-                        {moodImageDownloading
-                          ? t("form.downloading")
-                          : t("form.downloadImage")}
-                      </button>
-                    </div>
-                  </div>
+          <Field label={t("form.moodImage")}>
+            <div className="flex items-start gap-3">
+              <div className="w-44 shrink-0 overflow-hidden rounded border border-tm-dark">
+                <MediaImage
+                  relPath={form.mood_image_path}
+                  className="aspect-video w-full"
+                  placeholderIcon={28}
+                />
+              </div>
+              <div className="flex flex-col items-start gap-2 pt-1">
+                <button
+                  className={btnSecondary}
+                  onClick={() => void handlePickImage("mood")}
+                >
+                  <FolderOpen size={14} />
+                  {form.mood_image_path
+                    ? t("form.replaceImage")
+                    : t("form.pickImage")}
+                </button>
+                {form.mood_image_path && (
+                  <button
+                    className="text-xs text-tm-red hover:underline"
+                    onClick={() => handleRemoveImage("mood")}
+                  >
+                    {t("form.removeImage")}
+                  </button>
+                )}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="url"
+                    value={moodImageUrl}
+                    onChange={(e) => setMoodImageUrl(e.target.value)}
+                    placeholder={t("form.imageUrlPlaceholder")}
+                    className="w-64 rounded border border-tm-dark bg-tm-darker px-2.5 py-1.5 text-sm text-tm-fg placeholder:text-tm-gray focus:border-tm-accent focus:outline-none"
+                  />
+                  <button
+                    className={btnSecondary}
+                    onClick={() => void handleDownloadImage()}
+                    disabled={moodImageDownloading || !moodImageUrl.trim()}
+                  >
+                    <CloudDownload size={14} />
+                    {moodImageDownloading
+                      ? t("form.downloading")
+                      : t("form.downloadImage")}
+                  </button>
                 </div>
-              </Field>
-              <Field label={t("form.productImages")}>
-                <div className="space-y-3">
-                {form.images.length > 0 && (
+              </div>
+            </div>
+          </Field>
+          <Field label={t("form.productImages")}>
+            <div className="space-y-3">
+              {form.images.length > 0 && (
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-3">
                   {form.images.map((rel, i) => (
                     <div
@@ -1785,9 +1810,9 @@ export function DeviceFormDialog({
                     ? t("form.downloading")
                     : t("form.downloadImage")}
                 </button>
-                </div>
-                </div>
-              </Field>
+              </div>
+            </div>
+          </Field>
         </FormSection>
 
         {/* Links */}

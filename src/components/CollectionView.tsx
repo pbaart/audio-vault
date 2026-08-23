@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Activity,
+  AudioWaveform,
+  Bluetooth,
   Cpu,
+  Gauge,
   Headphones,
   LayoutGrid,
   Pencil,
   Plus,
   Rows3,
   Search,
+  Tag,
   Trash2,
+  Zap,
 } from "lucide-react";
 import type { Device, DeviceCategory } from "../types";
 import { DEVICE_TYPES, DRIVER_TYPES, HEADPHONE_TYPES } from "../types";
@@ -325,6 +331,16 @@ export function CollectionView({
         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
           {sorted.map((d) => {
             const badge = deriveTubeBadge(d.impedance_ohms, d.driver_type);
+            // Fixed spec slots: every slot renders even when empty
+            // (icon + N/A), so icons sit in the same cells on every card.
+            const priceLabel =
+              d.price == null
+                ? t("common.na")
+                : formatPrice(
+                    d.price,
+                    settings.currency,
+                    localeFor(settings.language),
+                  );
             return (
               <article
                 key={d.id}
@@ -337,11 +353,24 @@ export function CollectionView({
                     className="h-full w-full"
                     maxDim={IMG_SIZE_CARD}
                   />
-                  {isHp && badge && (
-                    <div className="absolute right-2 top-2">
-                      <Tip label={t(`tube.dot.${badge}`)} side="bottom">
-                        <TubeBadge badge={badge} size="sm" dot tooltip={null} />
+                  {d.ownership_status && d.ownership_status !== "owned" && (
+                    <div className="absolute bottom-2 left-2">
+                      <Tip label={t("fields.status")} side="top" align="start">
+                        <span className="flex items-center rounded-full border border-tm-dark bg-tm-darker/90 px-2 py-0.5 text-[10px] text-tm-fg">
+                          {enumLabel(d.ownership_status, t)}
+                        </span>
                       </Tip>
+                    </div>
+                  )}
+                  {d.overall_rating != null && (
+                    <div className="absolute bottom-2 right-2">
+                      <span className="flex items-center rounded-full border border-tm-dark bg-tm-darker/90 px-2 py-0.5">
+                        <StarRating
+                          value={d.overall_rating}
+                          size={14}
+                          showValue={false}
+                        />
+                      </span>
                     </div>
                   )}
                 </div>
@@ -362,49 +391,70 @@ export function CollectionView({
                           : ""}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-tm-gray">
+                  <div
+                    className={cls(
+                      "grid gap-x-3 gap-y-2 text-xs text-tm-gray",
+                      // Device specs (DAC chip, output power, codecs, …) are
+                      // too long for three columns; two is the max there.
+                      isHp ? "grid-cols-3" : "grid-cols-2",
+                    )}
+                  >
                     {isHp ? (
                       <>
-                        {d.impedance_ohms != null && (
-                          <span>{d.impedance_ohms} Ω</span>
-                        )}
-                        {d.sensitivity_db != null && (
-                          <span>{d.sensitivity_db} dB</span>
+                        <span className="flex items-center gap-1">
+                          <Activity size={12} className="shrink-0" />
+                          {d.impedance_ohms == null
+                            ? t("common.na")
+                            : `${d.impedance_ohms} Ω`}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Gauge size={12} className="shrink-0" />
+                          {d.sensitivity_db == null
+                            ? t("common.na")
+                            : `${d.sensitivity_db} dB`}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Tag size={12} className="shrink-0" />
+                          {priceLabel}
+                        </span>
+                        {badge && (
+                          <div className="col-span-3">
+                            <Tip label={t("fields.tubeAmp")}>
+                              <TubeBadge
+                                badge={badge}
+                                size="sm"
+                                tooltip={null}
+                              />
+                            </Tip>
+                          </div>
                         )}
                       </>
                     ) : (
                       <>
-                        {d.dac_chip && <span>{d.dac_chip}</span>}
-                        {d.output_power && <span>{d.output_power}</span>}
-                        {d.snr_db != null && <span>{d.snr_db} dB</span>}
-                        {d.bluetooth_codecs.length > 0 && (
-                          <span>
-                            {d.bluetooth_codecs.slice(0, 2).join(", ")}
-                            {d.bluetooth_codecs.length > 2 ? " …" : ""}
-                          </span>
-                        )}
+                        <span className="flex items-center gap-1">
+                          <Cpu size={12} className="shrink-0" />
+                          {d.dac_chip || t("common.na")}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Zap size={12} className="shrink-0" />
+                          {d.output_power || t("common.na")}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <AudioWaveform size={12} className="shrink-0" />
+                          {d.snr_db == null ? t("common.na") : `${d.snr_db} dB`}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Bluetooth size={12} className="shrink-0" />
+                          {d.bluetooth_codecs.length > 0
+                            ? d.bluetooth_codecs.slice(0, 2).join(", ") +
+                              (d.bluetooth_codecs.length > 2 ? " …" : "")
+                            : t("common.na")}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Tag size={12} className="shrink-0" />
+                          {priceLabel}
+                        </span>
                       </>
-                    )}
-                    {d.price != null && (
-                      <span>
-                        {formatPrice(
-                          d.price,
-                          settings.currency,
-                          localeFor(settings.language),
-                        )}
-                      </span>
-                    )}
-                    {isHp && d.soundstage_rating != null && (
-                      <span>
-                        {t("collection.stage", { n: d.soundstage_rating })}
-                      </span>
-                    )}
-                    {d.overall_rating != null && (
-                      <StarRating
-                        value={d.overall_rating}
-                        size={14}
-                        showValue={false}
-                      />
                     )}
                   </div>
                   <div
@@ -439,6 +489,9 @@ export function CollectionView({
                 <th className="px-3 py-2 font-semibold">{t("fields.brand")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.model")}</th>
                 <th className="px-3 py-2 font-semibold">{t("fields.type")}</th>
+                <th className="px-3 py-2 font-semibold">
+                  {t("fields.status")}
+                </th>
                 {isHp ? (
                   <>
                     <th className="px-3 py-2 font-semibold">
@@ -509,6 +562,11 @@ export function CollectionView({
                         : d.device_type
                           ? enumLabel(d.device_type, t)
                           : "—"}
+                    </td>
+                    <td className="px-3 py-2 text-tm-gray">
+                      {d.ownership_status
+                        ? enumLabel(d.ownership_status, t)
+                        : "—"}
                     </td>
                     {isHp ? (
                       <>

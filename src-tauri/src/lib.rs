@@ -824,6 +824,16 @@ ALTER TABLE devices_v17 RENAME TO devices;",
     // Idempotent.
     sql: "UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE image_path IS NOT NULL AND image_path != '';",
     kind: MigrationKind::Up,
+  },
+  Migration {
+    version: 21,
+    description: "add_ownership_status_column",
+    // Ownership/usage status for both categories: 'owned' | 'sold' |
+    // 'not_in_use' | 'loaned'. Short stored codes; the UI renders
+    // localized labels from the locale files (values.*). NULL = not
+    // marked — pre-existing rows keep NULL and new items start unset.
+    sql: "ALTER TABLE devices ADD COLUMN ownership_status TEXT;",
+    kind: MigrationKind::Up,
   }];
 
   tauri::Builder::default()

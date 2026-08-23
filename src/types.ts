@@ -46,6 +46,12 @@ export type ConnectorType =
  | "XLR"
  | "Mini-XLR";
 
+/**
+ * Ownership/usage status of an item (both categories). Short stored
+ * codes; the UI renders localized labels via `values.*`.
+ */
+export type OwnershipStatus = "owned" | "sold" | "not_in_use" | "loaned";
+
 export type PeqType = "PK" | "LSC" | "HSC";
 
 export interface PeqBand {
@@ -67,6 +73,8 @@ export interface Device {
  model: string;
  type: HeadphoneType | null;
  color: string | null;
+ /** Ownership/usage status; null = not marked. */
+ ownership_status: OwnershipStatus | null;
  manufacturer_url: string | null;
  webshop_url: string | null;
  mood_image_path: string | null;
@@ -188,4 +196,11 @@ export const CONNECTOR_TYPES: ConnectorType[] = [
  "6.35mm jack",
  "XLR",
  "Mini-XLR",
+];
+
+export const OWNERSHIP_STATUSES: OwnershipStatus[] = [
+ "owned",
+ "sold",
+ "not_in_use",
+ "loaned",
 ];

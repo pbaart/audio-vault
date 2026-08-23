@@ -175,6 +175,7 @@ CREATE TABLE IF NOT EXISTS devices (
   model TEXT NOT NULL,                    -- Model Name (e.g., "HD600", "Blessing 3")
   type TEXT NOT NULL,                     -- 'Over-Ear' | 'On-Ear' | 'IEM'
   color TEXT,                             -- Free text, e.g. 'Midnight Blue' (autocomplete from existing values)
+  ownership_status TEXT,                  -- 'owned' | 'sold' | 'not_in_use' | 'loaned'; NULL = not marked (both categories)
   manufacturer_url TEXT,                  -- Optional http(s) link to the manufacturer's website
   webshop_url TEXT,                       -- Optional http(s) link to the webshop where it was bought
   image_path TEXT,                        -- Relative path in ~/.local/share/audio-vault/media/
@@ -315,6 +316,7 @@ This logic runs whenever a device is saved (add or edit) and recalculates `tube_
 4. **Native Linux File Picker:** Selecting images opens native `xdg-desktop-portal` file choosers, copying selected files directly into `~/.local/share/audio-vault/media/`.
 5. **Frequency Response Lightbox:** Full-screen zoom modal for graph inspection.
 6. **Tube Compatibility Indicators:** Automatic status badges per the rules table above.
+7. **Ownership Status:** Per-item status field (both categories) in the form's Basic section — *Owned*, *Sold*, *Not in use* or *Loaned out* (empty = not marked). Shown as a chip on collection cards (non-owned statuses only — owned is the default) and in the detail view's identity chips; the table view has a Status column.
 
 ---
 

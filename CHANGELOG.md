@@ -2,6 +2,16 @@
 
 All notable changes to Audio Vault are documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- **Ownership status** for both headphones and devices (migration v21):
+  mark an item as *Owned*, *Sold*, *Not in use* or *Loaned out* in the
+  form's Basic section (empty = not marked). The status shows as a chip
+  on collection cards (non-owned statuses only — owned is the default),
+  a column in the table view, and in the detail view's identity chips.
+
 ## [0.4.0] - 2026-08-23
 
 ### Added
@@ -21,7 +31,7 @@ All notable changes to Audio Vault are documented in this file.
   cards load ~100 KB copies while the lightbox keeps full resolution.
 - **Themed window chrome on Linux:** the native title bar is replaced by
   an in-app bar matching the active color scheme — app identity + nav
-  + minimize/maximize/close, drag to move, double-click to maximize,
+  - minimize/maximize/close, drag to move, double-click to maximize,
   icon-color hover states and the app's standard tooltips.
 - **"Recently modified" sort** backed by a new `updated_at` column
   (migration v15).

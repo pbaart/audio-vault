@@ -5,6 +5,7 @@ import { getAppPaths } from "./paths";
 /** Static SQL — all values are bound via `?` placeholders; no string interpolation. */
 const UPDATE_SQL =
   "UPDATE devices SET brand = ?, model = ?, type = ?, color = ?, " +
+  "ownership_status = ?, " +
   "manufacturer_url = ?, webshop_url = ?, mood_image_path = ?, " +
   "price = ?, purchase_date = ?, driver_type = ?, impedance_ohms = ?, " +
   "sensitivity_db = ?, connector_type = ?, tube_amp_suitable = ?, " +
@@ -20,7 +21,7 @@ const UPDATE_SQL =
   "WHERE id = ?";
 
 const INSERT_SQL =
-  "INSERT INTO devices (id, brand, model, type, color, manufacturer_url, " +
+  "INSERT INTO devices (id, brand, model, type, color, ownership_status, manufacturer_url, " +
   "webshop_url, mood_image_path, price, " +
   "purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, " +
   "tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, " +
@@ -30,7 +31,7 @@ const INSERT_SQL =
   "supported_formats, bluetooth_codecs, inputs, outputs, output_power, " +
   "snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, " +
   "room_correction, images, updated_at) " +
-  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 let dbPromise: Promise<Database> | null = null;
 
@@ -150,6 +151,9 @@ function rowToDevice(row: Row): Device {
     model: asString(row.model) ?? "",
     type: asString(row.type) as Device["type"],
     color: asString(row.color),
+    ownership_status: asString(
+      row.ownership_status,
+    ) as Device["ownership_status"],
     manufacturer_url: asString(row.manufacturer_url),
     webshop_url: asString(row.webshop_url),
     mood_image_path: asString(row.mood_image_path),
@@ -307,6 +311,7 @@ export async function saveDevice(device: Device): Promise<Device> {
     device.model,
     device.type,
     device.color,
+    device.ownership_status,
     device.manufacturer_url,
     device.webshop_url,
     device.mood_image_path,

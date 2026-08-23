@@ -22,6 +22,7 @@
     "edit": "Bearbeiten",
     "close": "Dialog schließen",
     "closeViewer": "Ansicht schließen",
+    "na": "k. A.",
     "bands_one": "{{count}} Band",
     "bands_other": "{{count}} Bänder"
   },
@@ -42,12 +43,7 @@
       "Transformer Only": "Nicht ratsam",
       "No": "Nicht möglich"
     },
-    "dot": {
-      "Yes": "Perfektes Match für Röhrenverstärker",
-      "OTL Only": "Begrenzte Kompatibilität mit Röhrenverstärkern (nur OTL)",
-      "Transformer Only": "Nicht ratsam für Röhrenverstärker (nur mit Transformator)",
-      "No": "Nicht möglich mit Röhrenverstärkern"
-    }
+    "tooltip": "Röhrenverstärker-Kompatibilität"
   },
   "tubeRule": {
     "high": "≥ 120 Ω: Perfektes Match",
@@ -83,7 +79,11 @@
     "4_4mm_Pentaconn": "4,4-mm-Pentaconn",
     "6_35mm_jack": "6,35-mm-Klinke",
     "XLR": "XLR",
-    "Mini-XLR": "Mini-XLR"
+    "Mini-XLR": "Mini-XLR",
+    "owned": "Im Besitz",
+    "sold": "Verkauft",
+    "not_in_use": "Nicht in Gebrauch",
+    "loaned": "Verliehen"
   },
   "fields": {
     "brand": "Marke",
@@ -102,6 +102,7 @@
     "timbre": "Klangfarbe",
     "tonalBalance": "Tonale Balance",
     "color": "Farbe",
+    "status": "Status",
     "connector": "Anschluss",
     "rating": "Bewertung",
     "tubeAmp": "Röhrenverstärker",
@@ -153,7 +154,6 @@
     "count_one": "{{shown}} von {{total}} Gerät",
     "count_other": "{{shown}} von {{total}} Geräten",
     "noMatch": "Keine Geräte entsprechen deinen Filtern.",
-    "stage": "Bühne {{n}}/5",
     "aria": {
       "edit": "{{name}} bearbeiten",
       "delete": "{{name}} löschen"
@@ -185,6 +185,7 @@
     "model": "Modell",
     "type": "Typ",
     "color": "Farbe",
+    "status": "Status",
     "phBrand": "z. B. Sennheiser",
     "phModel": "z. B. HD 660S2",
     "select": "Auswählen …",

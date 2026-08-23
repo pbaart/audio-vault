@@ -22,6 +22,7 @@
     "edit": "Bewerken",
     "close": "Dialoog sluiten",
     "closeViewer": "Weergave sluiten",
+    "na": "nvt",
     "bands_one": "{{count}} band",
     "bands_other": "{{count}} banden"
   },
@@ -42,12 +43,7 @@
       "Transformer Only": "Niet geadviseerd",
       "No": "Niet mogelijk"
     },
-    "dot": {
-      "Yes": "Perfecte match voor buizenversterkers",
-      "OTL Only": "Beperkte compatibiliteit met buizenversterkers (alleen OTL)",
-      "Transformer Only": "Niet geadviseerd voor buizenversterkers (alleen met transformator)",
-      "No": "Niet mogelijk met buizenversterkers"
-    }
+    "tooltip": "Buizenversterker-compatibiliteit"
   },
   "tubeRule": {
     "high": "≥ 120 Ω: Perfecte match",
@@ -83,7 +79,11 @@
     "4_4mm_Pentaconn": "4,4 mm Pentaconn",
     "6_35mm_jack": "6,35 mm jack",
     "XLR": "XLR",
-    "Mini-XLR": "Mini-XLR"
+    "Mini-XLR": "Mini-XLR",
+    "owned": "In bezit",
+    "sold": "Verkocht",
+    "not_in_use": "Niet in gebruik",
+    "loaned": "Uitgeleend"
   },
   "fields": {
     "brand": "Merk",
@@ -102,6 +102,7 @@
     "timbre": "Timbre",
     "tonalBalance": "Tonaal evenwicht",
     "color": "Kleur",
+    "status": "Status",
     "connector": "Aansluiting",
     "rating": "Beoordeling",
     "tubeAmp": "Buizenversterker",
@@ -153,7 +154,6 @@
     "count_one": "{{shown}} van {{total}} apparaat",
     "count_other": "{{shown}} van {{total}} apparaten",
     "noMatch": "Geen apparaten komen overeen met je filters.",
-    "stage": "Stage {{n}}/5",
     "aria": {
       "edit": "{{name}} bewerken",
       "delete": "{{name}} verwijderen"
@@ -185,6 +185,7 @@
     "model": "Model",
     "type": "Type",
     "color": "Kleur",
+    "status": "Status",
     "phBrand": "bijv. Sennheiser",
     "phModel": "bijv. HD 660S2",
     "select": "Selecteer…",

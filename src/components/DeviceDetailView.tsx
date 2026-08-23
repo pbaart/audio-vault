@@ -1,20 +1,24 @@
 import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Archive,
   ArrowLeft,
+  CircleCheck,
   Cpu,
   Globe,
+  Handshake,
   Headphones,
   Palette,
   Pencil,
   Plug,
   ShoppingBag,
+  Tag,
   Trash2,
   Volume2,
   ZoomIn,
 } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import type { Device } from "../types";
+import type { Device, OwnershipStatus } from "../types";
 import { formatDate, formatPrice } from "../lib/format";
 import { enumLabel, localeFor, type TranslateFn } from "../lib/i18n";
 import type { AppSettings } from "../lib/settings";
@@ -173,6 +177,14 @@ export function DeviceDetailView({
                   <Chip
                     label={enumLabel(device.connector_type, t)}
                     icon={<Plug size={12} />}
+                  />
+                </Tip>
+              )}
+              {device.ownership_status && (
+                <Tip label={t("fields.status")}>
+                  <Chip
+                    label={enumLabel(device.ownership_status, t)}
+                    icon={statusIcon(device.ownership_status)}
                   />
                 </Tip>
               )}
@@ -513,6 +525,20 @@ function UrlButton({ url, icon }: { url: string; icon: ReactNode }) {
       {hostOf(url)}
     </button>
   );
+}
+
+/** Icon per ownership status (rendered in the identity chip row). */
+function statusIcon(status: OwnershipStatus): ReactNode {
+  switch (status) {
+    case "owned":
+      return <CircleCheck size={12} />;
+    case "sold":
+      return <Tag size={12} />;
+    case "not_in_use":
+      return <Archive size={12} />;
+    case "loaned":
+      return <Handshake size={12} />;
+  }
 }
 
 function Chip({ label, icon }: { label: string; icon?: ReactNode }) {

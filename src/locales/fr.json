@@ -22,6 +22,7 @@
     "edit": "Modifier",
     "close": "Fermer la boîte de dialogue",
     "closeViewer": "Fermer le visionneur",
+    "na": "N/D",
     "bands_one": "{{count}} bande",
     "bands_other": "{{count}} bandes"
   },
@@ -42,12 +43,7 @@
       "Transformer Only": "Déconseillé",
       "No": "Impossible"
     },
-    "dot": {
-      "Yes": "Correspondance parfaite avec les amplis à tubes",
-      "OTL Only": "Compatibilité limitée avec les amplis à tubes (OTL uniquement)",
-      "Transformer Only": "Déconseillé pour les amplis à tubes (à transformateur uniquement)",
-      "No": "Impossible avec les amplis à tubes"
-    }
+    "tooltip": "Compatibilité avec les amplis à tubes"
   },
   "tubeRule": {
     "high": "≥ 120 Ω : Correspondance parfaite",
@@ -83,7 +79,11 @@
     "4_4mm_Pentaconn": "Pentaconn 4,4 mm",
     "6_35mm_jack": "Jack 6,35 mm",
     "XLR": "XLR",
-    "Mini-XLR": "Mini-XLR"
+    "Mini-XLR": "Mini-XLR",
+    "owned": "Possédé",
+    "sold": "Vendu",
+    "not_in_use": "Non utilisé",
+    "loaned": "Prêté"
   },
   "fields": {
     "brand": "Marque",
@@ -102,6 +102,7 @@
     "timbre": "Timbre",
     "tonalBalance": "Équilibre tonal",
     "color": "Couleur",
+    "status": "Statut",
     "connector": "Connecteur",
     "rating": "Note",
     "tubeAmp": "Ampli à tubes",
@@ -153,7 +154,6 @@
     "count_one": "{{shown}} sur {{total}} appareil",
     "count_other": "{{shown}} sur {{total}} appareils",
     "noMatch": "Aucun appareil ne correspond à vos filtres.",
-    "stage": "Scène {{n}}/5",
     "aria": {
       "edit": "Modifier {{name}}",
       "delete": "Supprimer {{name}}"
@@ -185,6 +185,7 @@
     "model": "Modèle",
     "type": "Type",
     "color": "Couleur",
+    "status": "Statut",
     "phBrand": "ex. Sennheiser",
     "phModel": "ex. HD 660S2",
     "select": "Sélectionner…",
