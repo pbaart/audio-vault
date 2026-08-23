@@ -24,13 +24,17 @@ All data lives on this machine in XDG directories — nothing leaves it:
 
 ## Screenshots
 
-Collection overview (list view):
+Headphones collection:
 
-![Collection view](docs/screenshot-1.png)
+![Headphones collection](docs/screenshot-headphones.png)
 
 Device detail view:
 
-![Device detail view](docs/screenshot-2.png)
+![Device detail view](docs/screenshot-detailedview.png)
+
+Add/edit dialog:
+
+![Add/edit dialog](docs/screenshot-edit.png)
 
 ## Features (Phase 1 / MVP)
 
