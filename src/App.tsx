@@ -10,6 +10,7 @@ import { setTheme } from "./lib/themes";
 import { removeMediaFile, setMediaDir } from "./lib/media";
 import { CollectionView } from "./components/CollectionView";
 import { TitleBar, isCsd } from "./components/TitleBar";
+import { ResizeHandles } from "./components/ResizeHandles";
 import { DeviceDetailView } from "./components/DeviceDetailView";
 import { DeviceFormDialog } from "./components/DeviceFormDialog";
 import { SettingsView } from "./components/SettingsView";
@@ -45,7 +46,10 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
   const [selected, setSelected] = useState<Device | null>(null);
-  const [view, setView] = useState<View>({ name: "collection", category: "headphones" });
+  const [view, setView] = useState<View>({
+    name: "collection",
+    category: "headphones",
+  });
   const [formState, setFormState] = useState<{
     open: boolean;
     device: Device | null;
@@ -208,8 +212,11 @@ export default function App() {
     return (
       <div className="flex h-screen flex-col bg-tm-bg">
         {csd && <TitleBar />}
+        <ResizeHandles />
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
-          <h1 className="text-lg font-semibold text-tm-red">{t("app.error")}</h1>
+          <h1 className="text-lg font-semibold text-tm-red">
+            {t("app.error")}
+          </h1>
           <p className="max-w-md break-all text-sm text-tm-gray">
             {localizeNote(error)}
           </p>
@@ -222,6 +229,7 @@ export default function App() {
     return (
       <div className="flex h-screen flex-col bg-tm-bg">
         {csd && <TitleBar />}
+        <ResizeHandles />
         <div className="flex flex-1 items-center justify-center">
           <p className="text-sm text-tm-gray">{t("app.loading")}</p>
         </div>
@@ -265,6 +273,8 @@ export default function App() {
           {nav}
         </header>
       )}
+
+      <ResizeHandles />
 
       <main className="flex-1 overflow-y-auto p-6">
         {view.name === "settings" ? (
@@ -312,7 +322,9 @@ export default function App() {
           device={formState.device}
           category={formState.category}
           settings={settings}
-          onClose={() => setFormState({ open: false, device: null, category: "headphones" })}
+          onClose={() =>
+            setFormState({ open: false, device: null, category: "headphones" })
+          }
           onSaved={handleSaved}
         />
       )}
@@ -345,7 +357,9 @@ export default function App() {
             })}
             {(deleteTarget.mood_image_path ||
               deleteTarget.fr_graph_path ||
-              deleteTarget.images.length > 0) && <> {t("delete.mediaNote")}</>}{" "}
+              deleteTarget.images.length > 0) && (
+              <> {t("delete.mediaNote")}</>
+            )}{" "}
             {t("delete.unundoable")}
           </p>
         </Modal>

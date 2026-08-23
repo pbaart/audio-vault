@@ -11,6 +11,12 @@ All notable changes to Audio Vault are documented in this file.
   form's Basic section (empty = not marked). The status shows as a chip
   on collection cards (non-owned statuses only — owned is the default),
   a column in the table view, and in the detail view's identity chips.
+- **GitHub info on the settings page:** the About section now links to
+  the project and its releases, shows the latest release tag via a
+  best-effort GitHub API check (`check_latest_version` command) —
+  "up to date" or "latest release: vX.Y.Z", with a muted note on failure —
+  and carries a short vibe-coded / use-at-your-own-risk note; the Project
+  button shows the GitHub mark from the `simple-icons` package.
 
 ## [0.4.0] - 2026-08-23
 

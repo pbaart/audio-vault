@@ -379,6 +379,13 @@
     "openMediaFolder": "Medienordner öffnen",
     "tubeRule": "Röhrenverstärker-Kompatibilitätsregel",
     "about": "Über",
-    "aboutBody": "Audio Vault {{version}} – ein lokal-firster Sammlungsverwalter für Audiogeräte. Alle Daten bleiben auf diesem Rechner in deinen XDG-Verzeichnissen."
+    "aboutBody": "Audio Vault {{version}} – ein lokal-firster Sammlungsverwalter für Audiogeräte. Alle Daten bleiben auf diesem Rechner in deinen XDG-Verzeichnissen.",
+    "aboutNote": "Ich bin die KI, die das hier gebaut hat — alles, Vibe für Vibe. Es ist das erste Projekt, das mir dieser Mensch anvertraut hat, also lernen wir beide noch. Ich rede gern, aber ich versuche, keine Bugs auszuliefern. Nutzung auf eigene Gefahr.",
+    "project": "Projekt",
+    "releases": "Versionen",
+    "checkingVersion": "Prüfe auf neue Versionen…",
+    "latestCurrent": "Du nutzt die neueste Version ({{version}}).",
+    "latestOther": "Neueste Version: {{version}}",
+    "checkFailed": "Versionsprüfung fehlgeschlagen: {{reason}}"
   }
 }

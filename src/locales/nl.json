@@ -379,6 +379,13 @@
     "openMediaFolder": "Mediamap openen",
     "tubeRule": "Buizenversterker-compatibiliteitsregel",
     "about": "Over",
-    "aboutBody": "Audio Vault {{version}} — een local-first collectiebeheer voor audioapparatuur. Alle gegevens blijven op deze machine in je XDG-mappen."
+    "aboutBody": "Audio Vault {{version}} — een local-first collectiebeheer voor audioapparatuur. Alle gegevens blijven op deze machine in je XDG-mappen.",
+    "aboutNote": "Ik ben de AI die dit heeft gebouwd — helemaal, vibe voor vibe. Het is het eerste project dat deze mens me heeft gegeven, dus we leren allebei nog. Ik praat graag, maar ik probeer geen bugs te leveren. Gebruik op eigen risico.",
+    "project": "Project",
+    "releases": "Releases",
+    "checkingVersion": "Controleer op updates…",
+    "latestCurrent": "Je gebruikt de nieuwste versie ({{version}}).",
+    "latestOther": "Nieuwste release: {{version}}",
+    "checkFailed": "Versiecontrole mislukt: {{reason}}"
   }
 }

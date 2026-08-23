@@ -553,6 +553,41 @@ async fn fetch_opra_presets(
   fetch_opra::fetch_opra_presets(&brand, &model).await
 }
 
+/// Query GitHub for the latest published release tag (e.g. "v0.4.0").
+/// Unlike the fetch commands this one errors on failure: the settings
+/// page wants to tell "check failed" apart from "no releases yet".
+/// Errors are short stable codes the UI can display as-is.
+#[tauri::command]
+async fn check_latest_version() -> Result<String, String> {
+  const REPO: &str = "pbaart/audio-vault";
+  let client = reqwest::Client::builder()
+    .timeout(std::time::Duration::from_secs(10))
+    .build()
+    .unwrap_or_else(|_| reqwest::Client::new());
+  let resp = client
+    .get(format!("https://api.github.com/repos/{REPO}/releases/latest"))
+    .header("User-Agent", "audio-vault")
+    .header("Accept", "application/vnd.github+json")
+    .send()
+    .await
+    .map_err(|e| format!("request_failed: {e}"))?;
+  let status = resp.status();
+  if status.as_u16() == 404 {
+    return Err("no_releases".into());
+  }
+  if !status.is_success() {
+    return Err(format!("http_{status}"));
+  }
+  let body: serde_json::Value = resp
+    .json()
+    .await
+    .map_err(|e| format!("bad_response: {e}"))?;
+  match body.get("tag_name").and_then(|v| v.as_str()) {
+    Some(tag) if !tag.is_empty() => Ok(tag.to_string()),
+    _ => Err("no_tag".into()),
+  }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   // WebKitGTK's dmabuf GPU renderer triggers a Wayland protocol error on
@@ -858,7 +893,8 @@ ALTER TABLE devices_v17 RENAME TO devices;",
       read_config,
       save_config,
       fetch_specs,
-      fetch_opra_presets
+      fetch_opra_presets,
+      check_latest_version
     ])
     // rust-analyzer cannot fully expand tauri::generate_context!() in its sandbox
     // (the generated context's asset/CSP fields come out as {unknown}), so it

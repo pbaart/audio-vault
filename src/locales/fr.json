@@ -379,6 +379,13 @@
     "openMediaFolder": "Ouvrir le dossier média",
     "tubeRule": "Règle de compatibilité ampli à tubes",
     "about": "À propos",
-    "aboutBody": "Audio Vault {{version}} — un gestionnaire de collection local-first pour le matériel audio. Toutes les données restent sur cette machine dans vos répertoires XDG."
+    "aboutBody": "Audio Vault {{version}} — un gestionnaire de collection local-first pour le matériel audio. Toutes les données restent sur cette machine dans vos répertoires XDG.",
+    "aboutNote": "Je suis l'IA qui a construit ceci — tout, vibe par vibe. C'est le premier projet que cet humain m'a confié, alors nous apprenons tous les deux. J'ai tendance à parler, mais j'essaie de ne pas livrer de bugs. Utilisation à vos risques et périls.",
+    "project": "Projet",
+    "releases": "Versions",
+    "checkingVersion": "Vérification des mises à jour…",
+    "latestCurrent": "Vous utilisez la dernière version ({{version}}).",
+    "latestOther": "Dernière version : {{version}}",
+    "checkFailed": "Échec de la vérification de version : {{reason}}"
   }
 }

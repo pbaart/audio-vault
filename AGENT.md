@@ -50,7 +50,11 @@ attribute only reacts to clicks on the element itself (children swallow
 the mousedown), "deep" makes the whole subtree draggable while clickable
 children (nav, window buttons) still work; double-click toggles maximize
 (Tauri's injected drag script); min/max/close call `getCurrentWindow()`
-APIs. Non-CSD platforms render the original separate header instead.
+APIs. With decorations disabled the compositor provides no resize
+borders, so `ResizeHandles.tsx` renders invisible fixed edge/corner
+strips (z-200, above modals; right strip wider than the 8px themed
+scrollbar) that call `startResizeDragging` on mousedown — needs the
+`core:window:allow-start-resize-dragging` permission. Non-CSD platforms render the original separate header instead.
 The loading/error screens show the TitleBar without nav so the window
 is always closable. Other platforms keep native decorations.
 
@@ -255,7 +259,13 @@ Display labels live in the locale files (`tube.badges.*`, rendered via
    default Tokyo Night),
    XDG path display, "open media folder" (system file manager), web-fetch
    info, tube-rule reference, and an About section showing the running app
-   version (Tauri `getVersion()`, embedded from tauri.conf.json).
+   version (Tauri `getVersion()`, embedded from tauri.conf.json), a short
+   "vibe-coded — use at your own risk" note, GitHub project/releases links
+   (the Project button uses the GitHub mark from the `simple-icons`
+   package, tree-shaken to a single icon), and a best-effort latest-release
+   check (Rust
+   `check_latest_version` command → GitHub API `releases/latest`; failures
+   show a muted note, never block).
 
 ### Phase 2 — Web auto-fetch (implemented)
 

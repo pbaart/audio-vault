@@ -36,7 +36,7 @@ Add/edit dialog:
 
 ![Add/edit dialog](docs/screenshot-edit.png)
 
-## Features (Phase 1 / MVP)
+## Features
 
 - **Two categories:** Headphones (incl. IEMs) and Devices (DAC, AMP,
   Dongle DAC, DAC+AMP, BT Amp, Tube Amp, Power Amp, Preamp, Streamer,
@@ -45,6 +45,9 @@ Add/edit dialog:
   codecs, inputs/outputs, amplifier specs, AVR extras); both categories
   carry a mood image (cover) plus a multi-image product gallery
   (front/back/details)
+- **Ownership status:** mark any item as owned, sold, not in use or
+  loaned out — shown as a chip on collection cards (non-owned statuses
+  only), a column in the table view and in the detail view
 - Collection overview with grid, search, filters (type / driver / tube-amp
   compatibility) and sorting (name, added, modified, impedance, price)
 - **Overall star rating** with half-star support (0.5–5), shown in the
@@ -67,6 +70,21 @@ Add/edit dialog:
   - **File import** (fallback, offered only when OPRA has no match): FiiO
     DSP XML exports or JSON (bare band arrays, Audio Vault format, or
     OPRA-style entries)
+- **Web auto-fetch:** a Fetch specs button in the dialog looks up the
+  current brand/model on the web and offers to fill the form — only
+  empty fields are ever filled, user-entered values are never
+  overwritten, and nothing is saved until you apply the preview:
+  - frequency-response graph from the squig.link measurement index
+    (main + federated headphone databases); the raw REW data is rendered
+    in-app to a PNG (log-frequency axis, active theme colors) and stored
+    like any other image
+  - price from squig.link phone-book entries
+  - driver type, impedance, sensitivity via keyless web search of
+    manufacturer/retailer pages
+  - product image (`og:image`) added to the product-image gallery
+  - best-effort per step: the result panel lists what was found and why
+    anything else failed; phone books are cached locally so only the
+    first lookup is slow; plain user agent, no API keys
 - Tube-amp compatibility badge computed from impedance + driver type
   (override-able per device)
 - Lightbox image viewer (full resolution; everything else uses cached
@@ -76,10 +94,12 @@ Add/edit dialog:
   and cards load ~100 KB copies while the lightbox keeps full quality
 - **Themed window chrome (Linux):** the native title bar is replaced by
   an in-app bar that matches the active color scheme exactly — drag to
-  move, double-click to maximize, minimize/maximize/close controls
+  move, double-click to maximize, minimize/maximize/close controls, and
+  edge resize handles for the undecorated window
 - Settings screen: language (EN/DE/NL/FR), currency, date format, color
   scheme, XDG paths, an "open media folder" action, and an About section
-  showing the running app version
+  with the running app version, GitHub project/releases links and a
+  best-effort latest-release check
 - Bundles: Linux (`.deb`, `.rpm`, `.AppImage`) and macOS (`.app`, `.dmg`), built via GitHub Actions CI
 
 ### Tube-amp compatibility rule
@@ -94,38 +114,18 @@ Add/edit dialog:
 
 Those are the display labels — the database stores the short codes (`Yes`, `OTL Only`, `Transformer Only`, `No`), so changing display names never requires a migration.
 
-## Features (Phase 2 — Web auto-fetch)
+## Wishlist
 
-A **Fetch specs** button in the add/edit dialog looks up the current
-brand/model combination on the web and offers to fill the form — **only
-empty fields are ever filled, user-entered values are never overwritten**.
+Not implemented yet — ideas for future versions:
 
-| Field | Source |
-| --- | --- |
-| Frequency-response graph | squig.link measurement index (main + federated headphone databases). The raw REW measurement data is rendered in-app to a PNG (log-frequency axis, active theme colors) and stored in the media folder like any other image. |
-| Price | squig.link phone-book entry |
-| Driver type, impedance, sensitivity | Keyless DuckDuckGo web search → manufacturer/retailer pages parsed with lenient heuristics. |
-| Product image | `og:image` from the first result page that provides one, downloaded into the media folder and added to the product-image gallery. |
-
-Behaviour notes:
-
-- **Best-effort and isolated.** Every step can fail independently; the
-  result panel lists what was found plus notes for what couldn't be
-  determined (and why). Nothing is ever saved automatically — you review
-  the preview and press **Apply to form (empty fields only)**.
-- **No match → blank fields.** If the device isn't in the squig.link index
-  and the search doesn't yield specs, the form simply stays editable with
-  whatever you typed.
-- **Caching.** The squig.link phone books are cached under
-  `~/.local/share/audio-vault/cache/` (24 h for the main index, 7 days for
-  the federation list and federated books), so only the first lookup is
-  slow.
-- **Privacy.** Requests go out with a plain user agent (`AudioVault/0.3`)
-  to squig.link, DuckDuckGo and the result pages. No API keys or
-  credentials are needed or stored.
-- FR data files use squig.link's REW text format (`frequency\tamp\tphase`);
-  the left channel is preferred, with right-channel and channel-less
-  fallbacks.
+- **Auto-update:** the settings page shows the latest release, but
+  downloading and installing it (Tauri updater plugin) is not wired up
+- **Backup & restore:** export/import the whole collection (database +
+  media folder) as a single archive, plus CSV export of the table views
+- **Side-by-side comparison:** pick two headphones or devices and compare
+  specs, sound ratings and FR/PEQ curves on one screen
+- **Windows support:** CI intentionally builds Linux and macOS only;
+  Windows packaging (MSI/NSIS) is untested
 
 ## Development
 
@@ -171,12 +171,13 @@ app/
 │   │   ├── themes.ts       # Color schemes: tokens, chart palettes, applyTheme
 │   │   ├── format.ts       # Price/date formatting helpers
 │   │   ├── i18n.ts         # i18next setup, enum labels, note localization
-│   │   ├── fetchSpecs.ts   # Phase 2: fetch/download command wrappers
-│   │   ├── renderFr.ts     # Phase 2: FR curve → PNG (canvas) + SVG preview
-│   │   ├── opra.ts         # Phase 3: OPRA lookup wrapper + band conversion
-│   │   ├── parseFiioEq.ts  # Phase 3: FiiO DSP XML → bands
-│   │   ├── peqImport.ts    # Phase 3: PEQ file dispatch (XML/JSON) + generic JSON parser
-│   │   └── peqCurve.ts     # PEQ bands → combined magnitude curve + SVG model
+│   │   ├── fetchSpecs.ts   # fetch/download command wrappers
+│   │   ├── renderFr.ts     # FR curve → PNG (canvas) + SVG preview
+│   │   ├── opra.ts         # OPRA lookup wrapper + band conversion
+│   │   ├── parseFiioEq.ts  # FiiO DSP XML → bands
+│   │   ├── peqImport.ts    # PEQ file dispatch (XML/JSON) + generic JSON parser
+│   │   ├── peqCurve.ts     # PEQ bands → combined magnitude curve + SVG model
+│   │   └── versionCheck.ts # latest-release check (GitHub API)
 │   └── components/
 │       ├── CollectionView.tsx
 │       ├── DateCalendar.tsx        # themed month-grid popover (purchase date)
@@ -186,7 +187,8 @@ app/
 │       ├── FrPreview.tsx         # fetched FR curve mini-chart (SVG)
 │       ├── InfoTip.tsx           # hover/click info popover (The Sound labels)
 │       ├── PeqGraph.tsx          # PEQ response graph (JSX, themed)
-│       ├── SettingsView.tsx      # incl. the "Web fetch" info section
+│       ├── ResizeHandles.tsx     # CSD edge strips → start_resize_dragging
+│       ├── SettingsView.tsx      # incl. the "Web fetch" info + About/GitHub section
 │       ├── StarRating.tsx        # half-star rating input (overall rating)
 │       ├── TagInput.tsx          # chip multi-value input (inputs/outputs/codecs)
 │       ├── Tip.tsx               # styled hover tooltip for badges/pills
@@ -201,15 +203,16 @@ app/
     │   │                   #   media_delete, media_read_base64,
     │   │                   #   media_save_bytes, media_download_image,
     │   │                   #   media_scaled, open_media_folder,
-    │   │                   #   read_config, save_config, fetch_specs,
-    │   │                   #   fetch_opra_presets
-    │   │                   #   + DB migrations (v1–v20; v9+ ratings, v14 doubles
-    │   │                   #   sound ratings, v15 updated_at, v16+v17 devices
-    │   │                   #   category, v18 images column, v19/v20 legacy
-    │   │                   #   product images moved into the gallery)
-    │   ├── fetch_specs.rs  # Phase 2: squig.link index matching, REW
-    │   │                   #   parsing, web search, spec scraping
-    │   └── fetch_opra.rs   # Phase 3: OPRA database download/cache, parse,
+│   │                   #   read_config, save_config, fetch_specs,
+│   │                   #   fetch_opra_presets, check_latest_version
+│   │                   #   + DB migrations (v1–v21; v9+ ratings, v14 doubles
+│   │                   #   sound ratings, v15 updated_at, v16+v17 devices
+│   │                   #   category, v18 images column, v19/v20 legacy
+│   │                   #   product images moved into the gallery,
+│   │                   #   v21 ownership_status)
+│   ├── fetch_specs.rs  # squig.link index matching, REW
+│   │                   #   parsing, web search, spec scraping
+│   └── fetch_opra.rs   # OPRA database download/cache, parse,
     │                       #   brand+model matching
     ├── tauri.conf.json     # Asset protocol scope, CSP, bundle targets
     ├── tauri.linux.conf.json  # Linux-only: decorations off (custom title bar)

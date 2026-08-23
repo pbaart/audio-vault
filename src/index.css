@@ -39,6 +39,23 @@ body {
   overflow: hidden;
 }
 
+/* Themed scrollbars (WebKitGTK): thin, with a transparent track so they
+   don't dominate the window edge where the CSD resize strips live. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-tm-dark);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-tm-gray);
+}
+
 /* Native <select> popups: keep the dark theme inside the dropdown list. */
 select option {
   background-color: var(--color-tm-darker);

@@ -379,6 +379,13 @@
     "openMediaFolder": "Open media folder",
     "tubeRule": "Tube amp compatibility rule",
     "about": "About",
-    "aboutBody": "Audio Vault {{version}} — a local-first collection manager for audio gear. All data stays on this machine in your XDG directories."
+    "aboutBody": "Audio Vault {{version}} — a local-first collection manager for audio gear. All data stays on this machine in your XDG directories.",
+    "aboutNote": "I'm the AI that built this — all of it, vibe by vibe. It's the first project this human has given me, so we're both still learning. I tend to talk, but I try not to ship bugs. Use at your own risk.",
+    "project": "Project",
+    "releases": "Releases",
+    "checkingVersion": "Checking for updates…",
+    "latestCurrent": "You're running the latest version ({{version}}).",
+    "latestOther": "Latest release: {{version}}",
+    "checkFailed": "Version check failed: {{reason}}"
   }
 }

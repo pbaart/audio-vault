@@ -6,9 +6,12 @@ import {
   Globe,
   HardDrive,
   Info,
+  Rocket,
   SlidersHorizontal,
 } from "lucide-react";
-import { getAppPaths, type AppPaths } from "../lib/paths";
+import { siGithub } from "simple-icons";
+import { openUrl } from "@tauri-apps/plugin-opener";
+import { getAppPaths, isTauri, type AppPaths } from "../lib/paths";
 import { openMediaFolder } from "../lib/media";
 import { describeTubeRule } from "../lib/tube";
 import { LANGUAGES, localizeNote, type LanguageId } from "../lib/i18n";
@@ -19,7 +22,15 @@ import {
   type DateFormat,
 } from "../lib/settings";
 import { THEMES, type ThemeId } from "../lib/themes";
+import { checkLatestVersion } from "../lib/versionCheck";
 import { btnSecondary, cls, selectCls } from "../ui";
+
+/** GitHub home of the project (About section links + version check). */
+const GITHUB_REPO = "https://github.com/pbaart/audio-vault";
+
+/** Link-style button used for the GitHub buttons in the About section. */
+const linkBtn =
+  "flex items-center gap-1.5 rounded border border-tm-dark bg-tm-darker px-2.5 py-1 text-xs text-tm-cyan transition hover:border-tm-accent hover:text-tm-fg";
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -38,6 +49,8 @@ export function SettingsView({
   const [paths, setPaths] = useState<AppPaths | null>(null);
   const [folderError, setFolderError] = useState<string | null>(null);
   const [version, setVersion] = useState("");
+  const [latest, setLatest] = useState<string | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
 
   useEffect(() => {
     void getAppPaths()
@@ -47,6 +60,22 @@ export function SettingsView({
     void getVersion()
       .then(setVersion)
       .catch(() => undefined);
+  }, []);
+
+  // Best-effort latest-release check (GitHub API) for the About section.
+  useEffect(() => {
+    if (!isTauri()) return;
+    let cancelled = false;
+    void checkLatestVersion()
+      .then((v) => {
+        if (!cancelled) setLatest(v);
+      })
+      .catch((e) => {
+        if (!cancelled) setCheckError(String(e));
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleOpenFolder() {
@@ -160,6 +189,71 @@ export function SettingsView({
 
       <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+          <Info size={14} />
+          {t("settings.about")}
+        </h3>
+        <p className="text-sm leading-relaxed text-tm-gray">
+          {t("settings.aboutNote")}
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-tm-gray">
+          {t("settings.aboutBody", { version })}
+        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className={linkBtn}
+            title={GITHUB_REPO}
+            onClick={() => void openUrl(GITHUB_REPO)}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width={12}
+              height={12}
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d={siGithub.path} />
+            </svg>
+            {t("settings.project")}
+          </button>
+          <button
+            type="button"
+            className={linkBtn}
+            title={`${GITHUB_REPO}/releases`}
+            onClick={() => void openUrl(`${GITHUB_REPO}/releases`)}
+          >
+            <Rocket size={12} />
+            {t("settings.releases")}
+          </button>
+        </div>
+        {isTauri() && latest === null && checkError === null && (
+          <p className="mt-2 text-xs text-tm-gray">
+            {t("settings.checkingVersion")}
+          </p>
+        )}
+        {latest !== null && version !== "" && (
+          <p
+            className={cls(
+              "mt-2 text-xs",
+              latest.replace(/^v/, "") === version
+                ? "text-tm-gray"
+                : "text-tm-accent",
+            )}
+          >
+            {latest.replace(/^v/, "") === version
+              ? t("settings.latestCurrent", { version: latest })
+              : t("settings.latestOther", { version: latest })}
+          </p>
+        )}
+        {checkError !== null && (
+          <p className="mt-2 text-xs text-tm-gray/70">
+            {t("settings.checkFailed", { reason: checkError })}
+          </p>
+        )}
+      </section>
+
+      <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
+        <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
           <Globe size={14} />
           {t("settings.webFetch")}
         </h3>
@@ -180,6 +274,7 @@ export function SettingsView({
         </dl>
         <div className="mt-4">
           <button
+            type="button"
             className={btnSecondary}
             onClick={() => void handleOpenFolder()}
           >
@@ -201,16 +296,6 @@ export function SettingsView({
         </h3>
         <p className="text-sm leading-relaxed text-tm-gray">
           {describeTubeRule((k) => t(k))}
-        </p>
-      </section>
-
-      <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
-        <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
-          <Info size={14} />
-          {t("settings.about")}
-        </h3>
-        <p className="text-sm leading-relaxed text-tm-gray">
-          {t("settings.aboutBody", { version })}
         </p>
       </section>
     </div>
