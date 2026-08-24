@@ -767,17 +767,11 @@ pub fn run() {
           ALTER TABLE devices ADD COLUMN room_correction TEXT;",
     kind: MigrationKind::Up,
   },
-  Migration {
-    version: 18,
-    description: "add_device_images_column",
-    // Devices-category gallery: JSON string array of relative media
-    // paths (same convention as inputs/outputs). Product shots for the
-    // devices detail view; the mood image stays the cover shown in cards
-    // and the hero (the first product image is only a fallback when no
-    // mood image is set). Headphones leave this empty.
-    sql: "ALTER TABLE devices ADD COLUMN images TEXT;",
-    kind: MigrationKind::Up,
-  },
+  // Migrations run in the ORDER LISTED BELOW — the plugin hands them
+  // to sqlx as-is and sqlx does not sort by version. Keep this list in
+  // ascending version order. (0.4.0/0.5.0 listed v18 before v17, so
+  // v17's table rebuild silently dropped the images column and v19
+  // failed on every fresh install and upgrade.)
   Migration {
     version: 17,
     description: "make_type_nullable_for_devices_category",
@@ -840,6 +834,17 @@ ALTER TABLE devices_v17 RENAME TO devices;",
     kind: MigrationKind::Up,
   },
   Migration {
+    version: 18,
+    description: "add_device_images_column",
+    // Devices-category gallery: JSON string array of relative media
+    // paths (same convention as inputs/outputs). Product shots for the
+    // devices detail view; the mood image stays the cover shown in cards
+    // and the hero (the first product image is only a fallback when no
+    // mood image is set). Headphones leave this empty.
+    sql: "ALTER TABLE devices ADD COLUMN images TEXT;",
+    kind: MigrationKind::Up,
+  },
+  Migration {
     version: 19,
     description: "move_legacy_device_product_images_into_gallery",
     // Devices created before the gallery existed may still carry a
@@ -848,7 +853,67 @@ ALTER TABLE devices_v17 RENAME TO devices;",
     // images array (first position) so it is manageable like any other
     // gallery image. Idempotent: after one run no device row has
     // image_path set.
-    sql: "UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE category = 'devices' AND image_path IS NOT NULL AND image_path != '';",
+    //
+    // The rebuild (create / copy / drop / rename) guarantees the images
+    // column exists before the move: databases migrated by 0.4.0/0.5.0
+    // (v18 listed before v17) have v17+v18 recorded but NO images
+    // column, while fresh installs arrive with it from v18 (all NULL).
+    // The copy lists the 46 pre-v18 columns explicitly, so it works
+    // whether or not the source table has images.
+    sql: "CREATE TABLE devices_v19 (
+  id TEXT PRIMARY KEY,
+  brand TEXT NOT NULL,
+  model TEXT NOT NULL,
+  type TEXT,
+  image_path TEXT,
+  price REAL,
+  purchase_date TEXT,
+  driver_type TEXT,
+  impedance_ohms INTEGER,
+  sensitivity_db REAL,
+  connector_type TEXT,
+  tube_amp_suitable TEXT,
+  drive_difficulty TEXT,
+  sound_signature TEXT,
+  soundstage_rating INTEGER,
+  listening_notes TEXT,
+  fr_graph_path TEXT,
+  peq_settings TEXT,
+  custom_fields TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  color TEXT,
+  manufacturer_url TEXT,
+  webshop_url TEXT,
+  peq_source TEXT,
+  mood_image_path TEXT,
+  overall_rating INTEGER,
+  imaging_rating INTEGER,
+  detail_retrieval_rating INTEGER,
+  timbre_rating INTEGER,
+  tonal_balance_rating INTEGER,
+  updated_at TEXT,
+  category TEXT NOT NULL DEFAULT 'headphones',
+  device_type TEXT,
+  dac_chip TEXT,
+  supported_formats TEXT,
+  bluetooth_codecs TEXT,
+  inputs TEXT,
+  outputs TEXT,
+  output_power TEXT,
+  snr_db REAL,
+  thd_n TEXT,
+  load_min_ohms INTEGER,
+  load_max_ohms INTEGER,
+  channels TEXT,
+  hdmi TEXT,
+  room_correction TEXT,
+  images TEXT
+);
+INSERT INTO devices_v19 (id, brand, model, type, image_path, price, purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, listening_notes, fr_graph_path, peq_settings, custom_fields, created_at, color, manufacturer_url, webshop_url, peq_source, mood_image_path, overall_rating, imaging_rating, detail_retrieval_rating, timbre_rating, tonal_balance_rating, updated_at, category, device_type, dac_chip, supported_formats, bluetooth_codecs, inputs, outputs, output_power, snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, room_correction)
+SELECT id, brand, model, type, image_path, price, purchase_date, driver_type, impedance_ohms, sensitivity_db, connector_type, tube_amp_suitable, drive_difficulty, sound_signature, soundstage_rating, listening_notes, fr_graph_path, peq_settings, custom_fields, created_at, color, manufacturer_url, webshop_url, peq_source, mood_image_path, overall_rating, imaging_rating, detail_retrieval_rating, timbre_rating, tonal_balance_rating, updated_at, category, device_type, dac_chip, supported_formats, bluetooth_codecs, inputs, outputs, output_power, snr_db, thd_n, load_min_ohms, load_max_ohms, channels, hdmi, room_correction FROM devices;
+DROP TABLE devices;
+ALTER TABLE devices_v19 RENAME TO devices;
+UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]') OR NOT json_valid(images) THEN json_array(image_path) ELSE json_insert(images, '$[0]', image_path) END, image_path = NULL WHERE category = 'devices' AND image_path IS NOT NULL AND image_path != '';",
     kind: MigrationKind::Up,
   },
   Migration {

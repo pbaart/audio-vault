@@ -2,6 +2,22 @@
 
 All notable changes to Audio Vault are documented in this file.
 
+## [0.5.1] - 2026-08-24
+
+### Fixed
+
+- **Startup crash on fresh installs and upgrades from ≤ 0.5.0:**
+  `while executing migration 19: … no such column: images`. Migration v18
+  (add `images`) was listed before v17 (table rebuild) in the migrations
+  list, and the SQL plugin applies migrations in *listed* order — sqlx
+  does not sort by version — so v17's rebuild silently dropped the
+  `images` column and v19 could never run. The list is now in ascending
+  version order, and v19 additionally rebuilds the table defensively so
+  databases already stuck in the broken state (v17+v18 recorded, no
+  `images` column) heal automatically on the next launch. Legacy
+  `image_path` values are moved into the product-image gallery as
+  intended; no data is lost.
+
 ## [0.5.0] - 2026-08-23
 
 ### Added
