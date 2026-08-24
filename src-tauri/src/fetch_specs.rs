@@ -20,7 +20,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use crate::{note, note_with};
 
-pub const USER_AGENT: &str = "AudioVault/0.5 (local desktop app; audiophile spec lookup)";
+pub const USER_AGENT: &str = "AudioVault/0.6 (local desktop app; audiophile spec lookup)";
 const REQ_TIMEOUT: Duration = Duration::from_secs(20);
 const BOOK_TIMEOUT: Duration = Duration::from_secs(8);
 const PAGE_CAP: usize = 400_000;

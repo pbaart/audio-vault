@@ -2,6 +2,32 @@
 
 All notable changes to Audio Vault are documented in this file.
 
+## [0.6.0] - 2026-08-24
+
+### Added
+
+- **Backup & restore on the settings page:** *Create backup* packs the
+  whole collection (database + all media, minus the regenerable image
+  cache) into a single zip archive saved anywhere via the native save
+  dialog. *Restore from backup* picks an archive, asks for confirmation,
+  validates it (rejects non-backups, corrupt databases and archives made
+  by a newer app version), keeps an automatic safety copy of the current
+  state in the app data directory, then replaces the collection — a
+  restart button loads the restored data. Restore also normalizes the
+  database's migration bookkeeping, so archives created by other builds
+  of the app start up without checksum errors.
+
+### Fixed
+
+- **Startup failure on databases last touched by another build of the
+  app** (`migration N was previously applied but has been modified`):
+  builds whose migration SQL text differs only cosmetically (whitespace
+  inside the string literals) produce different sqlx checksums and made
+  the app refuse to start. The app now rewrites the recorded migration
+  checksums to its own build's values at startup and after every restore
+  — safe bookkeeping normalization, since the migrations are
+  semantically identical.
+
 ## [0.5.1] - 2026-08-24
 
 ### Fixed

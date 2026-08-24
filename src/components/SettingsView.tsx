@@ -2,17 +2,29 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getVersion } from "@tauri-apps/api/app";
 import {
+  Archive,
+  Download,
   FolderOpen,
   Globe,
   HardDrive,
   Info,
   Rocket,
+  RotateCw,
   SlidersHorizontal,
+  Upload,
 } from "lucide-react";
 import { siGithub } from "simple-icons";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { getAppPaths, isTauri, type AppPaths } from "../lib/paths";
 import { openMediaFolder } from "../lib/media";
+import {
+  createBackup,
+  formatBytes,
+  pickBackupArchive,
+  relaunchApp,
+  restoreBackup,
+  type RestoreResult,
+} from "../lib/backup";
 import { describeTubeRule } from "../lib/tube";
 import { LANGUAGES, localizeNote, type LanguageId } from "../lib/i18n";
 import {
@@ -23,7 +35,8 @@ import {
 } from "../lib/settings";
 import { THEMES, type ThemeId } from "../lib/themes";
 import { checkLatestVersion } from "../lib/versionCheck";
-import { btnSecondary, cls, selectCls } from "../ui";
+import { btnPrimary, btnSecondary, btnDanger, cls, selectCls } from "../ui";
+import { Modal } from "./Modal";
 
 /** GitHub home of the project (About section links + version check). */
 const GITHUB_REPO = "https://github.com/pbaart/audio-vault";
@@ -51,6 +64,13 @@ export function SettingsView({
   const [version, setVersion] = useState("");
   const [latest, setLatest] = useState<string | null>(null);
   const [checkError, setCheckError] = useState<string | null>(null);
+  // Backup & restore
+  const [backupBusy, setBackupBusy] = useState(false);
+  const [restoreBusy, setRestoreBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [backupSize, setBackupSize] = useState<string | null>(null);
+  const [pendingRestore, setPendingRestore] = useState<string | null>(null);
+  const [restored, setRestored] = useState<RestoreResult | null>(null);
 
   useEffect(() => {
     void getAppPaths()
@@ -84,6 +104,47 @@ export function SettingsView({
       await openMediaFolder();
     } catch (err) {
       setFolderError(String(err));
+    }
+  }
+
+  async function handleCreateBackup() {
+    setActionError(null);
+    setBackupSize(null);
+    setRestored(null);
+    setBackupBusy(true);
+    try {
+      const summary = await createBackup();
+      if (summary) setBackupSize(formatBytes(summary.sizeBytes));
+    } catch (err) {
+      setActionError(String(err));
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function handlePickRestore() {
+    setActionError(null);
+    setBackupSize(null);
+    setRestored(null);
+    try {
+      const path = await pickBackupArchive();
+      if (path) setPendingRestore(path);
+    } catch (err) {
+      setActionError(String(err));
+    }
+  }
+
+  async function handleConfirmRestore() {
+    if (!pendingRestore) return;
+    const path = pendingRestore;
+    setPendingRestore(null);
+    setRestoreBusy(true);
+    try {
+      setRestored(await restoreBackup(path));
+    } catch (err) {
+      setActionError(String(err));
+    } finally {
+      setRestoreBusy(false);
     }
   }
 
@@ -291,6 +352,79 @@ export function SettingsView({
 
       <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
         <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
+          <Archive size={14} />
+          {t("settings.backup")}
+        </h3>
+        <p className="text-sm leading-relaxed text-tm-gray">
+          {t("settings.backupBody")}
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className={cls(
+              btnSecondary,
+              "disabled:cursor-not-allowed disabled:opacity-40",
+            )}
+            disabled={backupBusy || restoreBusy}
+            onClick={() => void handleCreateBackup()}
+          >
+            <Download size={14} />
+            {t("settings.createBackup")}
+          </button>
+          <button
+            type="button"
+            className={cls(
+              btnSecondary,
+              "disabled:cursor-not-allowed disabled:opacity-40",
+            )}
+            disabled={backupBusy || restoreBusy}
+            onClick={() => void handlePickRestore()}
+          >
+            <Upload size={14} />
+            {t("settings.restoreBackup")}
+          </button>
+        </div>
+        {(backupBusy || restoreBusy) && (
+          <p className="mt-2 text-xs text-tm-gray">
+            {backupBusy
+              ? t("settings.backupWorking")
+              : t("settings.restoreWorking")}
+          </p>
+        )}
+        {backupSize !== null && (
+          <p className="mt-2 text-xs text-tm-green">
+            {t("settings.backupDone", { size: backupSize })}
+          </p>
+        )}
+        {restored !== null && (
+          <div className="mt-3 rounded border border-tm-green/40 bg-tm-green/10 p-3">
+            <p className="text-sm leading-relaxed text-tm-fg">
+              {t("settings.restoreComplete")}
+            </p>
+            {restored.safetyCopyPath !== "" && (
+              <p className="mt-1 break-all font-mono text-xs text-tm-gray">
+                {t("settings.safetyCopy")} {restored.safetyCopyPath}
+              </p>
+            )}
+            <button
+              type="button"
+              className={cls(btnPrimary, "mt-3")}
+              onClick={() => void relaunchApp()}
+            >
+              <RotateCw size={14} />
+              {t("settings.restartNow")}
+            </button>
+          </div>
+        )}
+        {actionError !== null && (
+          <p className="mt-2 text-xs text-tm-red">
+            {localizeNote(actionError)}
+          </p>
+        )}
+      </section>
+
+      <section className="rounded-lg border border-tm-dark bg-tm-bg p-4">
+        <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-tm-gray">
           <Info size={14} />
           {t("settings.tubeRule")}
         </h3>
@@ -298,6 +432,39 @@ export function SettingsView({
           {describeTubeRule((k) => t(k))}
         </p>
       </section>
+
+      {pendingRestore !== null && (
+        <Modal
+          title={t("settings.restoreConfirmTitle")}
+          onClose={() => setPendingRestore(null)}
+          maxWidthClass="max-w-lg"
+          footer={
+            <>
+              <button
+                type="button"
+                className={btnSecondary}
+                onClick={() => setPendingRestore(null)}
+              >
+                {t("common.cancel")}
+              </button>
+              <button
+                type="button"
+                className={btnDanger}
+                onClick={() => void handleConfirmRestore()}
+              >
+                {t("settings.restoreConfirmButton")}
+              </button>
+            </>
+          }
+        >
+          <p className="text-sm leading-relaxed text-tm-gray">
+            {t("settings.restoreConfirmBody")}
+          </p>
+          <p className="mt-2 break-all font-mono text-xs text-tm-fg">
+            {pendingRestore}
+          </p>
+        </Modal>
+      )}
     </div>
   );
 }

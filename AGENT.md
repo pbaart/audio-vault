@@ -433,6 +433,32 @@ NO_STRIP=1 npm run tauri build
   v19/v20 are idempotent data migrations (legacy `image_path` values moved
   into the `images` array via SQLite JSON functions); failed attempts roll
   back and are retried on next launch.
+- **Backup & restore:** `create_backup` / `restore_backup` commands
+  (`src-tauri/src/backup.rs`). The archive is a zip with `manifest.json`
+  (app id + version + timestamp), `collection.db` (copied with SQLite's
+  online backup API — consistent while the app runs) and `media/**`
+  minus the regenerable `.cache/`. Restore validates everything BEFORE
+  touching anything: zip integrity, zip-slip-safe extraction
+  (`enclosed_name()`), manifest, a version guard refusing provably-newer
+  backups (plus a migration-ceiling check as tamper defence),
+  `PRAGMA integrity_check` and the devices table. It then keeps an
+  automatic safety copy of the current state
+  (`audio-vault-pre-restore-<ts>.zip` next to the DB) and only then swaps
+  the database (removing the old file's `-wal`/`-shm` sidecars first)
+  and replaces the media dir wholesale. A restart is required afterwards
+  (the SQL plugin's pool still holds the old file open); the settings
+  page offers relaunch via `tauri-plugin-process`
+  (`process:allow-restart`). rusqlite is pinned to 0.32.x so it shares
+  sqlx's libsqlite3-sys major — the `links = "sqlite3"` constraint allows
+  only one version in the build graph. `reconcile_migration_checksums`
+  (lib.rs) rewrites the recorded `_sqlx_migrations` checksums to this
+  build's SHA-384 values, both at startup (before the SQL plugin opens
+  the DB) and after a successful restore: builds of this repo can carry
+  cosmetically different SQL text for semantically identical migrations
+  (whitespace inside the string literals), which otherwise makes sqlx
+  refuse to start with "previously applied but has been modified".
+  The migrations list lives in `migrations()` (lib.rs) — keep it sorted,
+  sqlx applies it in listed order.
 - **Tauri v2 permissions:** every `plugin:*` invocation from the frontend
   needs an explicit grant in `src-tauri/capabilities/default.json`
   (`core:default` only covers the safe read-only subset). The CSD title

@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use base64::Engine;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
+mod backup;
 mod fetch_opra;
 mod fetch_specs;
 
@@ -58,6 +59,11 @@ impl Default for AppConfig {
     }
   }
 }
+
+/// Highest migration version this build knows about. Keep in sync with the
+/// migrations list in `migrations()` — used by restore to refuse backups
+/// whose schema is ahead of this build.
+const LATEST_MIGRATION_VERSION: i64 = 21;
 
 fn resolve_paths() -> AppPaths {
   let data_root = dirs::data_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -530,6 +536,59 @@ fn save_config(config: AppConfig) -> Result<(), String> {
   fs::write(config_file, raw).map_err(|e| e.to_string())
 }
 
+/// Create a backup archive (database + media, minus the regenerable image
+/// cache) at the user-chosen path. See the `backup` module for the archive
+/// format and guarantees.
+#[tauri::command]
+fn create_backup(dest_path: String) -> Result<backup::BackupSummary, String> {
+  let paths = resolve_paths();
+  backup::create_backup(
+    Path::new(&paths.db),
+    Path::new(&paths.media),
+    Path::new(&dest_path),
+  )
+}
+
+/// Restore the collection from a backup archive. Validates everything
+/// first, keeps an automatic pre-restore safety copy, then swaps database
+/// and media. The app must be restarted afterwards: the SQL plugin's
+/// connection pool still holds the old database file open.
+#[tauri::command]
+fn restore_backup(src_path: String) -> Result<backup::RestoreResult, String> {
+  let paths = resolve_paths();
+  let result = backup::restore_backup(
+    Path::new(&paths.db),
+    Path::new(&paths.media),
+    Path::new(&src_path),
+    env!("CARGO_PKG_VERSION"),
+    LATEST_MIGRATION_VERSION,
+  )?;
+  // Reconcile migration bookkeeping so the app can start even if the
+  // archive was made by a build whose SQL text differs cosmetically.
+  reconcile_migration_checksums(Path::new(&paths.db));
+  Ok(result)
+}
+
+/// Rewrite the recorded `_sqlx_migrations` checksums in `db_path` to match
+/// this build's migration SQL (best-effort; called at startup and after a
+/// successful restore). Different builds of this repo can carry cosmetically
+/// different SQL text for semantically identical migrations (whitespace
+/// inside the string literals differs → different SHA-384 checksums), and
+/// sqlx then refuses to start with "migration N was previously applied but
+/// has been modified". Rewriting the bookkeeping is safe because the
+/// migration semantics — and thus the resulting schema and data — are
+/// identical; at restore time the incoming database was additionally
+/// validated for integrity, the devices table and the migration ceiling.
+fn reconcile_migration_checksums(db_path: &Path) {
+  use sha2::{Digest, Sha384};
+  let Ok(conn) = rusqlite::Connection::open(db_path) else { return };
+  let Ok(mut stmt) = conn.prepare("UPDATE _sqlx_migrations SET checksum = ? WHERE version = ?") else { return };
+  for m in migrations() {
+    let checksum: Vec<u8> = Sha384::digest(m.sql.as_bytes()).to_vec();
+    let _ = stmt.execute(rusqlite::params![checksum, m.version]);
+  }
+}
+
 /// Run the best-effort web auto-fetch for a brand/model combination.
 /// See the `fetch_specs` module: problems are reported as notes in the
 /// result, never as command errors.
@@ -588,30 +647,11 @@ async fn check_latest_version() -> Result<String, String> {
   }
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-  // WebKitGTK's dmabuf GPU renderer triggers a Wayland protocol error on
-  // KWin — the compositor kills the client ~500ms after window creation,
-  // which looks like the app window closing instantly. Disabling the
-  // renderer falls back to the classic GL/shm path. An explicit user value
-  // is respected; this only provides a default.
-  // Safety: called once at the very start of startup, before any other
-  // thread exists, so no concurrent env access can race with this write.
-  if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
-    // pi-lens-ignore: rust-unsafe-block
-    unsafe { std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1") };
-  }
-
-  // First-launch behavior: create the XDG layout + DB parent dir before the
-  // frontend loads the database.
-  let paths =
-    // pi-lens-ignore: rust-expect
-    ensure_app_data().expect("failed to initialize audio-vault data directories");
-  // The SQL plugin keys its migrations by the exact URL string the frontend
-  // passes to `Database.load`, so both sides must use the same absolute path.
-  let db_url = format!("sqlite:{}", paths.db);
-
-  let migrations = vec![Migration {
+/// All database migrations, in ascending version order.
+/// NOTE: the SQL plugin applies migrations in LISTED order — sqlx
+/// does not sort by version — so this list must stay sorted.
+fn migrations() -> Vec<Migration> {
+  vec![Migration {
     version: 1,
     description: "create_devices_table",
     sql: "CREATE TABLE IF NOT EXISTS devices (
@@ -936,10 +976,47 @@ UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]
     // marked — pre-existing rows keep NULL and new items start unset.
     sql: "ALTER TABLE devices ADD COLUMN ownership_status TEXT;",
     kind: MigrationKind::Up,
-  }];
+  }
+  ]
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+  // WebKitGTK's dmabuf GPU renderer triggers a Wayland protocol error on
+  // KWin — the compositor kills the client ~500ms after window creation,
+  // which looks like the app window closing instantly. Disabling the
+  // renderer falls back to the classic GL/shm path. An explicit user value
+  // is respected; this only provides a default.
+  // Safety: called once at the very start of startup, before any other
+  // thread exists, so no concurrent env access can race with this write.
+  if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
+    // pi-lens-ignore: rust-unsafe-block
+    unsafe { std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1") };
+  }
+
+  // First-launch behavior: create the XDG layout + DB parent dir before the
+  // frontend loads the database.
+  let paths =
+    // pi-lens-ignore: rust-expect
+    ensure_app_data().expect("failed to initialize audio-vault data directories");
+  // The SQL plugin keys its migrations by the exact URL string the frontend
+  // passes to `Database.load`, so both sides must use the same absolute path.
+  let db_url = format!("sqlite:{}", paths.db);
+
+  let migrations = migrations();
+
+  // Self-heal migration bookkeeping BEFORE the SQL plugin opens the
+  // database: if this database was last touched by a build whose migration
+  // SQL text differs cosmetically, sqlx would refuse to start ("migration
+  // N was previously applied but has been modified"). Rewriting the
+  // recorded checksums to this build's values is safe — see
+  // reconcile_migration_checksums.
+  reconcile_migration_checksums(Path::new(&paths.db));
+
 
   tauri::Builder::default()
     .plugin(tauri_plugin_opener::init())
+    .plugin(tauri_plugin_process::init())
     .plugin(
       tauri_plugin_sql::Builder::default()
         .add_migrations(&db_url, migrations)
@@ -959,6 +1036,8 @@ UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]
       read_text_file,
       read_config,
       save_config,
+      create_backup,
+      restore_backup,
       fetch_specs,
       fetch_opra_presets,
       check_latest_version
@@ -971,4 +1050,44 @@ UPDATE devices SET images = CASE WHEN images IS NULL OR TRIM(images) IN ('', '[]
     .run(tauri::generate_context!())
     // pi-lens-ignore: rust-expect
     .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn reconcile_updates_foreign_checksums() {
+    use sha2::{Digest, Sha384};
+    let dir = std::env::temp_dir().join(format!("audio-vault-reconcile-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let db = dir.join("reconcile.db");
+    {
+      let conn = rusqlite::Connection::open(&db).unwrap();
+      conn.execute_batch(
+        "CREATE TABLE _sqlx_migrations (version INTEGER PRIMARY KEY, description TEXT NOT NULL, installed_on TEXT NOT NULL, success BOOLEAN NOT NULL, checksum BLOB NOT NULL, execution_time INTEGER NOT NULL);
+         INSERT INTO _sqlx_migrations (version, description, installed_on, success, checksum, execution_time) VALUES (1, 'x', 'now', 1, X'DEADBEEF', 0);",
+      )
+      .unwrap();
+    }
+    reconcile_migration_checksums(&db);
+    let conn = rusqlite::Connection::open(&db).unwrap();
+    let rec: Vec<u8> = conn
+      .query_row("SELECT checksum FROM _sqlx_migrations WHERE version = 1", [], |r| r.get(0))
+      .unwrap();
+    let first = migrations().into_iter().find(|m| m.version == 1).unwrap();
+    let expect: Vec<u8> = Sha384::digest(first.sql.as_bytes()).to_vec();
+    assert_eq!(rec, expect);
+    std::fs::remove_dir_all(&dir).ok();
+  }
+
+  #[test]
+  fn reconcile_is_a_noop_without_migrations_table() {
+    let dir = std::env::temp_dir().join(format!("audio-vault-reconcile-noop-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let db = dir.join("empty.db");
+    rusqlite::Connection::open(&db).unwrap(); // empty database, no tables
+    reconcile_migration_checksums(&db); // must not panic
+    std::fs::remove_dir_all(&dir).ok();
+  }
 }

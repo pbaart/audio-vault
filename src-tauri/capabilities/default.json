@@ -15,6 +15,7 @@
     "core:window:allow-toggle-maximize",
     "opener:default",
     "opener:allow-open-path",
+    "process:allow-restart",
     "sql:default",
     "sql:allow-load",
     "sql:allow-execute",
